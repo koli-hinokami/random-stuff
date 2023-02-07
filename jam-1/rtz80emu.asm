@@ -75,7 +75,9 @@ msg_terminated:			db "Application terminated",13,10,0
 msg_unimplemented_opcode: 	db "[FATAL]: Unimplemented opcode!",13,10,0
 msg_sessionend:			db "Emulated program terminated.",13,10,0
 msg_wrongentrypoint:		
-	db "Wrong entry point! Type in Z80 program first, then jump to $7016",13,10,0
+	db "Type in Z80 program or CP/M BIOS+BDOS+RAMDisk first, then jump to $7016"
+	db "to start the emulator",13,10
+	
 msg_debugopcode:
 foldstart
 	db "DEBUG LOG",13,10,0
@@ -190,7 +192,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	0	;05 005 DEC B    
 	dw	z80_opcode_mov_r8_i8,		0	;06 006 LD B,n    
 	dw	z80_opcode_unimplemented,	0	;07 007 RLCA     
-	dw	z80_opcode_unimplemented,	1	;08 010 EX AF,AF 
+	dw	z80_opcode_ex_af_af,		1	;08 010 EX AF,AF 
 	dw	z80_opcode_unimplemented,	1	;09 011 ADD HL,BC
 	dw	z80_opcode_unimplemented,	1	;0A 012 LD A,(BC) 
 	dw	z80_opcode_unimplemented,	1	;0B 013 DEC BC    
@@ -399,7 +401,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	2	;D6 326 SUB A,n   
 	dw	z80_opcode_unimplemented,	2	;D7 327 RST &10  
 	dw	z80_opcode_unimplemented,	3	;D8 330 RET C    
-	dw	z80_opcode_unimplemented,	3	;D9 331 EXX      
+	dw	z80_opcode_exx,			3	;D9 331 EXX      
 	dw	z80_opcode_unimplemented,	3	;DA 332 JP C,nn   
 	dw	z80_opcode_unimplemented,	3	;DB 333 IN A,(n)  
 	dw	z80_opcode_unimplemented,	3	;DC 334 CALL C,nn  
@@ -417,7 +419,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	5	;E8 350 RET PE   
 	dw	z80_opcode_unimplemented,	5	;E9 351 JP (HL)  
 	dw	z80_opcode_unimplemented,	5	;EA 352 JP PE,nn  
-	dw	z80_opcode_unimplemented,	5	;EB 353 IN A,(n)  
+	dw	z80_opcode_ex_de_hl,		5	;EB 353 EX DE,HL
 	dw	z80_opcode_unimplemented,	5	;EC 354 CALL PE,nn 
 	dw	z80_dispatcher_ext,		0	;ED 355 [EXT]
 	dw	z80_opcode_unimplemented,	5	;EE 356 XOR A,n   
@@ -760,11 +762,11 @@ z80_l2:	db	0
 z80_f2:	db	0
 z80_a2:	db	0
 z80_ix:;dw	0
-z80_ixl: db	0
 z80_ixh: db	0
+z80_ixl: db	0
 z80_iy:;dw	0
-z80_iyl: db	0
 z80_iyh: db	0
+z80_iyl: db	0
 z80_sp:	dw	0
 ;z80_pc:	dw	0	;Is offloaded to SI, taking the RT intention
 z80_i:	db	0
@@ -1252,6 +1254,53 @@ z80_opcode_or_m8:	proc
 	sta	z80_f
 	ret
 	endp
+z80_opcode_fast_inc_r8:	proc
+	mov	ab,	z80_registers;lea tx,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	tx,	ab
+	mov	a,	[tx]	;inc	[tx]
+	inc	a
+	mov	[tx],	a	
+	ret
+	endp
+z80_opcode_fast_dec_r8:	proc
+	mov	ab,	z80_registers;lea tx,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	tx,	ab
+	mov	a,	[tx]	;inc	[tx]
+	dec	a
+	mov	[tx],	a	
+	ret			
+	endp
+z80_opcode_inc_r8:	proc
+	mov	ab,	z80_registers;lea tx,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	tx,	ab
+	;--
+	mov	a,	[tx]	;inc	[tx]
+	inc	a
+	mov	[tx],	a	;result into A
+	mov	b,	0	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+z80_opcode_dec_r8:	proc
+	mov	ab,	z80_registers;lea tx,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	tx,	ab
+	;--
+	mov	a,	[tx]	;inc	[tx]
+	dec	a
+	mov	[tx],	a	;result into A
+	mov	b,	0	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+
 z80_generateflags_lc:	proc
 	;Generate flags for shift operations
 	;Parameters:
@@ -1365,6 +1414,81 @@ z80_opcode_jmp_a16:	proc
 	mov	b,	[si]
 	inc	si
 	mov	si,	ab				;set PC to the address
+	ret
+	endp
+
+z80_opcode_ex_de_hl:	proc
+	mov	di,	z80_d	
+	mov	a,	[di]	;mov	ab,	[di]
+	inc	di
+	mov	b,	[di]
+	ldc	z80_h		;mov	cd,	[z80_hl]
+	ldd	z80_l
+	sta	z80_h		;mov	[z80_hl],	ab
+	stb	z80_l
+	mov	[di],	d	;mov	[z80_de],	cd
+	dec	di
+	mov	[di],	c
+	ret
+	endp
+z80_opcode_ex_de_ix:	proc
+	mov	di,	z80_d	
+	mov	a,	[di]	;mov	ab,	[di]
+	inc	di
+	mov	b,	[di]
+	ldc	z80_ixh		;mov	cd,	[z80_hl]
+	ldd	z80_ixl
+	sta	z80_ixh		;mov	[z80_hl],	ab
+	stb	z80_ixl
+	mov	[di],	d	;mov	[z80_de],	cd
+	dec	di
+	mov	[di],	c
+	ret
+	endp
+z80_opcode_ex_de_iy:	proc
+	mov	di,	z80_d	
+	mov	a,	[di]	;mov	ab,	[di]
+	inc	di
+	mov	b,	[di]
+	ldc	z80_iyh		;mov	cd,	[z80_hl]
+	ldd	z80_iyl
+	sta	z80_iyh		;mov	[z80_hl],	ab
+	stb	z80_iyl
+	mov	[di],	d	;mov	[z80_de],	cd
+	dec	di
+	mov	[di],	c
+	ret
+	endp
+z80_opcode_ex_af_af:	proc
+	mov	di,	z80_f
+	mov	a,	[di]	;mov	ab,	[di]
+	inc	di
+	mov	b,	[di]
+	ldc	z80_f2		;mov	cd,	[z80_hl]
+	ldd	z80_a2
+	sta	z80_f2		;mov	[z80_hl],	ab
+	stb	z80_a2
+	mov	[di],	d	;mov	[z80_de],	cd
+	dec	di
+	mov	[di],	c
+	ret
+	endp
+
+z80_opcode_exx:		proc
+	push	si
+	mov	si,	z80_b
+	mov	di,	z80_b2
+	mov	c,	8
+z80_opcode_exx.loop:	
+	mov	a,	[si]
+	mov	b,	[di]
+	mov	[di],	a
+	mov	[si],	b
+	inc	si
+	inc	di
+	dec	c
+	jnz	z80_opcode_exx.loop
+	pop	si
 	ret
 	endp
 z80_opcode_debug:	proc
