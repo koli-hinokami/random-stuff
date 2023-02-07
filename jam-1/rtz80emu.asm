@@ -61,10 +61,11 @@
 ;                                   ::Headers::
 ;                                   '''''''''''
 .architecture 8bitPipeline 
-.export 0 TopRomAddress
 .entry entry
+.export 0x0000 TopRomAddress
 .origin 0x7000
 .segment DataRO
+
 ;                            ,,...............,,
 ;                            ::Constant arrays::
 ;                            '''''''''''''''''''
@@ -74,9 +75,11 @@ msg_sessionend:			db "Emulated program terminated.",13,10,0
 msg_wrongentrypoint:		
 	db "Wrong entry point! Type in Z80 program first, then jump to $7016",13,10,0
 msg_debugopcode:
+foldstart
 	db "DEBUG LOG",13,10,0
 	;PC:0000 AF :0000 BC :0000 DE :0000 HL :0000 IX:0000 IY:0000
 	;        AF':0000 BC':0000 DE':0000 HL':0000
+	;	 s z - h - v n c
 	db "PC:",0
 	db " AF: ",0
 	db " BC: ",0
@@ -94,9 +97,10 @@ msg_debugopcode:
 	db " ",13,10,"        ",0
 	db "sSzZ-+hH-+vVnNcC"
 	db 13,10,0
+foldend
 .subsegment
 .align	256
-z80_signzeroparity:
+z80_signzeroparity: foldstart
 	db  64,  4,  4,  0,  4,  0,  0,  4,  4,  0,  0,  4,  0,  4,  4,  0
 	db   4,  0,  0,  4,  0,  4,  4,  0,  0,  4,  4,  0,  4,  0,  0,  4
 	db   4,  0,  0,  4,  0,  4,  4,  0,  0,  4,  4,  0,  4,  0,  0,  4
@@ -113,6 +117,7 @@ z80_signzeroparity:
 	db 132,128,128,132,128,132,132,128,128,132,132,128,132,128,128,132
 	db 132,128,128,132,128,132,132,128,128,132,132,128,132,128,128,132
 	db 128,132,132,128,132,128,128,132,132,128,128,132,128,132,132,128
+foldend
 ;z80_signzero:
 ;	db  64,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
 ;	db   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
@@ -131,8 +136,7 @@ z80_signzeroparity:
 ;	db 128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128
 ;	db 128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128
 .subsegment
-	dw	z80_opcode_unimplemented,0
-z80_opcode_table:
+z80_opcode_table: foldstart
 ;struct opcode {
 ;	void(*handling_routine)(__reg_c__ uint8_t);
 ;	// ^ This is quirky C we all love. This is the way pointers to functions 
@@ -173,6 +177,7 @@ z80_opcode_table:
 ;	E8	RET PE   |JP (HL) !|JP PE,nn  |IN A,(n)  |CALL PE,nn |[EXT]    |XOR A,n   |RST &28  |
 ;	F0	RET P    |POP AF   |JP P,nn   |DI        |CALL P,nn  |PUSH AF  |OR n      |RST &30  |
 ;	F8	RET M    |LD SP,HL |JP M,nn   |EI        |CALL M,nn  |[IY]     |CP n      |RST &38  |
+foldmid
 	dw	z80_opcode_nop,			0	;00 000	NOP
 	dw	z80_opcode_unimplemented,	0	;01 001 LD BC,nn 
 	dw	z80_opcode_unimplemented,	0	;02 002 LD (BC),A 
@@ -291,7 +296,7 @@ z80_opcode_table:
 	dw	z80_opcode_mov_m_r8,		3	;73 163 LD (HL),E 
 	dw	z80_opcode_mov_m_r8,		4	;74 164 LD (HL),H  
 	dw	z80_opcode_mov_m_r8,		5	;75 165 LD (HL),L
-	dw	z80_opcode_unimplemented,	0	;76 166 troublesome HALT
+	dw	z80_opcode_unimplemented,	0	;76 166 The troublesome HALT
 	dw	z80_opcode_mov_m_r8,		7	;77 167 LD (HL),A
 	dw	z80_opcode_mov_r8_r8,		56	;78 170 LD A,B   
 	dw	z80_opcode_mov_r8_r8,		57	;79 171 LD A,C   
@@ -307,7 +312,7 @@ z80_opcode_table:
 	dw	z80_opcode_add_r8,		3	;83 203 ADD A,E   
 	dw	z80_opcode_add_r8,		4	;84 204 ADD A,H    
 	dw	z80_opcode_add_r8,		5	;85 205 ADD A,L  
-	dw	z80_opcode_unimplemented,	6	;86 206 ADD A,(HL)
+	dw	z80_opcode_add_m8,		6	;86 206 ADD A,(HL)
 	dw	z80_opcode_add_r8,		7	;87 207 ADD A,A  
 	dw	z80_opcode_adc_r8,		0	;88 210 ADC A,B  
 	dw	z80_opcode_adc_r8,		1	;89 211 ADC A,C  
@@ -315,7 +320,7 @@ z80_opcode_table:
 	dw	z80_opcode_adc_r8,		3	;8B 213 ADC A,E   
 	dw	z80_opcode_adc_r8,		4	;8C 214 ADC A,H    
 	dw	z80_opcode_adc_r8,		5	;8D 215 ADC A,L  
-	dw	z80_opcode_unimplemented,	6	;8E 216 ADC A,(HL)
+	dw	z80_opcode_adc_m8,		6	;8E 216 ADC A,(HL)
 	dw	z80_opcode_adc_r8,		7	;8F 217 ADC A,A  
 	dw	z80_opcode_sub_r8,		0	;90 220 SUB A,B  
 	dw	z80_opcode_sub_r8,		1	;91 221 SUB A,C  
@@ -323,7 +328,7 @@ z80_opcode_table:
 	dw	z80_opcode_sub_r8,		3	;93 223 SUB A,E   
 	dw	z80_opcode_sub_r8,		4	;94 224 SUB A,H    
 	dw	z80_opcode_sub_r8,		5	;95 225 SUB A,L  
-	dw	z80_opcode_unimplemented,	6	;96 226 SUB A,(HL)
+	dw	z80_opcode_sub_m8,		6	;96 226 SUB A,(HL)
 	dw	z80_opcode_sub_r8,		7	;97 227 SUB A,A  
 	dw	z80_opcode_sbb_r8,		0	;98 230 SBC A,B  
 	dw	z80_opcode_sbb_r8,		1	;99 231 SBC A,C  
@@ -331,7 +336,7 @@ z80_opcode_table:
 	dw	z80_opcode_sbb_r8,		3	;9B 233 SBC A,E   
 	dw	z80_opcode_sbb_r8,		4	;9C 234 SBC A,H    
 	dw	z80_opcode_sbb_r8,		5	;9D 235 SBC A,L  
-	dw	z80_opcode_unimplemented,	6	;9E 236 SBC A,(HL)
+	dw	z80_opcode_sbb_m8,		6	;9E 236 SBC A,(HL)
 	dw	z80_opcode_sbb_r8,		7	;9F 237 SBC A,A  
 	dw	z80_opcode_and_r8,		0	;A0 240 AND B    
 	dw	z80_opcode_and_r8,		1	;A1 241 AND C    
@@ -339,7 +344,7 @@ z80_opcode_table:
 	dw	z80_opcode_and_r8,		3	;A3 243 AND E     
 	dw	z80_opcode_and_r8,		4	;A4 244 AND H      
 	dw	z80_opcode_and_r8,		5	;A5 245 AND L    
-	dw	z80_opcode_unimplemented,	6	;A6 246 AND (HL)  
+	dw	z80_opcode_and_m8,		6	;A6 246 AND (HL)  
 	dw	z80_opcode_and_r8,		7	;A7 247 AND A    
 	dw	z80_opcode_xor_r8,		0	;A8 250 XOR B    
 	dw	z80_opcode_xor_r8,		1	;A9 251 XOR C    
@@ -347,7 +352,7 @@ z80_opcode_table:
 	dw	z80_opcode_xor_r8,		3	;AB 253 XOR E     
 	dw	z80_opcode_xor_r8,		4	;AC 254 XOR H      
 	dw	z80_opcode_xor_r8,		5	;AD 255 XOR L    
-	dw	z80_opcode_unimplemented,	6	;AE 256 XOR (HL)  
+	dw	z80_opcode_xor_m8,		6	;AE 256 XOR (HL)  
 	dw	z80_opcode_xor_r8,		7	;AF 257 XOR A    
 	dw	z80_opcode_or_r8,		0	;B0 260 OR B     
 	dw	z80_opcode_or_r8,		1	;B1 261 OR C     
@@ -355,7 +360,7 @@ z80_opcode_table:
 	dw	z80_opcode_or_r8,		3	;B3 263 OR E      
 	dw	z80_opcode_or_r8,		4	;B4 264 OR H       
 	dw	z80_opcode_or_r8,		5	;B5 265 OR L     
-	dw	z80_opcode_unimplemented,	6	;B6 266 OR (HL)   
+	dw	z80_opcode_or_m8,		6	;B6 266 OR (HL)   
 	dw	z80_opcode_or_r8,		7	;B7 267 OR A     
 	dw	z80_opcode_unimplemented,	0	;B8 270 CP B     
 	dw	z80_opcode_unimplemented,	1	;B9 271 CP C     
@@ -429,11 +434,13 @@ z80_opcode_table:
 	dw	z80_opcode_unimplemented,	7	;FD 375 [IY]
 	dw	z80_opcode_unimplemented,	7	;FE 376 CP n      
 	dw	z80_opcode_unimplemented,	7	;FF 377 RST &38  
-	dw	z80_opcode_unimplemented,	0 	;10 400 For catching off-by one errors
+	dw	z80_opcode_unimplemented,	0 	;100 400 For catching off-by one errors
+foldend
 .segment DataRW
 ;                               ,,.........,,
 ;                               ::Variables::
 ;                               '''''''''''''
+foldstart
 init_sp:		dw 0	;SP to restore to return to monitor.
 ;Z80 Register set
 .align 8
@@ -465,11 +472,12 @@ z80_sp:	dw	0
 z80_i:	db	0
 z80_r:	db	0
 z80_iff:	db	0	;I'm not sure if IFF0/1 are needed
+foldend
 .segment Code
 ;                                  ,,....,,
 ;                                  ::Code::
 ;                                  ''''''''
-entry:
+entry:	proc
 	;nop		;Byte at $0 must be a nop, but I am loading to $7000.
 			;Address $0 is taken care of by Z80 software.
 	push	ra
@@ -478,7 +486,8 @@ entry:
 	pop	ra
 	ret
 	;nop
-start:
+	endp
+start:	proc
 	push	ra
 	mov	tx,	sp
 	mov	ab,	tx
@@ -491,18 +500,21 @@ os_return:
 	pop	ra
 	break
 	ret
-print_init_msg:
-;Register allocation
-;RA	fast return address
-;SP	PCPU machine stack pointer
-;SI	Z80 PC
-;DI	gen. purpose
-;AB	gen. purpose
-;CD	gen. purpose
-emuloop_init:
+	endp
+
+emuloop_init:	proc
 	mov	si,	0
 	ret
-emuloop:
+endp
+emuloop:	proc
+	;Register allocation
+	;RA	Native fast return address
+	;SP	Native machine stack pointer
+	;SI	Z80 PC
+	;DI	gen. purpose
+	;AB	gen. purpose
+	;CD	gen. purpose
+
 	push	ra
 emuloop.main:
 	;native command		macro command		comment
@@ -536,18 +548,21 @@ emuloop.main:
 emuloop.ret:
 	pop	ra
 	ret
-main:
+	endp
+main:	proc
 	push	ra
 	call	emuloop_init
 	call	emuloop
 	pop	ra
 	ret
-z80_opcode_nop:
+	endp
+z80_opcode_nop:	proc
 	;As opcode handlers are usually not calling other subrouties,
 	;no additional enter and leave code is needed.
 	nop;?		;lol
 	ret
-z80_opcode_mov_r8_i8:
+	endp
+z80_opcode_mov_r8_i8:	proc
 	;break
 	;Parameters:
 	;C	register number
@@ -560,7 +575,8 @@ z80_opcode_mov_r8_i8:
 	lodsb
 	mov	[tx],	a
 	ret
-z80_opcode_mov_m_i8:
+	endp
+z80_opcode_mov_m_i8:	proc
 	;No parameters
 	;Covers:
 	;066 = $36
@@ -572,7 +588,8 @@ z80_opcode_mov_m_i8:
 	lodsb			;mov	[tx],	[si++]
 	mov	[tx],	a
 	ret
-z80_opcode_mov_r8_r8:
+	endp
+z80_opcode_mov_r8_r8:	proc
 	;Parameters:
 	;C	0ds
 	;Pseudo-hyperthreading interleave
@@ -597,7 +614,8 @@ z80_opcode_mov_r8_r8:
 	mov	a,	[tx]	;mov	[di],	[tx]
 	mov	[di],	a
 	ret
-z80_opcode_mov_r8_m:
+	endp
+z80_opcode_mov_r8_m:	proc
 	mov	ab,	z80_registers;lea	di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -608,7 +626,8 @@ z80_opcode_mov_r8_m:
 	mov	a,	[tx]	;mov	[di],	[tx]
 	mov	[di],	a
 	ret
-z80_opcode_mov_m_r8:
+	endp
+z80_opcode_mov_m_r8:	proc
 	mov	ab,	z80_registers;lea	di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -619,7 +638,8 @@ z80_opcode_mov_m_r8:
 	mov	a,	[di]	;mov	[tx](mem),	[di](reg)
 	mov	[tx],	a
 	ret
-z80_opcode_fast_add_r8:
+	endp
+z80_opcode_fast_add_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -631,7 +651,8 @@ z80_opcode_fast_add_r8:
 	add	a,	b
 	mov	[tx],	a
 	ret
-z80_opcode_fast_sub_r8:
+	endp
+z80_opcode_fast_sub_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -643,7 +664,8 @@ z80_opcode_fast_sub_r8:
 	sub	a,	b
 	mov	[tx],	a
 	ret
-z80_opcode_add_r8:
+	endp
+z80_opcode_add_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -658,7 +680,8 @@ z80_opcode_add_r8:
 	mov	b,	0	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
-z80_opcode_sub_r8:
+	endp
+z80_opcode_sub_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -673,7 +696,8 @@ z80_opcode_sub_r8:
 	mov	b,	1	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
-z80_opcode_adc_r8:
+	endp
+z80_opcode_adc_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -694,7 +718,8 @@ z80_opcode_adc_r8:
 	mov	b,	0	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
-z80_opcode_sbb_r8:
+	endp
+z80_opcode_sbb_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -715,7 +740,8 @@ z80_opcode_sbb_r8:
 	mov	b,	1	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
-z80_opcode_and_r8:
+	endp
+z80_opcode_and_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -732,8 +758,9 @@ z80_opcode_and_r8:
 	mov	tl,	a
 	mov	a,	[tx]
 	sta	z80_f
-	ret			
-z80_opcode_xor_r8:
+	ret		
+	endp
+z80_opcode_xor_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -751,7 +778,8 @@ z80_opcode_xor_r8:
 	mov	a,	[tx]
 	sta	z80_f
 	ret			
-z80_opcode_or_r8:
+	endp
+z80_opcode_or_r8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -769,7 +797,8 @@ z80_opcode_or_r8:
 	mov	a,	[tx]
 	sta	z80_f
 	ret	
-z80_opcode_add_m8:
+	endp
+z80_opcode_add_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
@@ -783,7 +812,8 @@ z80_opcode_add_m8:
 	mov	b,	0	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
-z80_opcode_sub_m8:
+	endp
+z80_opcode_sub_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
@@ -797,7 +827,8 @@ z80_opcode_sub_m8:
 	mov	b,	1	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
-z80_opcode_adc_m8:
+	endp
+z80_opcode_adc_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
@@ -817,7 +848,8 @@ z80_opcode_adc_m8:
 	mov	b,	0	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
-z80_opcode_sbb_m8:
+	endp
+z80_opcode_sbb_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
@@ -837,7 +869,8 @@ z80_opcode_sbb_m8:
 	mov	b,	1	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
-z80_opcode_and_m8:
+	endp
+z80_opcode_and_m8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -854,20 +887,9 @@ z80_opcode_and_m8:
 	mov	tl,	a
 	mov	a,	[tx]
 	sta	z80_f
-	ret	
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	and	a,	b
-	mov	[tx],	a	;result into A
-	;--
-	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
-	mov	a,	[tx]
-	sta	z80_f
 	ret			
-z80_opcode_xor_m8:
+	endp
+z80_opcode_xor_m8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -884,20 +906,9 @@ z80_opcode_xor_m8:
 	mov	tl,	a
 	mov	a,	[tx]
 	sta	z80_f
-	ret	
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	xor	a,	b
-	mov	[tx],	a	;result into A
-	;--
-	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
-	mov	a,	[tx]
-	sta	z80_f
-	ret			
-z80_opcode_or_m8:
+	ret		
+	endp
+z80_opcode_or_m8:	proc
 	mov	ab,	z80_registers;lea di,	[ab+c]
 	add	a,	c
 	incc	b
@@ -914,9 +925,9 @@ z80_opcode_or_m8:
 	mov	tl,	a
 	mov	a,	[tx]
 	sta	z80_f
-	ret	
 	ret
-z80_generateflags_lc:
+	endp
+z80_generateflags_lc:	proc
 	;Generate flags for shift operations
 	;Parameters:
 	;A	Result
@@ -932,7 +943,8 @@ z80_generateflags_lc.no_c:
 z80_generateflags_lc.no_z:
 	stb	z80_f
 	ret
-z80_generateflags_p:
+	endp
+z80_generateflags_p:	proc
 	;Parameters:
 	;A	Result
 	;FL.C   -.- Flags to write to Z80 flags register
@@ -951,7 +963,8 @@ z80_generateflags_p.no_c:
 	add	b,	a
 	stb	z80_f
 	ret
-z80_generateflags:
+	endp
+z80_generateflags:	proc
 	;Parameters:
 	;A	Result
 	;B	The N flag + 5/3
@@ -988,7 +1001,8 @@ z80_generateflags.no_z:
 	stb	z80_f
 	;s z 0 0 0 v n c
 	ret
-z80_opcode_call_a16:
+	endp
+z80_opcode_call_a16:	proc
 	lda	z80_sp		;mov	di,	[z80_sp];setup stack pointer
 	ldb 	z80_sp+1
 	mov	di,	ab
@@ -1005,7 +1019,8 @@ z80_opcode_call_a16:
 	sta	z80_sp
 	stb	z80_sp+1
 	ret
-z80_opcode_ret:
+	endp
+z80_opcode_ret:		proc
 	lda	z80_sp		;mov	di,	[z80_sp];setup stack pointer
 	ldb 	z80_sp+1
 	mov	di,	ab
@@ -1018,14 +1033,16 @@ z80_opcode_ret:
 	sta	z80_sp
 	stb	z80_sp+1
 	ret
-z80_opcode_jmp_a16:
+	endp
+z80_opcode_jmp_a16:	proc
 	;Absolute jump
 	lodsb			;lodsw			;fetch address for jump
 	mov	b,	[si]
 	inc	si
 	mov	si,	ab				;set PC to the address
 	ret
-z80_opcode_debug:
+	endp
+z80_opcode_debug:	proc
 	;Debug opcode, displays internal state.
 	;Speed of execution is not relevant - it interfaces with SIO anyways.
 	push	ra
@@ -1233,7 +1250,8 @@ z80_opcode_debug.delayloop:
 	pop	si
 	pop	ra
 	ret
-z80_opcode_endsession:
+	endp
+z80_opcode_endsession:	proc
 	;Handler for correct termination of emulator.
 	nop
 	jmp	0xE000
@@ -1244,7 +1262,8 @@ z80_opcode_endsession:
 	pop	si
 	pop	ra
 	ret
-z80_opcode_unimplemented:
+	endp
+z80_opcode_unimplemented:	proc
 	;jmp	0xE000
 	push	si			
 	mov	si,	msg_unimplemented_opcode
@@ -1253,11 +1272,13 @@ z80_opcode_unimplemented:
 	pop	si
 	jmp	os_terminate
 	ret
-os_terminate:
+	endp
+os_terminate:	proc
 	mov	si,	msg_terminated
 	call	uart_write
 	jmp	0xE000
 	ret
+	endp
 .include lib\Vga.inc
 .include lib\Uart.inc
 .include lib\Math.inc
