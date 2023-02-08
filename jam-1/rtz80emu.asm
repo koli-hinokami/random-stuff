@@ -102,6 +102,18 @@ foldstart
 	db "sSzZ-+hH-+vVnNcC"
 	db 13,10,0
 foldend
+msg_nativedebug:
+	db "NATIVE DEBUG LOG",13,10,0
+	db "PC:",0
+	db " SP:",0
+	db " CD:",0
+	db " AB:",0
+	db " SI:",0
+	db " DI:",0
+	db " RA:",0
+	db " TX:",0
+	db 13,10,0
+	
 .subsegment
 .align	256
 z80_signzeroparity: foldstart
@@ -820,6 +832,7 @@ emuloop.main:
 	inc	a
 	mov	[tx],	a
 	call	z80_opcode_debug			;do debug output
+	;call	native_debug
 	mov	c,	[si]	;movzx	c,	[si++]	;fetch Z80 command
 	mov	d,	0
 	inc	si
@@ -1820,6 +1833,67 @@ z80_opcode_unimplemented:	proc
 	jmp	os_terminate
 	ret
 	endp
+native_debug:	proc
+	push	tx
+	push	ra
+	push	di
+	push	si
+	push	a
+	push	b
+	push	c
+	push	d
+	mov	tx,	sp	;lea	si,	[sp]
+	mov	di,	tx	;a stack frame! 1st in the program!
+	;inc	di
+	;---
+	mov	si,	msg_nativedebug
+	call	uart_write
+	;--
+	call	uart_write
+	push	si
+	mov	tx,	ra
+	mov	ab,	tx
+	call	math_itoahex_16
+	call	uart_write
+	pop	si
+	;--
+	call	uart_write
+	push	si
+	mov	tx,	sp
+	mov	ab,	tx
+	call	math_itoahex_16
+	call	uart_write
+	pop	si
+	;--
+	mov	c,	6
+	push	di
+native_debug.loop:
+	mov	b,	[di]
+	inc	di
+	mov	a,	[di]
+	inc	di
+	call	uart_write
+	push	si
+	call	math_itoahex_16
+	call	uart_write
+	pop	si
+	dec	c
+	jnz	native_debug.loop
+	pop	di
+	;---
+	call	uart_write
+	;---
+	pop	d
+	pop	c
+	pop	b
+	pop	a
+	pop	si
+	pop	di
+	pop	ra
+	pop	tx
+	ret
+	endp
+
 os_terminate:	proc
 	mov	si,	msg_terminated
 	call	uart_write
