@@ -1,0 +1,580 @@
+;First define the registers, 
+
+register  8  a,b ,c,d    
+register  8  tl ,th   ; together they form tx
+register 16  si, di
+register 16  tx, ab, cd  ;ab,cd are "fake" to facilitiate address loading. 
+register 16  pc
+register 16  ra
+register 16  sp
+
+; IO Ports
+register  8  lcdCommand ,lcdData 
+register  8  uart_data,uart_ctrl
+register  8  audio_data
+register  8  cntrl_data
+register  8  vga
+
+;Definition helpers
+opcode	proc	: ; ignore "proc" and "endp" instr. - i'll use them to drive 
+opcode	endp	: ; notepad++'s folding
+
+opcode	foldstart	: ;
+opcode  foldmid 	: ; 
+opcode  foldend 	: ;
+
+;nop instruction is simpliest, and we need it to be 0x00 
+opcode	nop				: db 0
+opcode	cnop			: db 0            ; nops's guarding mem clashes (shouldn't be needed anymore)
+
+;constant loads
+;		6 
+opcode	mov a,#1		: db 001,#1
+opcode  mov b,#1		: db 002,#1
+opcode  mov c,#1		: db 003,#1
+opcode  mov d,#1		: db 004,#1
+opcode  mov tl,#1		: db 005,#1  
+opcode  mov th,#1		: db 006,#1  
+
+;fake constant loads
+opcode  mov tx,#1       : db 005,#1,006,#1>>8
+opcode  mov ab,#1       : db 001,#1,002,#1>>8
+opcode  mov cd,#1       : db 003,#1,004,#1>>8
+opcode  mov si,#1       : db 005,#1,006,#1>>8,027
+opcode  mov di,#1       : db 005,#1,006,#1>>8,029
+
+
+;8 bit register to register moves
+;		4*3 = 12
+opcode  mov a,b			: db 007
+opcode  mov a,c			: db 008
+opcode  mov a,d			: db 009
+opcode  mov b,a			: db 00A
+opcode  mov b,c			: db 00B
+opcode  mov b,d			: db 00C
+opcode  mov c,a			: db 00D
+opcode  mov c,b			: db 00E
+opcode  mov c,d			: db 00F
+opcode  mov d,a			: db 010
+opcode  mov d,b			: db 011
+opcode  mov d,c			: db 012
+
+opcode  mov tl,a        : db 013
+opcode  mov tl,b        : db 014
+opcode  mov tl,c        : db 015
+opcode  mov tl,d        : db 016
+opcode  mov th,a        : db 017
+opcode  mov th,b        : db 018
+opcode  mov th,c        : db 019
+opcode  mov th,d        : db 01a
+
+opcode  mov a,tl        : db 01b
+opcode  mov b,tl        : db 01c
+opcode  mov c,tl        : db 01d
+opcode  mov d,tl        : db 01e
+opcode  mov a,th        : db 01f
+opcode  mov b,th        : db 020
+opcode  mov c,th        : db 021
+opcode  mov d,th        : db 022
+
+
+;16 bit move instructions
+opcode  mov ra,tx       : db 023
+opcode  mov tx,ra       : db 024
+opcode  mov sp,tx       : db 025
+opcode  mov tx,sp       : db 026
+opcode  mov si,tx       : db 027
+opcode  mov tx,si       : db 028
+opcode  mov di,tx       : db 029
+opcode  mov tx,di       : db 02A
+opcode  mov di,si       : db 02B
+opcode  mov si,di       : db 02C
+opcode  mov si,sp       : db 02D
+opcode  mov di,sp       : db 02E
+
+
+;16 bit increment's and decrements
+
+;opcode  dec sp			: db 031                ;never used 
+opcode  dec si			: db 032
+opcode  dec di			: db 033
+;opcode  inc sp			: db 034               ;never used 
+opcode  inc si			: db 035
+opcode	inc di			: db 036
+
+;IO
+opcode  out lcdCommand,a  : db 037
+opcode  out lcdData,a     : db 038
+opcode  in a,lcdCommand   : db 03e
+
+opcode  out uart_data,a   : db 039
+opcode  in a,uart_data    : db 03a
+opcode  in a,uart_ctrl    : db 03b
+
+opcode  out audio_data,a  : db 03c
+opcode  in a,cntrl_data   : db 03d
+
+       
+opcode  in a,vga          : db 031
+
+opcode	break             : db 0,03f,0,0
+
+;Memory Read
+opcode  mov a,[si]      : db 040
+opcode  mov b,[si]      : db 041
+opcode  mov c,[si]      : db 042
+opcode  mov d,[si]      : db 043
+opcode  mov a,[di]      : db 044
+opcode  mov b,[di]      : db 045
+opcode  mov c,[di]      : db 046
+opcode  mov d,[di]      : db 047
+opcode  mov a,[tx]      : db 048
+opcode  mov b,[tx]      : db 049
+opcode  mov c,[tx]      : db 04A
+opcode  mov d,[tx]      : db 04B
+
+;Memory Write
+opcode  mov [si],a      : db 04C
+opcode  mov [si],b      : db 04D
+opcode  mov [si],c      : db 04E
+opcode  mov [si],d      : db 04F
+opcode  mov [di],a      : db 050
+opcode  mov [di],b      : db 051
+opcode  mov [di],c      : db 052
+opcode  mov [di],d      : db 053
+opcode  mov [tx],a      : db 054
+opcode  mov [tx],b      : db 055
+opcode  mov [tx],c      : db 056
+opcode  mov [tx],d      : db 057
+
+opcode lodsb            : db 05b     ;a=[si++]
+opcode stosb            : db 07e     ;[di++]=a
+
+;flow control
+
+opcode  call tx         : db 05c,0,0
+opcode  call di         : db 05d,0,0
+opcode  ret             : db 05e,0,0
+
+opcode  callBD tx       : db 05c
+opcode  callBD di       : db 05d
+opcode  retBD           : db 05e
+
+
+opcode  prebranch       : db 05f
+opcode  jmp tx          : db 05f,060
+
+;Single Flag
+opcode  jo tx           : db 05f,061    ; Overflow
+opcode  jno tx          : db 05f,062    ;!Overflow
+opcode  js tx           : db 05f,063    ; Sign
+opcode  jns tx          : db 05f,064    ;!Sign
+opcode  jz tx           : db 05f,065    ; Zero
+opcode  jnz tx          : db 05f,066    ;!Zero
+opcode  je tx           : db 05f,065    ; Zero
+opcode  jne tx          : db 05f,066    ;!Zero
+opcode  jc   tx         : db 05f,067    ; Carry
+opcode  jnc  tx         : db 05f,068    ;!Carry
+
+; Unsigned operation
+opcode  jnae tx         : db 05f,068    ; <  !Carry
+opcode  jb   tx         : db 05f,068    ; <  !Carry
+opcode  jae  tx         : db 05f,067    ; >=  Carry
+opcode  jnb  tx         : db 05f,067    ; >=  Carry
+opcode  jbe  tx         : db 05f,069    ; <= !Carry OR Zero
+opcode  jna  tx         : db 05f,069    ; <= !Carry OR Zero
+opcode  ja   tx         : db 05f,06A    ; >   Carry AND !Zero
+opcode  jnbe tx         : db 05f,06A    ; >   Carry AND !Zero
+
+; Signed operations
+opcode  jl   tx         : db 05f,06B    ; <   Sign != Overflow
+opcode  jnge tx         : db 05f,06B    ; <   Sign != Overflow
+opcode  jge  tx         : db 05f,06C    ; >=  Sign == Overflow
+opcode  jnl  tx         : db 05f,06C    ; >=  Sign == Overflow
+opcode  jle  tx         : db 05f,06D    ; <=  Zero OR ( Sign != Overflow)
+opcode  jng  tx         : db 05f,06D    ; <=  Zero OR ( Sign != Overflow)
+opcode  jg   tx         : db 05f,06E    ; >   !Zero AND ( Sign == Overflow)
+opcode  jnle tx         : db 05f,06E    ; >   !Zero AND ( Sign == Overflow)
+
+; Logical Carry Operation
+opcode  jlc  tx         : db 05f,06F    ; Logical Carry
+opcode  jnlc tx         : db 05f,070    ;!Logical Carry
+
+opcode  jmp  di         : db 05f,071    
+
+; branch macros
+opcode  call #1         : db 005,#1,006,#1>>8,05c,0,0       
+opcode  jmp  #1         : db 005,#1,006,#1>>8,05f,060       
+
+
+;branch macro Single Flag
+opcode  jo #1           : db 005,#1,006,#1>>8,05f,061    ; Overflow
+opcode  jno #1          : db 005,#1,006,#1>>8,05f,062    ;!Overflow
+opcode  js #1           : db 005,#1,006,#1>>8,05f,063    ; Sign
+opcode  jns #1          : db 005,#1,006,#1>>8,05f,064    ;!Sign
+opcode  jz #1           : db 005,#1,006,#1>>8,05f,065    ; Zero
+opcode  jnz #1          : db 005,#1,006,#1>>8,05f,066    ;!Zero
+opcode  je #1           : db 005,#1,006,#1>>8,05f,065    ; Zero
+opcode  jne #1          : db 005,#1,006,#1>>8,05f,066    ;!Zero
+opcode  jc   #1         : db 005,#1,006,#1>>8,05f,067    ; Carry
+opcode  jnc  #1         : db 005,#1,006,#1>>8,05f,068    ;!Carry
+
+; branch macro Unsigned operation
+opcode  jnae #1         : db 005,#1,006,#1>>8,05f,068    ; <  !Carry
+opcode  jb   #1         : db 005,#1,006,#1>>8,05f,068    ; <  !Carry
+opcode  jae  #1         : db 005,#1,006,#1>>8,05f,067    ; >=  Carry
+opcode  jnb  #1         : db 005,#1,006,#1>>8,05f,067    ; >=  Carry
+opcode  jbe  #1         : db 005,#1,006,#1>>8,05f,069    ; <= !Carry OR Zero
+opcode  jna  #1         : db 005,#1,006,#1>>8,05f,069    ; <= !Carry OR Zero
+opcode  ja   #1         : db 005,#1,006,#1>>8,05f,06A    ; >   Carry AND !Zero
+opcode  jnbe #1         : db 005,#1,006,#1>>8,05f,06A    ; >   Carry AND !Zero
+
+; branch macro Signed operations
+opcode  jl   #1         : db 005,#1,006,#1>>8,05f,06B    ; <   Sign != Overflow
+opcode  jnge #1         : db 005,#1,006,#1>>8,05f,06B    ; <   Sign != Overflow
+opcode  jge  #1         : db 005,#1,006,#1>>8,05f,06C    ; >=  Sign == Overflow
+opcode  jnl  #1         : db 005,#1,006,#1>>8,05f,06C    ; >=  Sign == Overflow
+opcode  jle  #1         : db 005,#1,006,#1>>8,05f,06D    ; <=  Zero OR ( Sign != Overflow)
+opcode  jng  #1         : db 005,#1,006,#1>>8,05f,06D    ; <=  Zero OR ( Sign != Overflow)
+opcode  jg   #1         : db 005,#1,006,#1>>8,05f,06E    ; >   !Zero AND ( Sign == Overflow)
+opcode  jnle #1         : db 005,#1,006,#1>>8,05f,06E    ; >   !Zero AND ( Sign == Overflow)
+
+opcode  jlc   #1        : db 005,#1,006,#1>>8,05f,06F    ; Logical Carry
+opcode  jnlc  #1        : db 005,#1,006,#1>>8,05f,070    ;!Logical Carry
+
+
+
+; Stack operations
+opcode  push a          : db 072
+opcode  push b          : db 073
+opcode  push c          : db 074
+opcode  push d          : db 075
+opcode  push tl         : db 076
+opcode  push th         : db 077
+
+opcode  pop a           : db 078
+opcode  pop b           : db 079
+opcode  pop c           : db 07a
+opcode  pop d           : db 07b
+opcode  pop tl          : db 07c
+opcode  pop th          : db 07d
+
+
+; Fake 16 bit stack operations
+
+opcode  push tx         : db 076,077
+opcode  push ra         : db 024,076,077
+opcode  push sp         : db 026,076,077
+opcode  push si         : db 028,076,077
+opcode  push di         : db 02A,076,077
+
+opcode  pop tx          : db 07d,07c
+opcode  pop ra          : db 07d,07c,0,023
+opcode  pop sp          : db 07d,07c,0,025
+opcode  pop si          : db 07d,07c,0,027
+opcode  pop di          : db 07d,07c,0,029
+
+
+;clear carry
+opcode  clc             : db 07F
+
+;shifts
+opcode  shl a           : db 080
+opcode  shl b           : db 081
+opcode  shl c           : db 082
+opcode  shl d           : db 083
+opcode  shr a           : db 084
+opcode  shr b           : db 085
+opcode  shr c           : db 086
+opcode  shr d           : db 087
+
+;addition 4*3 = 12
+opcode  add a,b         : db 088
+opcode  add a,c         : db 089
+opcode  add a,d         : db 08A
+opcode  add b,a         : db 08B
+opcode  add b,c         : db 08C
+opcode  add b,d         : db 08D
+opcode  add c,a         : db 08E
+opcode  add c,b         : db 08F
+opcode  add c,d         : db 090
+opcode  add d,a         : db 091
+opcode  add d,b         : db 092
+opcode  add d,c         : db 093
+opcode  add b,b         : db 059
+
+;addition 4*3 = 12 (With carry)
+opcode  addc a,b        : db 094
+opcode  addc a,c        : db 095
+opcode  addc a,d        : db 096
+opcode  addc b,a        : db 097
+opcode  addc b,b        : db 058
+opcode  addc b,c        : db 098
+opcode  addc b,d        : db 099
+opcode  addc c,a        : db 09A
+opcode  addc c,b        : db 09B
+opcode  addc c,d        : db 09C
+opcode  addc d,a        : db 09D
+opcode  addc d,b        : db 09E
+opcode  addc d,c        : db 09F
+
+opcode  adc a,b         : db 094
+opcode  adc a,c         : db 095
+opcode  adc a,d         : db 096
+opcode  adc b,a         : db 097
+opcode  adc b,b         : db 058
+opcode  adc b,c         : db 098
+opcode  adc b,d         : db 099
+opcode  adc c,a         : db 09A
+opcode  adc c,b         : db 09B
+opcode  adc c,d         : db 09C
+opcode  adc d,a         : db 09D
+opcode  adc d,b         : db 09E
+opcode  adc d,c         : db 09F
+
+opcode  addac c,a       : db 05a
+
+;8 bit increment 
+opcode  inc a           : db 0A0
+opcode  inc b           : db 0A1
+opcode  inc c           : db 0A2
+opcode  inc d           : db 0A3
+
+opcode  incc a          : db 0A4
+opcode  incc b          : db 0A5
+opcode  incc c          : db 0A6
+opcode  incc d          : db 0A7
+opcode  incc si         : db 034
+
+;subtract 
+opcode  sub a,b         : db 0A8
+opcode  sub a,c         : db 0A9
+opcode  sub a,d         : db 0AA
+opcode  sub b,a         : db 0AB
+opcode  sub b,c         : db 0AC
+opcode  sub b,d         : db 0AD
+opcode  sub c,a         : db 0AE
+opcode  sub c,b         : db 0AF
+opcode  sub c,d         : db 0B0
+opcode  sub d,a         : db 0B1
+opcode  sub d,b         : db 0B2
+opcode  sub d,c         : db 0B3
+opcode  subae d,c       : db 02f
+
+;subtract 
+opcode  subb a,b        : db 0B4
+opcode  subb a,c        : db 0B5
+opcode  subb a,d        : db 0B6
+opcode  subb b,a        : db 0B7
+opcode  subb b,c        : db 0B8
+opcode  subb b,d        : db 0B9
+opcode  subb c,a        : db 0BA
+opcode  subb c,b        : db 0BB
+opcode  subb c,d        : db 0BC
+opcode  subb d,a        : db 0BD
+opcode  subb d,b        : db 0BE
+opcode  subb d,c        : db 0BF
+
+opcode  sbb a,b         : db 0B4
+opcode  sbb a,c         : db 0B5
+opcode  sbb a,d         : db 0B6
+opcode  sbb b,a         : db 0B7
+opcode  sbb b,c         : db 0B8
+opcode  sbb b,d         : db 0B9
+opcode  sbb c,a         : db 0BA
+opcode  sbb c,b         : db 0BB
+opcode  sbb c,d         : db 0BC
+opcode  sbb d,a         : db 0BD
+opcode  sbb d,b         : db 0BE
+opcode  sbb d,c         : db 0BF
+
+;8 bit decrement
+opcode  dec a           : db 0C0
+opcode  dec b           : db 0C1
+opcode  dec c           : db 0C2
+opcode  dec d           : db 0C3
+
+;and 
+opcode  and a,b         : db 0C4
+opcode  and a,c         : db 0C5
+opcode  and a,d         : db 0C6
+opcode  and b,a         : db 0C7
+opcode  and b,c         : db 0C8
+opcode  and b,d         : db 0C9
+opcode  and c,a         : db 0CA
+opcode  and c,b         : db 0CB
+opcode  and c,d         : db 0CC
+opcode  and d,a         : db 0CD
+opcode  and d,b         : db 0CE
+opcode  and d,c         : db 0CF
+
+;or
+opcode  or a,b          : db 0D0
+opcode  or a,c          : db 0D1
+opcode  or a,d          : db 0D2
+opcode  or b,a          : db 0D3
+opcode  or b,c          : db 0D4
+opcode  or b,d          : db 0D5
+opcode  or c,a          : db 0D6
+opcode  or c,b          : db 0D7
+opcode  or c,d          : db 0D8
+opcode  or d,a          : db 0D9
+opcode  or d,b          : db 0DA
+opcode  or d,c          : db 0DB
+
+;xor
+opcode  xor a,b         : db 0DC
+opcode  xor a,c         : db 0DD
+opcode  xor a,d         : db 0DE
+opcode  xor b,a         : db 0DF
+opcode  xor b,c         : db 0E0
+opcode  xor b,d         : db 0E1
+opcode  xor c,a         : db 0E2
+opcode  xor c,b         : db 0E3
+opcode  xor c,d         : db 0E4
+opcode  xor d,a         : db 0E5
+opcode  xor d,b         : db 0E6
+opcode  xor d,c         : db 0E7
+opcode  xor a,a         : db 0E8
+opcode  xor b,b         : db 0E9
+opcode  xor c,c         : db 0EA
+opcode  xor d,d         : db 0EB
+
+;not
+opcode  not a           : db 0EC
+opcode  not b           : db 0ED
+opcode  not c           : db 0EE
+opcode  not d           : db 0EF
+
+;cmp
+opcode  cmp a,b         : db 0F0
+opcode  cmp a,c         : db 0F1
+opcode  cmp a,d         : db 0F2
+opcode  cmp b,a         : db 0F3
+opcode  cmp b,c         : db 0F4
+opcode  cmp b,d         : db 0F5
+opcode  cmp c,a         : db 0F6
+opcode  cmp c,b         : db 0F7
+opcode  cmp c,d         : db 0F8
+opcode  cmp d,a         : db 0F9
+opcode  cmp d,b         : db 0FA
+opcode  cmp d,c         : db 0FB
+
+;test
+opcode  test a          : db 0FC
+opcode  test b          : db 0FD
+opcode  test c          : db 0FE
+opcode  test d          : db 0FF
+
+
+;------------------------------Powerful macroses------------------------------
+
+;string operation macroses
+opcode	movsb		: db 05B,07E
+opcode	movsw		: db 05B,07E,05B,07E
+opcode	lodsw		: db 05B,00A,05B
+opcode	stosw		: db 051,036,07E
+
+;16-bit move macroses
+;TX <-> Reg. pair
+opcode	mov	tx,	ab	: db 013,018
+opcode	mov	tx,	cd	: db 015,01a
+opcode	mov	ab,	tx	: db 01b,020
+opcode	mov	cd,	tx	: db 01d,022
+
+;SI/DI <-> Reg. pair
+opcode	mov	si,	ab	: db 013,018,000,027
+opcode	mov	di,	ab	: db 013,018,000,029
+opcode	mov	si,	cd	: db 015,01a,000,027
+opcode	mov	di,	cd	: db 015,01a,000,029
+opcode	mov	ab,	si	: db 028,01b,000,020
+opcode	mov	ab,	di	: db 02A,01b,000,020
+opcode	mov	cd,	si	: db 028,01d,000,022
+opcode	mov	cd,	di	: db 02A,01d,000,022
+
+opcode	mov	si,	#1	: db db 005,#1,006,#1>>8,027
+
+;Reg. pair inc/dec
+opcode	inc	ab		: db 0A0,0A5
+opcode	inc	cd		: db 0A2,0A7
+opcode	dec	ab		: db 0C0,075,004,000,0B9,07B
+opcode	dec	cd		: db 0C2,073,002,000,0BE,079
+					;dec	a/c
+					;push	d/b
+					;mov	d/b,	imm8
+					;db	0
+					;sbb	b/d,	d/b
+					;pop	d/b
+;TX inc/dec
+;DO NOT USE UNDER ANY CIRCUMSTANCES,
+;because they are very long and very slow, especially decrement, and require initialized stack.
+opcode	inc	tx	: db 072,073,01b,020,0A0,0A5,013,018,078,079
+opcode	dec	tx	: db 072,073,01b,020,0C0,075,004,000,0B9,07B,013,018,079,078
+					;push	a	b	;2/4
+					;mov	ab,	tx	;2/2
+					;dec	ab		;6/8
+					;mov	tx,	ab	;2/2
+					;pop	b	a	;2/4
+								;14	bytes
+								;20	cycles
+								
+;Reg. pair push/pop
+opcode	push	ab		: db 073,072
+opcode	push	cd		: db 075,074
+opcode	pop	ab		: db 078,079
+opcode	pop	cd		: db 07a,07b
+
+;Reg.pair add/sub
+opcode	add	ab,	cd	: db 089,099
+opcode	add	cd,	ab	: db 08E,09E
+opcode	adc	ab,	cd	: db 095,099
+opcode	adc	cd,	ab	: db 09A,09E
+
+opcode	sub	ab,	cd	: db 0A9,0B9
+opcode	sub	cd,	ab	: db 0AE,0BE
+opcode	sbb	ab,	cd	: db 0B5,0B9
+opcode	sbb	cd,	ab	: db 0BA,0BE
+
+opcode	add	ab,	#1	: db 075,074,003,#1,004,#1>>8,089,099,07a,07b	;push cd; mov cd,#1; add ab,cd; pop cd
+opcode	add	cd,	#1	: db 073,072,001,#1,002,#1>>8,08E,09E,078,079
+opcode	adc	ab,	#1	: db 075,074,003,#1,004,#1>>8,095,099,07a,07b
+opcode	adc	cd,	#1	: db 073,072,001,#1,002,#1>>8,09A,09E,078,079
+
+opcode	sub	ab,	#1	: db 075,074,003,#1,004,#1>>8,0A9,0B9,07a,07b
+opcode	sub	cd,	#1	: db 073,072,001,#1,002,#1>>8,0AE,0BE,078,079
+opcode	sbb	ab,	#1	: db 075,074,003,#1,004,#1>>8,0B5,0B9,07a,07b
+opcode	sbb	cd,	#1	: db 073,072,001,#1,002,#1>>8,0BA,0BE,078,079
+
+
+;Reg.pair <-> Memory (Indirect)
+opcode	mov	ab,	[si]	: db 040,035,041,000,032
+opcode	mov	ab,	[di]	: db 044,036,045,000,033
+opcode	mov	cd,	[si]	: db 042,035,043,000,032
+opcode	mov	cd,	[di]	: db 046,036,047,000,033
+opcode	mov	[si],	ab	: db 04C,035,04D,000,032
+opcode	mov	[di],	ab	: db 050,036,051,000,033
+opcode	mov	[si],	cd	: db 04E,035,04F,000,032
+opcode	mov	[di],	cd	: db 052,036,053,000,033
+opcode	mov	ab,	[tx]	: db 048,076,077,072,073,01b,020,0A0,0A5,013,018,078,079,049,07d,07c
+opcode	mov	cd,	[tx]	: db 04A,076,077,072,073,01b,020,0A0,0A5,013,018,078,079,04B,07d,07c
+opcode	mov	[tx],	ab	: db 054,076,077,072,073,01b,020,0A0,0A5,013,018,078,079,055,07d,07c
+opcode	mov	[tx],	cd	: db 056,076,077,072,073,01b,020,0A0,0A5,013,018,078,079,057,07d,07c
+
+;Register <-> Memory (Direct)
+
+opcode	lda	#1		: db 005,#1,006,#1>>8,048
+opcode	ldb	#1		: db 005,#1,006,#1>>8,049
+opcode	ldc	#1		: db 005,#1,006,#1>>8,04A
+opcode	ldd	#1		: db 005,#1,006,#1>>8,04B
+opcode	sta	#1		: db 005,#1,006,#1>>8,054
+opcode	stb	#1		: db 005,#1,006,#1>>8,055
+opcode	stc	#1		: db 005,#1,006,#1>>8,056
+opcode	std	#1		: db 005,#1,006,#1>>8,057
+
+;opcode	mov	ab,	[#1]	: db 005,#1,006,#1>>8,048,005,(#1+1),006,(#1+1)>>8,049
+
+
+
+
+
+
