@@ -103,6 +103,7 @@ foldstart
 	db 13,10,0
 foldend
 msg_nativedebug:
+foldstart
 	db "NATIVE DEBUG LOG",13,10,0
 	db "PC:",0
 	db " SP:",0
@@ -113,7 +114,7 @@ msg_nativedebug:
 	db " RA:",0
 	db " TX:",0
 	db 13,10,0
-	
+foldend
 .subsegment
 .align	256
 z80_signzeroparity: foldstart
@@ -197,26 +198,26 @@ z80_opcode_table: foldstart
 ;	F8	RET M	 |LD SP,HL |JP M,nn   |EI	 |CALL M,nn  |[IY]     |CP n	  |RST &38  |
 foldmid
 	dw	z80_opcode_nop,			0	;00 000	NOP
-	dw	z80_opcode_unimplemented,	0	;01 001 LD BC,nn 
+	dw	z80_opcode_mov_r16_i16,		0	;01 001 LD BC,nn 
 	dw	z80_opcode_unimplemented,	0	;02 002 LD (BC),A 
 	dw	z80_opcode_unimplemented,	0	;03 003 INC BC	  
-	dw	z80_opcode_unimplemented,	0	;04 004 INC B	   
-	dw	z80_opcode_unimplemented,	0	;05 005 DEC B	 
+	dw	z80_opcode_inc_r8,		0	;04 004 INC B	   
+	dw	z80_opcode_dec_r8,		0	;05 005 DEC B	 
 	dw	z80_opcode_mov_r8_i8,		0	;06 006 LD B,n	  
 	dw	z80_opcode_unimplemented,	0	;07 007 RLCA	 
 	dw	z80_opcode_ex_af_af,		1	;08 010 EX AF,AF 
 	dw	z80_opcode_unimplemented,	1	;09 011 ADD HL,BC
 	dw	z80_opcode_unimplemented,	1	;0A 012 LD A,(BC) 
 	dw	z80_opcode_unimplemented,	1	;0B 013 DEC BC	  
-	dw	z80_opcode_unimplemented,	1	;0C 014 INC C	   
-	dw	z80_opcode_unimplemented,	1	;0D 015 DEC C	 
+	dw	z80_opcode_inc_r8,		1	;0C 014 INC C	   
+	dw	z80_opcode_dec_r8,		1	;0D 015 DEC C	 
 	dw	z80_opcode_mov_r8_i8,		1	;0E 016 LD C,n	  
 	dw	z80_opcode_unimplemented,	1	;0F 017 RRCA	 
 	dw	z80_opcode_unimplemented,	2	;10 020 DJNZ d	 
-	dw	z80_opcode_unimplemented,	2	;11 021 LD DE,nn 
+	dw	z80_opcode_mov_r16_i16,	2		;11 021 LD DE,nn 
 	dw	z80_opcode_unimplemented,	2	;12 022 LD (DE),A 
 	dw	z80_opcode_unimplemented,	2	;13 023 INC DE	  
-	dw	z80_opcode_unimplemented,	2	;14 024 INC D	   
+	dw	z80_opcode_inc_r8,		2	;14 024 INC D	   
 	dw	z80_opcode_unimplemented,	2	;15 025 DEC D	 
 	dw	z80_opcode_mov_r8_i8,		2	;16 026 LD D,n	  
 	dw	z80_opcode_unimplemented,	2	;17 027 RLA	 
@@ -224,28 +225,28 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;19 031 ADD HL,DE
 	dw	z80_opcode_unimplemented,	3	;1A 032 LD A,(DE) 
 	dw	z80_opcode_unimplemented,	3	;1B 033 DEC DE	  
-	dw	z80_opcode_unimplemented,	3	;1C 034 INC E	   
-	dw	z80_opcode_unimplemented,	3	;1D 035 DEC E	 
+	dw	z80_opcode_inc_r8,		3	;1C 034 INC E	   
+	dw	z80_opcode_dec_r8,		3	;1D 035 DEC E	 
 	dw	z80_opcode_mov_r8_i8,		3	;1E 036 LD E,n	  
 	dw	z80_opcode_unimplemented,	3	;1F 037 RRA	 
 	dw	z80_opcode_unimplemented,	4	;20 040 JR NZ,d	 
-	dw	z80_opcode_unimplemented,	4	;21 041 LD HL,nn 
+	dw	z80_opcode_mov_r16_i16,		4	;21 041 LD HL,nn 
 	dw	z80_opcode_unimplemented,	4	;22 042 LD (nn),HL
 	dw	z80_opcode_unimplemented,	4	;23 043 INC HL	  
-	dw	z80_opcode_unimplemented,	4	;24 044 INC H	   
-	dw	z80_opcode_unimplemented,	4	;25 045 DEC H	 
+	dw	z80_opcode_inc_r8,		4	;24 044 INC H	   
+	dw	z80_opcode_dec_r8,		4	;25 045 DEC H	 
 	dw	z80_opcode_mov_r8_i8,		4	;26 046 LD H,n	  
 	dw	z80_opcode_unimplemented,	4	;27 047 DAA	 
 	dw	z80_opcode_unimplemented,	5	;28 050 JR Z,d	 
 	dw	z80_opcode_unimplemented,	5	;29 051 ADD HL,HL
 	dw	z80_opcode_unimplemented,	5	;2A 052 LD HL,(nn)
 	dw	z80_opcode_unimplemented,	5	;2B 053 DEC HL	  
-	dw	z80_opcode_unimplemented,	5	;2C 054 INC L	   
-	dw	z80_opcode_unimplemented,	5	;2D 055 DEC L	 
+	dw	z80_opcode_inc_r8,		5	;2C 054 INC L	   
+	dw	z80_opcode_dec_r8,		5	;2D 055 DEC L	 
 	dw	z80_opcode_mov_r8_i8,		5	;2E 056 LD L,n	  
 	dw	z80_opcode_unimplemented,	5	;2F 057 CPL	 
 	dw	z80_opcode_unimplemented,	6	;30 060 JR NC,d	 
-	dw	z80_opcode_unimplemented,	6	;31 061 LD SP,nn 
+	dw	z80_opcode_mov_littleendian_r16_i16,20	;31 061 LD SP,nn 
 	dw	z80_opcode_unimplemented,	6	;32 062 LD (nn),A 
 	dw	z80_opcode_unimplemented,	6	;33 063 INC SP	  
 	dw	z80_opcode_unimplemented,	6	;34 064 INC (HL)   
@@ -256,8 +257,8 @@ foldmid
 	dw	z80_opcode_unimplemented,	7	;39 071 ADD HL,SP
 	dw	z80_opcode_unimplemented,	7	;3A 072 LD A,(nn) 
 	dw	z80_opcode_unimplemented,	7	;3B 073 DEC SP	  
-	dw	z80_opcode_unimplemented,	7	;3C 074 INC A	   
-	dw	z80_opcode_unimplemented,	7	;3D 075 DEC A	 
+	dw	z80_opcode_inc_r8,		7	;3C 074 INC A	   
+	dw	z80_opcode_dec_r8,		7	;3D 075 DEC A	 
 	dw	z80_opcode_mov_r8_i8,		7	;3E 076 LD A,n	  
 	dw	z80_opcode_unimplemented,	7	;3F 077 CCF	 
 	dw	z80_opcode_mov_r8_r8,		00	;40 100 LD B,B	 
@@ -746,6 +747,18 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;FE	376	LDDP (a8),F
 	dw z80_opcode_unimplemented,	0	;FF	377	LDDP (a8),A
 foldend
+z80_condcodes_to_flagmask:	;XOR and AND values for condition codes
+	db	0x00,0x40	;NZ
+	db	0xFF,0x40	;Z
+	db	0x00,0x01	;NC
+	db	0xFF,0x01	;C
+	db	0x00,0x04	;PO=NV
+	db	0xFF,0x04	;PE=V
+	db	0x00,0x80	;P=NS
+	db	0xFF,0x80	;M=S
+	
+	
+	
 .segment DataRW
 ;				,,.........,,
 ;				::Variables::
@@ -1551,6 +1564,28 @@ z80_opcode_exx.loop:
 	pop	si
 	ret
 	endp
+z80_opcode_mov_r16_i16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	lodsw			;mov	[di],	ab,	[si]
+	mov	b,	[di]	
+	inc	di
+	mov	a,	[di]
+	ret
+	endp
+z80_opcode_mov_littleendian_r16_i16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	lodsw			;mov	[di],	ab,	[si]
+	mov	a,	[di]	
+	inc	di
+	mov	b,	[di]
+	ret
+	endp
 z80_opcode_ncall_a16:	proc
 	;Do a subroutine call to a native subroutine.
 	push	ra
@@ -1575,6 +1610,139 @@ z80_opcode_ncall_hl:	proc
 	call	di		;The native call to a native subroutine
 	pop	si	;Restoration of SI - native subroutine likely destroyed it
 	pop	ra
+	ret
+	endp
+z80_opcode_jmp_cc_a16:	proc
+	clc			;lea	di,	[ab+z80_condcodes_to_flagmask*2]
+	shl	c
+	mov	ab,	z80_condcodes_to_flagmask
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	lodsb			;mov	ab,	[si++]
+	mov	b,	[si]
+	inc	si
+	ldc	z80_f		;mov	c,	[z80_f]
+	mov	d,	[di]	;xor	c,	[di]
+	inc	di		;and	c,	[di+1]
+	xor	c,	d
+	mov	d,	[di]
+	inc	di
+	and	c,	d
+	jnz	z80_opcode_jmp_cc_a16.ret
+	mov	si,	ab
+z80_opcode_jmp_cc_a16.ret:
+	ret
+	endp
+z80_opcode_call_cc_a16:	proc
+	clc			;lea	di,	[ab+z80_condcodes_to_flagmask*2]
+	shl	c
+	mov	ab,	z80_condcodes_to_flagmask
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	lodsb			;mov	ab,	[si++]
+	mov	b,	[si]
+	inc	si
+	ldc	z80_f		;mov	c,	[z80_f]
+	mov	d,	[di]	;xor	c,	[di]
+	inc	di		;and	c,	[di+1]
+	xor	c,	d
+	mov	d,	[di]
+	inc	di
+	and	c,	d
+	jnz	z80_opcode_call_cc_a16.ret
+	push	ab		;mov	di,	[z80_sp];setup stack pointer
+	lda	z80_sp		
+	ldb	z80_sp+1
+	mov	di,	ab
+	pop	ab
+	mov	cd,	si	;mov	[--di],	si	;store return address
+	dec	di		
+	mov	[di],	d
+	dec	di
+	mov	[di],	c
+	mov	si,	ab	;switch pc to the fetched address
+	mov	ab,	di	;mov	[z80_sp],di	;store changed sp
+	sta	z80_sp
+	stb	z80_sp+1
+z80_opcode_call_cc_a16.ret:
+	ret
+	endp
+
+z80_opcode_ret_cc_a16:	proc
+	clc			;lea	di,	[ab+z80_condcodes_to_flagmask*2]
+	shl	c
+	mov	ab,	z80_condcodes_to_flagmask
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	ldc	z80_f		;mov	c,	[z80_f]
+	mov	d,	[di]	;xor	c,	[di]
+	inc	di		;and	c,	[di+1]
+	xor	c,	d
+	mov	d,	[di]
+	inc	di
+	and	c,	d
+	jnz	z80_opcode_ret_cc_a16.ret
+	mov	si,	ab
+z80_opcode_ret_cc_a16.ret:
+	lda	z80_sp		;mov	di,	[z80_sp];setup stack pointer
+	ldb	z80_sp+1
+	mov	di,	ab
+	mov	a,	[di]	;mov	si,	[di++]	;fetch return address
+	inc	di					;and jump there
+	mov	b,	[di]
+	inc	di
+	mov	si,	ab
+	mov	ab,	di	;mov	[z80_sp],di	;store changed sp
+	sta	z80_sp
+	stb	z80_sp+1
+	ret
+	endp
+z80_opcode_jr_a8:	proc
+	mov	c,	[si]	;mov	c,	[si++]
+	inc	si
+	nop
+	mov	b,	c	;movsx	cd,	c
+	add	b,	b
+	mov	b,	0
+	mov	d,	0
+	sbb	d,	b
+	mov	ab,	si	;mov	ab,	si	;add	si,	cd
+	add	a,	c	;adc	ab,	cd	;do the relative jump
+	adc	b,	d
+	nop
+	mov	si,	ab	;mov	si,	ab
+	endp
+z80_opcode_jr_cc_a8:	proc
+	clc			;lea	di,	[ab+z80_condcodes_to_flagmask*2]
+	shl	c
+	mov	ab,	z80_condcodes_to_flagmask
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	lodsb			;mov	a,	[si++]
+	ldc	z80_f		;mov	c,	[z80_f]
+	mov	d,	[di]	;xor	c,	[di]
+	inc	di		;and	c,	[di+1]
+	xor	c,	d
+	mov	d,	[di]
+	inc	di
+	and	c,	d
+	jnz	z80_opcode_jr_cc_a8.ret
+	mov	b,	a	;movsx	cd,	a
+	mov	c,	a
+	add	b,	b
+	mov	b,	0
+	mov	d,	0
+	sbb	d,	b
+	mov	ab,	si	;mov	ab,	si	;add	si,	cd
+	add	a,	c	;adc	ab,	cd	;do the relative jump
+	adc	b,	d
+	nop
+	mov	si,	ab	;mov	si,	ab
+z80_opcode_jr_cc_a8.ret:
 	ret
 	endp
 z80_opcode_debug:	proc
