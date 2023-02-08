@@ -91,7 +91,7 @@ foldstart
 	db " HL: ",0
 	db " IX: ",0
 	db " IY: ",0
-	db 13,10,"       "
+	db 13,10,"OP:",0
 	db " AF':",0
 	db " BC':",0
 	db " DE':",0
@@ -1378,6 +1378,7 @@ z80_opcode_call_a16:	proc
 	lodsb			;lodsw	ab,	[si++]	;fetch address for call
 	mov	b,	[si]
 	inc	si
+	nop
 	mov	cd,	si	;mov	[--di],	si	;store return address
 	dec	di		
 	mov	[di],	d
@@ -1575,7 +1576,8 @@ z80_opcode_debug:	proc
 	;Speed of execution is not relevant - it interfaces with SIO anyways.
 	push	ra
 	push	si
-	mov	ab,si
+	mov	ab,	si
+	mov	cd,	si
 	;---
 	mov	si,	msg_debugopcode
 	call	uart_write
@@ -1585,7 +1587,7 @@ z80_opcode_debug:	proc
 	call	math_itoahex_16
 	call	uart_write
 	mov	si,	di
-	;---
+	foldstart
 	call	uart_write
 	mov	di,	si
 	ldb	z80_a
@@ -1635,6 +1637,17 @@ z80_opcode_debug:	proc
 	mov	si,	di
 	;---
 	call	uart_write
+	push	si
+	mov	di,	cd
+	dec	di		;mov	ab,		
+	mov	b,	[di]
+	inc	di
+	mov	a,	[di]
+	call	math_itoahex_16
+	call	uart_write
+	pop	si
+	;---
+	call	uart_write
 	mov	di,	si
 	ldb	z80_a2
 	lda	z80_f2
@@ -1681,11 +1694,11 @@ z80_opcode_debug:	proc
 	call	uart_write
 	mov	si,	di
 	call	uart_write
-	;---
+	foldend
 	;The flags
 	ldb	z80_f
 	mov	di,	si
-	;==
+	foldstart
 	inc	di
 	inc	di
 	add	b,b
@@ -1765,7 +1778,7 @@ z80_opcode_debug:	proc
 	mov	si,	di
 	mov	a,	32
 	call	uart_write_char
-	;==
+	foldend
 	call	uart_write
 	;==
 	mov	di,	0
