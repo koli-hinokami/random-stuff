@@ -20,7 +20,7 @@ foldstart
 ;		About flags:
 ;	Extracting multiple hardware flags is painful, and some are absent.
 ;	So some of the flags wont even remotely be present - the half-carry,
-;	so DAA would not be present.
+;	so DAA would not be present as well.
 ;	Implemented flags:
 ;		    .-+-- On Z80, BOTH Overflow and Parity are needed,
 ;		    | |	  as well as they are squeezed into one bit.
@@ -28,11 +28,9 @@ foldstart
 ;	  | | | | | | | | |
 ;	  | | | | | | | | '- Implemented
 ;	  | | | | | | | '- Implemented
-;	  | | | | | | '-- I am not sure, likely not.
+;	  | | | | | | '-- Implemented
 ;	  | | | | | '-- Implemented
-;	  | | | '--- Force-zeroed
-;	  | | |	  |
-;	  | | '---'- Implemented as force-zeroed
+;	  | | '-'-'- Force-zeroed
 ;	  | '- Implemented
 ;	  '- Implemented
 ;
@@ -48,7 +46,7 @@ foldstart
 ;		| 5000?| CP/M BDOS (msdos.sys)			   |
 ;		| 6000?| CP/M BIOS (io.sys)			   |
 ;		|68/90?| Z80 <-> PCPU layer - the hispeed emulator |
-;		| 8000 | End of ram				   |
+;		| 8800 | End of ram				   |
 ;		| 8B00 | VGA MMIO				   |
 ;		| 8C00 | VGA Palette RAM			   |
 ;		| 9000 | VGA Sprites data			   |
@@ -65,7 +63,7 @@ foldend
 foldstart
 .entry entry
 .export 0x0000 TopRomAddress
-.origin 0x7000
+.origin 0x6800
 .segment DataRO
 foldend
 ;			,,.............................,,
@@ -76,7 +74,7 @@ msg_unimplemented_opcode:	db "[FATAL]: Unimplemented opcode!",13,10,0
 msg_undefined_opcode:		db "[WARNING]: Undefined opcode!",13,10,0
 msg_sessionend:			db "Emulated program terminated.",13,10,0
 msg_wrongentrypoint:		
-	db "Type in Z80 program or CP/M BIOS+BDOS+RAMDisk first, then jump to $7016",13,10
+	db "Type in Z80 program or CP/M BIOS+BDOS+RAMDisk first, then jump to $6816",13,10
 	db "to start the emulator.",13,10,0
 msg_debugopcode:
 foldstart
@@ -91,6 +89,7 @@ foldstart
 	db " HL: ",0
 	db " IX: ",0
 	db " IY: ",0
+	db " SP: ",0
 	db 13,10,"OP:",0
 	db " AF':",0
 	db " BC':",0
@@ -790,7 +789,7 @@ z80_ixl: db	0
 z80_iy:;dw	0
 z80_iyh: db	0
 z80_iyl: db	0
-z80_sp:	dw	0
+z80_sp:	dw	0x4000		;End of CP/M TPA and start of CCP (aka command.com)
 ;z80_pc:	dw	0	;Is offloaded to SI, taking the RT intention
 z80_i:	db	0
 z80_r:	db	0
@@ -820,14 +819,14 @@ start:	proc
 os_return:
 	mov	si,	msg_sessionend
 	call	uart_write
+	lda	init_sp
+	ldb	init_sp+1
+	mov	tx,	ab
+	mov	ra,	tx
 	pop	ra
-	break
+	;break
 	ret
 	endp
-emuloop_init:	proc
-	mov	si,	0x100
-	ret
-endp
 emuloop:	proc
 	;Register allocation
 	;RA	Native fast return address
@@ -837,6 +836,7 @@ emuloop:	proc
 	;AB	gen. purpose
 	;CD	gen. purpose
 	push	ra
+	mov	si,	0x100	;Start point for the emulator is CP/M TPA
 emuloop.main:
 	;native command		macro command		comment
 	;---	--	--	===	==	=	-=-=-=-=-=-=-=-
@@ -873,7 +873,6 @@ emuloop.ret:
 	endp
 main:	proc
 	push	ra
-	call	emuloop_init
 	call	emuloop
 	pop	ra
 	ret
@@ -1447,18 +1446,19 @@ z80_opcode_push_rp:	proc
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
 	add	a,	c	
 	incc	b
+	nop
 	mov	di,	ab	
 	lda	z80_sp		;mov	si,	ab,	[z80_sp]
 	ldb	z80_sp+1	;optimizable
 	mov	si,	ab
-	;mov	word	[--si],	[di]
-	dec	si
+	dec	si		;mov	word	[--si],	[di]
 	mov	a,	[di]	
 	mov	[si],	a	
 	inc	di
+	dec	si
 	mov	a,	[di]	
 	mov	[si],	a	
-	dec	si
+	nop
 	mov	ab,	si	;mov	[z80_sp],	ab,	si
 	sta	z80_sp
 	stb	z80_sp+1
@@ -1635,7 +1635,7 @@ z80_opcode_jmp_cc_a16.ret:
 	ret
 	endp
 z80_opcode_call_cc_a16:	proc
-	clc			;lea	di,	[ab+z80_condcodes_to_flagmask*2]
+	clc			;lea	di,	[z80_condcodes_to_flagmask+c*2]
 	shl	c
 	mov	ab,	z80_condcodes_to_flagmask
 	add	a,	c
@@ -1811,9 +1811,17 @@ z80_opcode_debug:	proc
 	mov	si,	di
 	;---
 	call	uart_write
+	mov	di,	si
+	lda	z80_sp
+	ldb	z80_sp+1
+	call	math_itoahex_16
+	call	uart_write
+	mov	si,	di
+	;---
+	call	uart_write
 	push	si
 	mov	di,	cd
-	dec	di		;mov	ab,		
+	dec	di
 	mov	b,	[di]
 	inc	di
 	mov	a,	[di]
@@ -1956,7 +1964,7 @@ z80_opcode_debug:	proc
 	call	uart_write
 	;==
 	mov	di,	0
-z80_opcode_debug.delayloop:
+ z80_opcode_debug.delayloop:
 	dec	di
 	mov	ab,	di
 	nop
