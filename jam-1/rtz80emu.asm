@@ -163,38 +163,38 @@ z80_opcode_table: foldstart
 ;	uint8_t flags;
 ;}
 ;		   0/8	     1/9       2/A	 3/B	     4/C	5/D	  6/E	     7/F
-;	00	NOP	!|LD BC,nn |LD (BC),A |INC BC	 |INC B	     |DEC B    |LD B,n	 !|RLCA	    |
-;	08	EX AF,AF |ADD HL,BC|LD A,(BC) |DEC BC	 |INC C	     |DEC C    |LD C,n	 !|RRCA	    |
-;	10	DJNZ d	 |LD DE,nn |LD (DE),A |INC DE	 |INC D	     |DEC D    |LD D,n	 !|RLA	    |
-;	18	JR d	 |ADD HL,DE|LD A,(DE) |DEC DE	 |INC E	     |DEC E    |LD E,n	 !|RRA	    |
-;	20	JR NZ,d	 |LD HL,nn |LD (nn),HL|INC HL	 |INC H	     |DEC H    |LD H,n	 !|DAA	    |
-;	28	JR Z,d	 |ADD HL,HL|LD HL,(nn)|DEC HL	 |INC L	     |DEC L    |LD L,n	 !|CPL	    |
-;	30	JR NC,d	 |LD SP,nn |LD (nn),A |INC SP	 |INC (HL)   |DEC (HL) |LD (HL),n!|SCF	    |
-;	38	JR C,d	 |ADD HL,SP|LD A,(nn) |DEC SP	 |INC A	     |DEC A    |LD A,n	 !|CCF	    |
-;	40	LD B,B	 |LD B,C   |LD B,D    |LD B,E	 |LD B,H     |LD B,L   |LD B,(HL) |LD B,A   |
-;	48	LD C,B	 |LD C,C   |LD C,D    |LD C,E	 |LD C,H     |LD C,L   |LD C,(HL) |LD C,A   |
-;	50	LD D,B	 |LD D,C   |LD D,D    |LD D,E	 |LD D,H     |LD D,L   |LD D,(HL) |LD D,A   |
-;	58	LD E,B	 |LD E,C   |LD E,D    |LD E,E	 |LD E,H     |LD E,L   |LD E,(HL) |LD E,A   |
-;	60	LD H,B	 |LD H,C   |LD H,D    |LD H,E	 |LD H,H     |LD H,L   |LD H,(HL) |LD H,A   |
-;	68	LD L,B	 |LD L,C   |LD L,D    |LD L,E	 |LD L,H     |LD L,L   |LD L,(HL) |LD L,A   |
-;	70	LD (HL),B|LD (HL),C|LD (HL),D |LD (HL),E |LD (HL),H  |LD (HL),L|HALT	 ?|LD (HL),A|
-;	78	LD A,B	 |LD A,C   |LD A,D    |LD A,E	 |LD A,H     |LD A,L   |LD A,(HL) |LD A,A   |
-;	80	ADD A,B	 |ADD A,C  |ADD A,D   |ADD A,E	 |ADD A,H    |ADD A,L  |ADD A,(HL)|ADD A,A  |
-;	88	ADC A,B	 |ADC A,C  |ADC A,D   |ADC A,E	 |ADC A,H    |ADC A,L  |ADC A,(HL)|ADC A,A  |
-;	90	SUB A,B	 |SUB A,C  |SUB A,D   |SUB A,E	 |SUB A,H    |SUB A,L  |SUB A,(HL)|SUB A,A  |
-;	98	SBC A,B	 |SBC A,C  |SBC A,D   |SBC A,E	 |SBC A,H    |SBC A,L  |SBC A,(HL)|SBC A,A  |
-;	A0	AND B	 |AND C	   |AND D     |AND E	 |AND H	     |AND L    |AND (HL)  |AND A    |
-;	A8	XOR B	 |XOR C	   |XOR D     |XOR E	 |XOR H	     |XOR L    |XOR (HL)  |XOR A    |
-;	B0	OR B	 |OR C	   |OR D      |OR E	 |OR H	     |OR L     |OR (HL)	  |OR A	    |
+;	00	NOP	!|LD BC,nn |LD (BC),A |INC BC	 |INC B	    !|DEC B   !|LD B,n	 !|RLCA	    |
+;	08	EX AF,AF!|ADD HL,BC|LD A,(BC) |DEC BC	 |INC C	    !|DEC C   !|LD C,n	 !|RRCA	    |
+;	10	DJNZ d	 |LD DE,nn |LD (DE),A |INC DE	 |INC D	    !|DEC D   !|LD D,n	 !|RLA	    |
+;	18	JR d	!|ADD HL,DE|LD A,(DE) |DEC DE	 |INC E	    !|DEC E   !|LD E,n	 !|RRA	    |
+;	20	JR NZ,d	!|LD HL,nn |LD (nn),HL|INC HL	 |INC H	    !|DEC H   !|LD H,n	 !|DAA	   X|
+;	28	JR Z,d	!|ADD HL,HL|LD HL,(nn)|DEC HL	 |INC L	    !|DEC L   !|LD L,n	 !|CPL	    |
+;	30	JR NC,d	!|LD SP,nn |LD (nn),A |INC SP	 |INC (HL)   |DEC (HL) |LD (HL),n!|SCF	    |
+;	38	JR C,d	!|ADD HL,SP|LD A,(nn) |DEC SP	 |INC A	    !|DEC A   !|LD A,n	 !|CCF	    |
+;	40	LD B,B	!|LD B,C  !|LD B,D   !|LD B,E	!|LD B,H    !|LD B,L  !|LD B,(HL) |LD B,A  !|
+;	48	LD C,B	!|LD C,C  !|LD C,D   !|LD C,E	!|LD C,H    !|LD C,L  !|LD C,(HL) |LD C,A  !|
+;	50	LD D,B	!|LD D,C  !|LD D,D   !|LD D,E	!|LD D,H    !|LD D,L  !|LD D,(HL) |LD D,A  !|
+;	58	LD E,B	!|LD E,C  !|LD E,D   !|LD E,E	!|LD E,H    !|LD E,L  !|LD E,(HL) |LD E,A  !|
+;	60	LD H,B	!|LD H,C  !|LD H,D   !|LD H,E	!|LD H,H    !|LD H,L  !|LD H,(HL) |LD H,A  !|
+;	68	LD L,B	!|LD L,C  !|LD L,D   !|LD L,E	!|LD L,H    !|LD L,L  !|LD L,(HL) |LD L,A  !|
+;	70	LD (HL),B!LD (HL),C!LD (HL),D!|LD (HL),E!|LD (HL),H !|LD (HL),L|HALT	 ?|LD (HL),A!
+;	78	LD A,B	!|LD A,C  !|LD A,D   !|LD A,E	!|LD A,H    !|LD A,L  !|LD A,(HL) !LD A,A  !|
+;	80	ADD A,B	!|ADD A,C !|ADD A,D  !|ADD A,E	!|ADD A,H   !|ADD A,L !|ADD A,(HL)!ADD A,A  |
+;	88	ADC A,B	!|ADC A,C !|ADC A,D  !|ADC A,E	!|ADC A,H   !|ADC A,L !|ADC A,(HL)!ADC A,A  |
+;	90	SUB A,B	!|SUB A,C !|SUB A,D  !|SUB A,E	!|SUB A,H   !|SUB A,L !|SUB A,(HL)!SUB A,A  |
+;	98	SBC A,B	!|SBC A,C !|SBC A,D  !|SBC A,E	!|SBC A,H   !|SBC A,L !|SBC A,(HL)!SBC A,A  |
+;	A0	AND B	!|AND C	  !|AND D    !|AND E	!|AND H	    !|AND L   !|AND (HL)  !AND A    |
+;	A8	XOR B	!|XOR C	  !|XOR D    !|XOR E	!|XOR H	    !|XOR L   !|XOR (HL)  !XOR A    |
+;	B0	OR B	!|OR C	  !|OR D     !|OR E	!|OR H	    !|OR L     |OR (HL)	  |OR A	    |
 ;	B8	CP B	 |CP C	   |CP D      |CP E	 |CP H	     |CP L     |CP (HL)	  |CP A	    |
-;	C0	RET NZ	 |POP BC   |JP NZ,nn  |JP nn	 |CALL NZ,nn |PUSH BC  |ADD A,n	  |RST &00  |
-;	C8	RET Z	 |RET	   |JP Z,nn   |[ESH]	 |CALL Z,nn  |CALL nn  |ADC A,n	  |RST &08  |
-;	D0	RET NC	 |POP DE   |JP NC,nn  |OUT (n),A |CALL NC,nn |PUSH DE  |SUB A,n	  |RST &10  |
-;	D8	RET C	 |EXX	   |JP C,nn   |IN A,(n)	 |CALL C,nn  |[IX]     |SBC A,n	  |RST &18  |
-;	E0	RET PO	 |POP HL   |JP PO,nn  |EX (SP),HL|CALL PO,nn |PUSH HL  |AND n	  |RST &20  |
-;	E8	RET PE	 |JP (HL) !|JP PE,nn  |IN A,(n)	 |CALL PE,nn |[EXT]    |XOR A,n	  |RST &28  |
-;	F0	RET P	 |POP AF   |JP P,nn   |DI	 |CALL P,nn  |PUSH AF  |OR n	  |RST &30  |
-;	F8	RET M	 |LD SP,HL |JP M,nn   |EI	 |CALL M,nn  |[IY]     |CP n	  |RST &38  |
+;	C0	RET NZ	!|POP BC  !|JP NZ,nn !|JP nn	!|CALL NZ,nn!|PUSH BC !|ADD A,n	  |RST &00  |
+;	C8	RET Z	!|RET	  !|JP Z,nn  !|[ESH]	 |CALL Z,nn !|CALL nn !|ADC A,n	  |RST &08  |
+;	D0	RET NC	!|POP DE  !|JP NC,nn !|OUT (n),A |CALL NC,nn!|PUSH DE !|SUB A,n	  |RST &10  |
+;	D8	RET C	!|EXX	  !|JP C,nn  !|IN A,(n)	 |CALL C,nn !|[IX]     |SBC A,n	  |RST &18  |
+;	E0	RET PO	!|POP HL  !|JP PO,nn !|EX (SP),HL|CALL PO,nn!|PUSH HL !|AND n	  |RST &20  |
+;	E8	RET PE	!|JP (HL)  |JP PE,nn !|EX DE,HL !|CALL PE,nn!|[EXT]   !|XOR A,n	  |RST &28  |
+;	F0	RET P	!|POP AF  !|JP P,nn  !|DI	 |CALL P,nn !|PUSH AF !|OR n	  |RST &30  |
+;	F8	RET M	!|LD SP,HL |JP M,nn  !|EI	 |CALL M,nn !|[IY]     |CP n	  |RST &38  |
 foldmid
 	dw	z80_opcode_nop,			0	;00 000	NOP
 	dw	z80_opcode_mov_r16_i16,		0	;01 001 LD BC,nn 
@@ -217,10 +217,10 @@ foldmid
 	dw	z80_opcode_unimplemented,	2	;12 022 LD (DE),A 
 	dw	z80_opcode_unimplemented,	2	;13 023 INC DE	  
 	dw	z80_opcode_inc_r8,		2	;14 024 INC D	   
-	dw	z80_opcode_unimplemented,	2	;15 025 DEC D	 
+	dw	z80_opcode_dec_r8,		2	;15 025 DEC D	 
 	dw	z80_opcode_mov_r8_i8,		2	;16 026 LD D,n	  
 	dw	z80_opcode_unimplemented,	2	;17 027 RLA	 
-	dw	z80_opcode_unimplemented,	3	;18 030 JR d	 
+	dw	z80_opcode_jr_a8,		3	;18 030 JR d	 
 	dw	z80_opcode_unimplemented,	3	;19 031 ADD HL,DE
 	dw	z80_opcode_unimplemented,	3	;1A 032 LD A,(DE) 
 	dw	z80_opcode_unimplemented,	3	;1B 033 DEC DE	  
@@ -228,7 +228,7 @@ foldmid
 	dw	z80_opcode_dec_r8,		3	;1D 035 DEC E	 
 	dw	z80_opcode_mov_r8_i8,		3	;1E 036 LD E,n	  
 	dw	z80_opcode_unimplemented,	3	;1F 037 RRA	 
-	dw	z80_opcode_unimplemented,	4	;20 040 JR NZ,d	 
+	dw	z80_opcode_jr_cc_a8,		0	;20 040 JR NZ,d	 
 	dw	z80_opcode_mov_r16_i16,		4	;21 041 LD HL,nn 
 	dw	z80_opcode_unimplemented,	4	;22 042 LD (nn),HL
 	dw	z80_opcode_unimplemented,	4	;23 043 INC HL	  
@@ -236,7 +236,7 @@ foldmid
 	dw	z80_opcode_dec_r8,		4	;25 045 DEC H	 
 	dw	z80_opcode_mov_r8_i8,		4	;26 046 LD H,n	  
 	dw	z80_opcode_unimplemented,	4	;27 047 DAA	 
-	dw	z80_opcode_unimplemented,	5	;28 050 JR Z,d	 
+	dw	z80_opcode_jr_cc_a8,		1	;28 050 JR Z,d	 
 	dw	z80_opcode_unimplemented,	5	;29 051 ADD HL,HL
 	dw	z80_opcode_unimplemented,	5	;2A 052 LD HL,(nn)
 	dw	z80_opcode_unimplemented,	5	;2B 053 DEC HL	  
@@ -244,7 +244,7 @@ foldmid
 	dw	z80_opcode_dec_r8,		5	;2D 055 DEC L	 
 	dw	z80_opcode_mov_r8_i8,		5	;2E 056 LD L,n	  
 	dw	z80_opcode_unimplemented,	5	;2F 057 CPL	 
-	dw	z80_opcode_unimplemented,	6	;30 060 JR NC,d	 
+	dw	z80_opcode_jr_cc_a8,		2	;30 060 JR NC,d	 
 	dw	z80_opcode_mov_littleendian_r16_i16,20	;31 061 LD SP,nn 
 	dw	z80_opcode_unimplemented,	6	;32 062 LD (nn),A 
 	dw	z80_opcode_unimplemented,	6	;33 063 INC SP	  
@@ -252,7 +252,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	6	;35 065 DEC (HL) 
 	dw	z80_opcode_mov_m_i8,		6	;36 066 LD (HL),n 
 	dw	z80_opcode_unimplemented,	6	;37 067 SCF	 
-	dw	z80_opcode_unimplemented,	7	;38 070 JR C,d	 
+	dw	z80_opcode_jr_cc_a8,		3	;38 070 JR C,d	 
 	dw	z80_opcode_unimplemented,	7	;39 071 ADD HL,SP
 	dw	z80_opcode_unimplemented,	7	;3A 072 LD A,(nn) 
 	dw	z80_opcode_unimplemented,	7	;3B 073 DEC SP	  
@@ -380,78 +380,78 @@ foldmid
 	dw	z80_opcode_or_r8,		5	;B5 265 OR L	 
 	dw	z80_opcode_or_m8,		6	;B6 266 OR (HL)	  
 	dw	z80_opcode_or_r8,		7	;B7 267 OR A	 
-	dw	z80_opcode_unimplemented,	0	;B8 270 CP B	 
-	dw	z80_opcode_unimplemented,	1	;B9 271 CP C	 
-	dw	z80_opcode_unimplemented,	2	;BA 272 CP D	  
-	dw	z80_opcode_unimplemented,	3	;BB 273 CP E	  
-	dw	z80_opcode_unimplemented,	4	;BC 274 CP H	   
-	dw	z80_opcode_unimplemented,	5	;BD 275 CP L	 
-	dw	z80_opcode_unimplemented,	6	;BE 276 CP (HL)	  
-	dw	z80_opcode_unimplemented,	7	;BF 277 CP A	 
-	dw	z80_opcode_unimplemented,	0	;C0 300 RET NZ	 
+	dw	z80_opcode_cmp_r8,		0	;B8 270 CP B	 
+	dw	z80_opcode_cmp_r8,		1	;B9 271 CP C	 
+	dw	z80_opcode_cmp_r8,		2	;BA 272 CP D	  
+	dw	z80_opcode_cmp_r8,		3	;BB 273 CP E	  
+	dw	z80_opcode_cmp_r8,		4	;BC 274 CP H	   
+	dw	z80_opcode_cmp_r8,		5	;BD 275 CP L	 
+	dw	z80_opcode_cmp_m8,		6	;BE 276 CP (HL)	  
+	dw	z80_opcode_cmp_r8,		7	;BF 277 CP A	 
+	dw	z80_opcode_ret_cc_a16,		0	;C0 300 RET NZ	 
 	dw	z80_opcode_pop_rp,		0	;C1 301 POP BC	 
-	dw	z80_opcode_unimplemented,	0	;C2 302 JP NZ,nn  
+	dw	z80_opcode_jmp_cc_a16,		0	;C2 302 JP NZ,nn  
 	dw	z80_opcode_jmp_a16,		0	;C3 303 JP nn	  
-	dw	z80_opcode_unimplemented,	0	;C4 304 CALL NZ,nn 
+	dw	z80_opcode_call_cc_a16,		0	;C4 304 CALL NZ,nn 
 	dw	z80_opcode_push_rp,		0	;C5 305 PUSH BC	 
 	dw	z80_opcode_unimplemented,	0	;C6 306 ADD A,n	  
-	dw	z80_opcode_unimplemented,	0	;C7 307 RST &00	 
-	dw	z80_opcode_unimplemented,	1	;C8 310 RET Z	 
+	dw	z80_opcode_rst_nn,		0x00	;C7 307 RST &00	 
+	dw	z80_opcode_ret_cc_a16,		1	;C8 310 RET Z	 
 	dw	z80_opcode_ret,			1	;C9 311	RET
-	dw	z80_opcode_unimplemented,	1	;CA 312 JP Z,nn	  
+	dw	z80_opcode_jmp_cc_a16,		1	;CA 312 JP Z,nn	  
 	dw	z80_opcode_unimplemented,	1	;CB 313 [ESH]
-	dw	z80_opcode_unimplemented,	1	;CC 314 CALL Z,nn  
+	dw	z80_opcode_call_cc_a16,		1	;CC 314 CALL Z,nn  
 	dw	z80_opcode_call_a16,		1	;CD 315	CALL nn
 	dw	z80_opcode_unimplemented,	1	;CE 316 ADC A,n	  
-	dw	z80_opcode_unimplemented,	1	;CF 317 RST &08	 
-	dw	z80_opcode_unimplemented,	2	;D0 320 RET NC	 
+	dw	z80_opcode_rst_nn,		0x08	;CF 317 RST &08	 
+	dw	z80_opcode_ret_cc_a16,		2	;D0 320 RET NC	 
 	dw	z80_opcode_pop_rp,		2	;D1 321 POP DE	 
-	dw	z80_opcode_unimplemented,	2	;D2 322 JP NC,nn  
+	dw	z80_opcode_jmp_cc_a16,		2	;D2 322 JP NC,nn  
 	dw	z80_opcode_unimplemented,	2	;D3 323 OUT (n),A 
-	dw	z80_opcode_unimplemented,	2	;D4 324 CALL NC,nn 
+	dw	z80_opcode_call_cc_a16,		2	;D4 324 CALL NC,nn 
 	dw	z80_opcode_push_rp,		2	;D5 325 PUSH DE	 
 	dw	z80_opcode_unimplemented,	2	;D6 326 SUB A,n	  
-	dw	z80_opcode_unimplemented,	2	;D7 327 RST &10	 
-	dw	z80_opcode_unimplemented,	3	;D8 330 RET C	 
+	dw	z80_opcode_rst_nn,		0x10	;D7 327 RST &10	 
+	dw	z80_opcode_ret_cc_a16,		3	;D8 330 RET C	 
 	dw	z80_opcode_exx,			3	;D9 331 EXX	 
-	dw	z80_opcode_unimplemented,	3	;DA 332 JP C,nn	  
+	dw	z80_opcode_jmp_cc_a16,		3	;DA 332 JP C,nn	  
 	dw	z80_opcode_unimplemented,	3	;DB 333 IN A,(n)  
-	dw	z80_opcode_unimplemented,	3	;DC 334 CALL C,nn  
+	dw	z80_opcode_call_cc_a16,		3	;DC 334 CALL C,nn  
 	dw	z80_opcode_unimplemented,	3	;DD 335 [IX]
 	dw	z80_opcode_unimplemented,	3	;DE 336 SBC A,n	  
-	dw	z80_opcode_unimplemented,	3	;DF 337 RST &18	 
-	dw	z80_opcode_unimplemented,	4	;E0 340 RET PO	 
+	dw	z80_opcode_rst_nn,		0x18	;DF 337 RST &18	 
+	dw	z80_opcode_ret_cc_a16,		4	;E0 340 RET PO	 
 	dw	z80_opcode_pop_rp,		4	;E1 341 POP HL	 
-	dw	z80_opcode_unimplemented,	4	;E2 342 JP PO,nn  
+	dw	z80_opcode_jmp_cc_a16,		4	;E2 342 JP PO,nn  
 	dw	z80_opcode_unimplemented,	4	;E3 343 EX (SP),HL
-	dw	z80_opcode_unimplemented,	4	;E4 344 CALL PO,nn 
+	dw	z80_opcode_call_cc_a16,		4	;E4 344 CALL PO,nn 
 	dw	z80_opcode_push_rp,		4	;E5 345 PUSH HL	 
 	dw	z80_opcode_unimplemented,	4	;E6 346 AND n	  
-	dw	z80_opcode_unimplemented,	4	;E7 347 RST &20	 
-	dw	z80_opcode_unimplemented,	5	;E8 350 RET PE	 
+	dw	z80_opcode_rst_nn,		0x20	;E7 347 RST &20	 
+	dw	z80_opcode_ret_cc_a16,		5	;E8 350 RET PE	 
 	dw	z80_opcode_unimplemented,	5	;E9 351 JP (HL)	 
-	dw	z80_opcode_unimplemented,	5	;EA 352 JP PE,nn  
+	dw	z80_opcode_jmp_cc_a16,		5	;EA 352 JP PE,nn  
 	dw	z80_opcode_ex_de_hl,		5	;EB 353 EX DE,HL
-	dw	z80_opcode_unimplemented,	5	;EC 354 CALL PE,nn 
+	dw	z80_opcode_call_cc_a16,		5	;EC 354 CALL PE,nn 
 	dw	z80_dispatcher_ext,		0	;ED 355 [EXT]
 	dw	z80_opcode_unimplemented,	5	;EE 356 XOR A,n	  
-	dw	z80_opcode_unimplemented,	5	;EF 357 RST &28	 
-	dw	z80_opcode_unimplemented,	6	;F0 360 RET P	 
+	dw	z80_opcode_rst_nn,		0x28	;EF 357 RST &28	 
+	dw	z80_opcode_ret_cc_a16,		6	;F0 360 RET P	 
 	dw	z80_opcode_pop_rp,		6	;F1 361 POP AF	 
-	dw	z80_opcode_unimplemented,	6	;F2 362 JP P,nn	  
+	dw	z80_opcode_jmp_cc_a16,		6	;F2 362 JP P,nn	  
 	dw	z80_opcode_unimplemented,	6	;F3 363 DI	  
-	dw	z80_opcode_unimplemented,	6	;F4 364 CALL P,nn  
+	dw	z80_opcode_call_cc_a16,		6	;F4 364 CALL P,nn  
 	dw	z80_opcode_push_rp,		6	;F5 365 PUSH AF	 
 	dw	z80_opcode_unimplemented,	6	;F6 366 OR n	  
-	dw	z80_opcode_unimplemented,	6	;F7 367 RST &30	 
-	dw	z80_opcode_unimplemented,	7	;F8 370 RET M	 
+	dw	z80_opcode_rst_nn,		0x30	;F7 367 RST &30	 
+	dw	z80_opcode_ret_cc_a16,		7	;F8 370 RET M	 
 	dw	z80_opcode_unimplemented,	7	;F9 371 LD SP,HL 
-	dw	z80_opcode_unimplemented,	7	;FA 372 JP M,nn	  
+	dw	z80_opcode_jmp_cc_a16,		7	;FA 372 JP M,nn	  
 	dw	z80_opcode_unimplemented,	7	;FB 373 EI	  
-	dw	z80_opcode_unimplemented,	7	;FC 374 CALL M,nn 
+	dw	z80_opcode_call_cc_a16,		7	;FC 374 CALL M,nn 
 	dw	z80_opcode_unimplemented,	7	;FD 375 [IY]
 	dw	z80_opcode_unimplemented,	7	;FE 376 CP n	  
-	dw	z80_opcode_unimplemented,	7	;FF 377 RST &38	 
+	dw	z80_opcode_rst_nn,		0x38	;FF 377 RST &38	 
 	dw	z80_opcode_unimplemented,	0	;100 400 For catching off-by one errors
 foldend
 z80_ext_opcode_table: foldstart	;ED-prefixed opcodes
@@ -1143,6 +1143,22 @@ z80_opcode_or_r8:	proc
 	sta	z80_f
 	ret	
 	endp
+z80_opcode_cmp_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	mov	tx,	z80_a	;mov	tx,	z80_a
+	;--
+	mov	a,	[tx]	;add	[tx],	[di]
+	mov	b,	[di]
+	nop
+	sub	a,	b
+	nop;mov	[tx],	a	;result into A
+	mov	b,	1	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
 z80_opcode_add_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
@@ -1268,6 +1284,21 @@ z80_opcode_or_m8:	proc
 	mov	a,	[tx]
 	sta	z80_f
 	ret
+	endp
+z80_opcode_cmp_m8:	proc
+	ldb	z80_h		;mov	di,	ab,	[z80_hl]
+	lda	z80_l
+	mov	di,	ab
+	mov	tx,	z80_a	;mov	tx,	z80_a
+	;--
+	mov	a,	[tx]	;add	[tx],	[di]
+	mov	b,	[di]
+	nop
+	sub	a,	b
+	nop;mov	[tx],	a	;result into A
+	mov	b,	1	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
 	endp
 z80_opcode_fast_inc_r8:	proc
 	mov	ab,	z80_registers;lea tx,	[ab+c]
@@ -1695,6 +1726,25 @@ z80_opcode_ret_cc_a16.ret:
 	mov	b,	[di]
 	inc	di
 	mov	si,	ab
+	mov	ab,	di	;mov	[z80_sp],di	;store changed sp
+	sta	z80_sp
+	stb	z80_sp+1
+	ret
+	endp
+z80_opcode_rst_nn:	proc
+	;May be used to do an NMI w/external IFF flipping
+	lda	z80_sp		;mov	di,	[z80_sp];setup stack pointer
+	ldb	z80_sp+1
+	mov	di,	ab
+	mov	ab,	si	;mov	[--di],	ab,	si	;store return address
+	dec	di		
+	mov	[di],	b
+	dec	di
+	mov	[di],	a
+	mov	th,	0	;switch pc to the restart address
+	mov	tl,	c
+	nop
+	mov	si,	tx
 	mov	ab,	di	;mov	[z80_sp],di	;store changed sp
 	sta	z80_sp
 	stb	z80_sp+1
