@@ -198,64 +198,64 @@ z80_opcode_table: foldstart
 foldmid
 	dw	z80_opcode_nop,			0	;00 000	NOP
 	dw	z80_opcode_mov_r16_i16,		0	;01 001 LD BC,nn 
-	dw	z80_opcode_unimplemented,	0	;02 002 LD (BC),A 
-	dw	z80_opcode_unimplemented,	0	;03 003 INC BC	  
+	dw	z80_opcode_mov_mbc_a,		0	;02 002 LD (BC),A 
+	dw	z80_opcode_inc_r16,		0	;03 003 INC BC	  
 	dw	z80_opcode_inc_r8,		0	;04 004 INC B	   
 	dw	z80_opcode_dec_r8,		0	;05 005 DEC B	 
 	dw	z80_opcode_mov_r8_i8,		0	;06 006 LD B,n	  
 	dw	z80_opcode_unimplemented,	0	;07 007 RLCA	 
 	dw	z80_opcode_ex_af_af,		1	;08 010 EX AF,AF 
 	dw	z80_opcode_unimplemented,	1	;09 011 ADD HL,BC
-	dw	z80_opcode_unimplemented,	1	;0A 012 LD A,(BC) 
-	dw	z80_opcode_unimplemented,	1	;0B 013 DEC BC	  
+	dw	z80_opcode_mov_a_mbc,		1	;0A 012 LD A,(BC) 
+	dw	z80_opcode_dec_r16,		0	;0B 013 DEC BC	  
 	dw	z80_opcode_inc_r8,		1	;0C 014 INC C	   
 	dw	z80_opcode_dec_r8,		1	;0D 015 DEC C	 
 	dw	z80_opcode_mov_r8_i8,		1	;0E 016 LD C,n	  
 	dw	z80_opcode_unimplemented,	1	;0F 017 RRCA	 
 	dw	z80_opcode_unimplemented,	2	;10 020 DJNZ d	 
-	dw	z80_opcode_mov_r16_i16,	2		;11 021 LD DE,nn 
-	dw	z80_opcode_unimplemented,	2	;12 022 LD (DE),A 
-	dw	z80_opcode_unimplemented,	2	;13 023 INC DE	  
+	dw	z80_opcode_mov_r16_i16,		2	;11 021 LD DE,nn 
+	dw	z80_opcode_mov_mde_a,		2	;12 022 LD (DE),A 
+	dw	z80_opcode_inc_r16,		2	;13 023 INC DE	  
 	dw	z80_opcode_inc_r8,		2	;14 024 INC D	   
 	dw	z80_opcode_dec_r8,		2	;15 025 DEC D	 
 	dw	z80_opcode_mov_r8_i8,		2	;16 026 LD D,n	  
 	dw	z80_opcode_unimplemented,	2	;17 027 RLA	 
 	dw	z80_opcode_jr_a8,		3	;18 030 JR d	 
 	dw	z80_opcode_unimplemented,	3	;19 031 ADD HL,DE
-	dw	z80_opcode_unimplemented,	3	;1A 032 LD A,(DE) 
-	dw	z80_opcode_unimplemented,	3	;1B 033 DEC DE	  
+	dw	z80_opcode_mov_a_mde,		3	;1A 032 LD A,(DE) 
+	dw	z80_opcode_dec_r16,		2	;1B 033 DEC DE	  
 	dw	z80_opcode_inc_r8,		3	;1C 034 INC E	   
 	dw	z80_opcode_dec_r8,		3	;1D 035 DEC E	 
 	dw	z80_opcode_mov_r8_i8,		3	;1E 036 LD E,n	  
 	dw	z80_opcode_unimplemented,	3	;1F 037 RRA	 
 	dw	z80_opcode_jr_cc_a8,		0	;20 040 JR NZ,d	 
 	dw	z80_opcode_mov_r16_i16,		4	;21 041 LD HL,nn 
-	dw	z80_opcode_unimplemented,	4	;22 042 LD (nn),HL
-	dw	z80_opcode_unimplemented,	4	;23 043 INC HL	  
+	dw	z80_opcode_mov_a16_hl,		4	;22 042 LD (nn),HL
+	dw	z80_opcode_inc_r16,		4	;23 043 INC HL	  
 	dw	z80_opcode_inc_r8,		4	;24 044 INC H	   
 	dw	z80_opcode_dec_r8,		4	;25 045 DEC H	 
 	dw	z80_opcode_mov_r8_i8,		4	;26 046 LD H,n	  
 	dw	z80_opcode_unimplemented,	4	;27 047 DAA	 
 	dw	z80_opcode_jr_cc_a8,		1	;28 050 JR Z,d	 
 	dw	z80_opcode_unimplemented,	5	;29 051 ADD HL,HL
-	dw	z80_opcode_unimplemented,	5	;2A 052 LD HL,(nn)
-	dw	z80_opcode_unimplemented,	5	;2B 053 DEC HL	  
+	dw	z80_opcode_mov_hl_a16,		5	;2A 052 LD HL,(nn)
+	dw	z80_opcode_dec_r16,		4	;2B 053 DEC HL	  
 	dw	z80_opcode_inc_r8,		5	;2C 054 INC L	   
 	dw	z80_opcode_dec_r8,		5	;2D 055 DEC L	 
 	dw	z80_opcode_mov_r8_i8,		5	;2E 056 LD L,n	  
 	dw	z80_opcode_unimplemented,	5	;2F 057 CPL	 
 	dw	z80_opcode_jr_cc_a8,		2	;30 060 JR NC,d	 
 	dw	z80_opcode_mov_littleendian_r16_i16,20	;31 061 LD SP,nn 
-	dw	z80_opcode_unimplemented,	6	;32 062 LD (nn),A 
-	dw	z80_opcode_unimplemented,	6	;33 063 INC SP	  
-	dw	z80_opcode_unimplemented,	6	;34 064 INC (HL)   
-	dw	z80_opcode_unimplemented,	6	;35 065 DEC (HL) 
+	dw	z80_opcode_mov_a16_a,		6	;32 062 LD (nn),A 
+	dw	z80_opcode_inc_sp,		6	;33 063 INC SP	  
+	dw	z80_opcode_inc_m8,		6	;34 064 INC (HL)   
+	dw	z80_opcode_dec_m8,		6	;35 065 DEC (HL) 
 	dw	z80_opcode_mov_m_i8,		6	;36 066 LD (HL),n 
 	dw	z80_opcode_unimplemented,	6	;37 067 SCF	 
 	dw	z80_opcode_jr_cc_a8,		3	;38 070 JR C,d	 
 	dw	z80_opcode_unimplemented,	7	;39 071 ADD HL,SP
-	dw	z80_opcode_unimplemented,	7	;3A 072 LD A,(nn) 
-	dw	z80_opcode_unimplemented,	7	;3B 073 DEC SP	  
+	dw	z80_opcode_mov_a_a16,		7	;3A 072 LD A,(nn) 
+	dw	z80_opcode_dec_sp,		7	;3B 073 DEC SP	  
 	dw	z80_opcode_inc_r8,		7	;3C 074 INC A	   
 	dw	z80_opcode_dec_r8,		7	;3D 075 DEC A	 
 	dw	z80_opcode_mov_r8_i8,		7	;3E 076 LD A,n	  
@@ -1449,7 +1449,31 @@ z80_opcode_dec_r8:	proc
 	mov	a,	[tx]	;inc	[tx]
 	dec	a
 	mov	[tx],	a	;result into A
+	mov	b,	1	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+z80_opcode_inc_m8:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	tx,	ab
+	;--
+	mov	a,	[tx]	;inc	[tx]
+	inc	a
+	mov	[tx],	a	;result into A
 	mov	b,	0	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+z80_opcode_dec_m8:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	tx,	ab
+	;--
+	mov	a,	[tx]	;dec	[tx]
+	dec	a
+	mov	[tx],	a	;result into A
+	mov	b,	1	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
 	endp
@@ -1907,6 +1931,143 @@ z80_opcode_mov_sp_hl:	proc
 	ldb	z80_sp+1
 	sta	z80_l
 	stb	z80_h
+	ret
+	endp
+z80_opcode_mov_a_mbc:	proc
+	lda	z80_c
+	ldb	z80_b
+	mov	di,	ab
+	mov	a,	[di]
+	sta	z80_a
+	ret
+	endp
+z80_opcode_mov_mbc_a:	proc
+	lda	z80_c
+	ldb	z80_b
+	mov	di,	ab
+	lda	z80_a
+	mov	[di],	ab
+	ret
+	endp
+z80_opcode_mov_a_mde:	proc
+	lda	z80_e
+	ldb	z80_d
+	mov	di,	ab
+	mov	a,	[di]
+	sta	z80_a
+	ret
+	endp
+z80_opcode_mov_mde_a:	proc
+	lda	z80_e
+	ldb	z80_d
+	mov	di,	ab
+	lda	z80_a
+	mov	[di],	ab
+	ret
+	endp
+z80_opcode_mov_a_a16:	proc
+	lodsb	
+	mov	b,	[si]
+	inc	si
+	mov	di,	ab
+	mov	a,	[di]
+	sta	z80_a
+	ret
+	endp
+z80_opcode_mov_a16_a:	proc
+	lodsb	
+	mov	b,	[si]
+	inc	si
+	mov	di,	ab
+	lda	z80_a
+	mov	[di],	a
+	ret
+	endp
+z80_opcode_mov_hl_a16:	proc
+	lodsb	
+	mov	b,	[si]
+	inc	si
+	mov	di,	ab
+	mov	a,	[di]
+	inc	di
+	mov	b,	[di]
+	sta	z80_l
+	stb	z80_h
+	ret
+	endp
+z80_opcode_mov_a16_hl:	proc
+	lodsb	
+	mov	b,	[si]
+	inc	si
+	mov	di,	ab
+	lda	z80_l
+	ldb	z80_h
+	stosb			;mov	[di],	a
+				;inc	di
+	mov	[di],	b
+	ret
+	endp
+
+z80_opcode_inc_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	nop
+	mov	di,	ab	
+	mov	d,	[di]
+	inc	di
+	mov	c,	[di]
+	nop
+	inc	c
+	incc	d
+	mov	[di],	c
+	dec	di
+	mov	[di],	d
+	ret
+	endp
+z80_opcode_dec_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	nop
+	mov	di,	ab	
+	mov	d,	[di]
+	inc	di
+	mov	c,	[di]
+	nop
+	dec	c
+	mov	b,	0
+	sbb	d,	b
+	mov	[di],	c
+	dec	di
+	mov	[di],	d
+	ret
+	endp
+z80_opcode_inc_sp:	proc
+	;Is separate because historically SP was defined as a word with
+	;little-endian byte order, yet GPRs were ordered to match the code
+	;of GPR in commands referring to them, as such, big-endian byte order.
+	lda	z80_sp		;mov	di,	[z80_sp]
+	ldb	z80_sp+1
+	mov	di,	ab
+	nop
+	dec	di		
+	nop
+	mov	ab,	di	;mov	[z80_sp],di	
+	sta	z80_sp
+	stb	z80_sp+1
+	ret
+	endp
+z80_opcode_dec_sp:	proc
+	lda	z80_sp		;mov	di,	[z80_sp]
+	ldb	z80_sp+1
+	mov	di,	ab
+	nop
+	inc	di		
+	nop
+	mov	ab,	di	;mov	[z80_sp],di	
+	sta	z80_sp
+	stb	z80_sp+1
 	ret
 	endp
 z80_opcode_debug:	proc
