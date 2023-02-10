@@ -982,7 +982,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	4	;E6 346             
 	dw	z80_opcode_unimplemented,	0x20	;E7 347            
 	dw	z80_opcode_unimplemented,	5	;E8 350            
-	dw	z80_opcode_unimplemented,	5	;E9 351 JP (IX)    
+	dw	z80_opcode_jmp_xy,		5	;E9 351 JP (IX)    
 	dw	z80_opcode_unimplemented,	5	;EA 352             
 	dw	z80_opcode_unimplemented,	5	;EB 353             
 	dw	z80_opcode_unimplemented,	5	;EC 354            
@@ -3203,6 +3203,13 @@ z80_opcode_cmp_dxy:	proc
 	ret
 	endp
 
+z80_opcode_jmp_xy:	proc
+	mov	a,	[di]	;dereference DI to get the XY
+	inc	di
+	mov	b,	[di]
+	mov	si,	ab	;and place it directly into PC
+	ret
+	endp
 z180_mlt_r16:	proc
 	push	ra
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
