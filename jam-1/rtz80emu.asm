@@ -394,7 +394,7 @@ foldmid
 	dw	z80_opcode_jmp_a16,		0	;C3 303 JP nn	  
 	dw	z80_opcode_call_cc_a16,		0	;C4 304 CALL NZ,nn 
 	dw	z80_opcode_push_rp,		0	;C5 305 PUSH BC	 
-	dw	z80_opcode_unimplemented,	0	;C6 306 ADD A,n	  
+	dw	z80_opcode_add_i8,		0	;C6 306 ADD A,n	  
 	dw	z80_opcode_rst_nn,		0x00	;C7 307 RST &00	 
 	dw	z80_opcode_ret_cc_a16,		1	;C8 310 RET Z	 
 	dw	z80_opcode_ret,			1	;C9 311	RET
@@ -402,7 +402,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	1	;CB 313 [ESH]
 	dw	z80_opcode_call_cc_a16,		1	;CC 314 CALL Z,nn  
 	dw	z80_opcode_call_a16,		1	;CD 315	CALL nn
-	dw	z80_opcode_unimplemented,	1	;CE 316 ADC A,n	  
+	dw	z80_opcode_sub_i8,		1	;CE 316 ADC A,n	  
 	dw	z80_opcode_rst_nn,		0x08	;CF 317 RST &08	 
 	dw	z80_opcode_ret_cc_a16,		2	;D0 320 RET NC	 
 	dw	z80_opcode_pop_rp,		2	;D1 321 POP DE	 
@@ -410,7 +410,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	2	;D3 323 OUT (n),A 
 	dw	z80_opcode_call_cc_a16,		2	;D4 324 CALL NC,nn 
 	dw	z80_opcode_push_rp,		2	;D5 325 PUSH DE	 
-	dw	z80_opcode_unimplemented,	2	;D6 326 SUB A,n	  
+	dw	z80_opcode_adc_i8,		2	;D6 326 SUB A,n	  
 	dw	z80_opcode_rst_nn,		0x10	;D7 327 RST &10	 
 	dw	z80_opcode_ret_cc_a16,		3	;D8 330 RET C	 
 	dw	z80_opcode_exx,			3	;D9 331 EXX	 
@@ -418,7 +418,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;DB 333 IN A,(n)  
 	dw	z80_opcode_call_cc_a16,		3	;DC 334 CALL C,nn  
 	dw	z80_opcode_unimplemented,	3	;DD 335 [IX]
-	dw	z80_opcode_unimplemented,	3	;DE 336 SBC A,n	  
+	dw	z80_opcode_sbb_i8,		3	;DE 336 SBC A,n	  
 	dw	z80_opcode_rst_nn,		0x18	;DF 337 RST &18	 
 	dw	z80_opcode_ret_cc_a16,		4	;E0 340 RET PO	 
 	dw	z80_opcode_pop_rp,		4	;E1 341 POP HL	 
@@ -426,7 +426,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	4	;E3 343 EX (SP),HL
 	dw	z80_opcode_call_cc_a16,		4	;E4 344 CALL PO,nn 
 	dw	z80_opcode_push_rp,		4	;E5 345 PUSH HL	 
-	dw	z80_opcode_unimplemented,	4	;E6 346 AND n	  
+	dw	z80_opcode_and_i8,		4	;E6 346 AND n	  
 	dw	z80_opcode_rst_nn,		0x20	;E7 347 RST &20	 
 	dw	z80_opcode_ret_cc_a16,		5	;E8 350 RET PE	 
 	dw	z80_opcode_unimplemented,	5	;E9 351 JP (HL)	 
@@ -434,7 +434,7 @@ foldmid
 	dw	z80_opcode_ex_de_hl,		5	;EB 353 EX DE,HL
 	dw	z80_opcode_call_cc_a16,		5	;EC 354 CALL PE,nn 
 	dw	z80_dispatcher_ext,		0	;ED 355 [EXT]
-	dw	z80_opcode_unimplemented,	5	;EE 356 XOR A,n	  
+	dw	z80_opcode_xor_i8,		5	;EE 356 XOR A,n	  
 	dw	z80_opcode_rst_nn,		0x28	;EF 357 RST &28	 
 	dw	z80_opcode_ret_cc_a16,		6	;F0 360 RET P	 
 	dw	z80_opcode_pop_rp,		6	;F1 361 POP AF	 
@@ -442,15 +442,15 @@ foldmid
 	dw	z80_opcode_unimplemented,	6	;F3 363 DI	  
 	dw	z80_opcode_call_cc_a16,		6	;F4 364 CALL P,nn  
 	dw	z80_opcode_push_rp,		6	;F5 365 PUSH AF	 
-	dw	z80_opcode_unimplemented,	6	;F6 366 OR n	  
+	dw	z80_opcode_or_i8,		6	;F6 366 OR n	  
 	dw	z80_opcode_rst_nn,		0x30	;F7 367 RST &30	 
 	dw	z80_opcode_ret_cc_a16,		7	;F8 370 RET M	 
-	dw	z80_opcode_unimplemented,	7	;F9 371 LD SP,HL 
+	dw	z80_opcode_mov_sp_hl,		7	;F9 371 LD SP,HL 
 	dw	z80_opcode_jmp_cc_a16,		7	;FA 372 JP M,nn	  
 	dw	z80_opcode_unimplemented,	7	;FB 373 EI	  
 	dw	z80_opcode_call_cc_a16,		7	;FC 374 CALL M,nn 
 	dw	z80_opcode_unimplemented,	7	;FD 375 [IY]
-	dw	z80_opcode_unimplemented,	7	;FE 376 CP n	  
+	dw	z80_opcode_cmp_i8,		7	;FE 376 CP n	  
 	dw	z80_opcode_rst_nn,		0x38	;FF 377 RST &38	 
 	dw	z80_opcode_unimplemented,	0	;100 400 For catching off-by one errors
 foldend
@@ -1056,12 +1056,12 @@ z80_opcode_adc_r8:	proc
 	mov	d,	1	;and	c,	1
 	and	c,	d
 	;--
-	mov	a,	[tx]	;add	[tx],	[di]
 	mov	b,	[di]
+	mov	a,	[tx]	
+	nop
+	add	b,	c
 	nop
 	add	a,	b
-	nop
-	adc	a,	c
 	mov	[tx],	a	;result into A
 	mov	b,	0	;N flag into B
 	jmp	z80_generateflags;Do flags generation
@@ -1074,10 +1074,12 @@ z80_opcode_sbb_r8:	proc
 	mov	di,	ab
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
-	mov	a,	[tx]	;add	[tx],	[di]
 	mov	b,	[di]
+	mov	a,	[tx]
+	nop	
+	add	b,	c
 	nop
-	and	a,	b
+	sub	a,	b
 	mov	[tx],	a	;result into A
 	;--
 	mov	th,	z80_signzeroparity/256
@@ -1199,12 +1201,12 @@ z80_opcode_adc_m8:	proc
 	mov	d,	1	;and	c,	1
 	and	c,	d
 	;--
-	mov	a,	[tx]	;add	[tx],	[di]
 	mov	b,	[di]
+	mov	a,	[tx]	
+	nop
+	add	b,	c
 	nop
 	add	a,	b
-	nop
-	adc	a,	c
 	mov	[tx],	a	;result into A
 	mov	b,	0	;N flag into B
 	jmp	z80_generateflags;Do flags generation
@@ -1296,6 +1298,111 @@ z80_opcode_cmp_m8:	proc
 	nop
 	sub	a,	b
 	nop;mov	[tx],	a	;result into A
+	mov	b,	1	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+z80_opcode_add_i8:	proc
+	mov	tx,	z80_a	;mov	tx,	z80_a
+	mov	a,	[tx]	;add	[tx],	[di]
+	mov	b,	[si]
+	inc	si
+	add	a,	b
+	mov	[tx],	a	;result into A
+	mov	b,	0	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+z80_opcode_sub_i8:	proc
+	mov	tx,	z80_a	
+	mov	a,	[tx]	
+	mov	b,	[si]
+	inc	si
+	sub	a,	b
+	mov	[tx],	a	;result into A
+	mov	b,	1	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+z80_opcode_adc_i8:	proc
+	mov	tx,	z80_a	;mov	tx,	z80_a
+	ldc	z80_f		;mov	c,	[z80_f]
+	mov	d,	1	;and	c,	1
+	and	c,	d
+	;--
+	mov	b,	[si]
+	mov	a,	[tx]	
+	nop
+	add	b,	c
+	inc	si
+	add	a,	b
+	mov	[tx],	a	;result into A
+	mov	b,	0	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+z80_opcode_sbb_i8:	proc
+	mov	tx,	z80_a	;mov	tx,	z80_a
+	ldc	z80_f		;mov	c,	[z80_f]
+	mov	d,	1	;and	c,	1
+	and	c,	d
+	;--
+	mov	b,	[si]
+	mov	a,	[tx]	
+	inc	si
+	add	b,	c
+	nop
+	sub	a,	b
+	mov	[tx],	a	;result into A
+	mov	b,	1	;N flag into B
+	jmp	z80_generateflags;Do flags generation
+	ret			;return is on flags generation subroutine
+	endp
+z80_opcode_and_i8:	proc
+	mov	tx,	z80_a	;mov	tx,	z80_a
+	mov	a,	[tx]	;add	[tx],	[di]
+	mov	b,	[si]
+	nop
+	and	a,	b
+	mov	[tx],	a
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	sta	z80_f
+	ret			
+	endp
+z80_opcode_xor_i8:	proc
+	mov	tx,	z80_a	;mov	tx,	z80_a
+	mov	a,	[tx]	;add	[tx],	[di]
+	mov	b,	[si]
+	nop
+	xor	a,	b
+	mov	[tx],	a
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	sta	z80_f
+	ret				
+	endp
+z80_opcode_or_i8:	proc
+	mov	tx,	z80_a	;mov	tx,	z80_a
+	mov	a,	[tx]	;add	[tx],	[di]
+	mov	b,	[si]
+	nop
+	or	a,	b
+	mov	[tx],	a
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	sta	z80_f
+	ret			
+	endp
+z80_opcode_cmp_i8:	proc
+	mov	tx,	z80_a	
+	mov	a,	[tx]	
+	mov	b,	[si]
+	inc	si
+	sub	a,	b	;result into A
 	mov	b,	1	;N flag into B
 	jmp	z80_generateflags;Do flags generation
 	ret			;return is on flags generation subroutine
@@ -1793,6 +1900,13 @@ z80_opcode_jr_cc_a8:	proc
 	nop
 	mov	si,	ab	;mov	si,	ab
 z80_opcode_jr_cc_a8.ret:
+	ret
+	endp
+z80_opcode_mov_sp_hl:	proc
+	lda	z80_sp
+	ldb	z80_sp+1
+	sta	z80_l
+	stb	z80_h
 	ret
 	endp
 z80_opcode_debug:	proc
