@@ -2764,7 +2764,7 @@ z80_opcode_sla_r8:	proc
 	mov	b,	[di]
 	mov	d,	0
 	add	b,	b
-	adc	d,	d
+	incc	d
 	mov	[di],	b
 	;--
 	mov	th,	z80_signzeroparity/256
@@ -2783,7 +2783,7 @@ z80_opcode_sll_r8:	proc
 	mov	b,	[di]
 	mov	d,	0
 	add	b,	b
-	adc	d,	d
+	incc	d
 	inc	b
 	mov	[di],	b
 	;--
