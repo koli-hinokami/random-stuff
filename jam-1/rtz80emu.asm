@@ -203,31 +203,31 @@ foldmid
 	dw	z80_opcode_inc_r8,		0	;04 004 INC B	   
 	dw	z80_opcode_dec_r8,		0	;05 005 DEC B	 
 	dw	z80_opcode_mov_r8_i8,		0	;06 006 LD B,n	  
-	dw	z80_opcode_unimplemented,	0	;07 007 RLCA	 
+	dw	z80_opcode_rlc_r8,		7	;07 007 RLCA	 
 	dw	z80_opcode_ex_af_af,		1	;08 010 EX AF,AF 
-	dw	z80_opcode_unimplemented,	1	;09 011 ADD HL,BC
+	dw	z80_opcode_fast_add_hl_r16,	0	;09 011 ADD HL,BC
 	dw	z80_opcode_mov_a_mbc,		1	;0A 012 LD A,(BC) 
 	dw	z80_opcode_dec_r16,		0	;0B 013 DEC BC	  
 	dw	z80_opcode_inc_r8,		1	;0C 014 INC C	   
 	dw	z80_opcode_dec_r8,		1	;0D 015 DEC C	 
 	dw	z80_opcode_mov_r8_i8,		1	;0E 016 LD C,n	  
-	dw	z80_opcode_unimplemented,	1	;0F 017 RRCA	 
-	dw	z80_opcode_unimplemented,	2	;10 020 DJNZ d	 
+	dw	z80_opcode_rrc_r8,		7	;0F 017 RRCA	 
+	dw	z80_opcode_djnz_a8,		2	;10 020 DJNZ d	 
 	dw	z80_opcode_mov_r16_i16,		2	;11 021 LD DE,nn 
 	dw	z80_opcode_mov_mde_a,		2	;12 022 LD (DE),A 
 	dw	z80_opcode_inc_r16,		2	;13 023 INC DE	  
 	dw	z80_opcode_inc_r8,		2	;14 024 INC D	   
 	dw	z80_opcode_dec_r8,		2	;15 025 DEC D	 
 	dw	z80_opcode_mov_r8_i8,		2	;16 026 LD D,n	  
-	dw	z80_opcode_unimplemented,	2	;17 027 RLA	 
+	dw	z80_opcode_rl_r8,		7	;17 027 RLA	 
 	dw	z80_opcode_jr_a8,		3	;18 030 JR d	 
-	dw	z80_opcode_unimplemented,	3	;19 031 ADD HL,DE
+	dw	z80_opcode_fast_add_hl_r16,	2	;19 031 ADD HL,DE
 	dw	z80_opcode_mov_a_mde,		3	;1A 032 LD A,(DE) 
 	dw	z80_opcode_dec_r16,		2	;1B 033 DEC DE	  
 	dw	z80_opcode_inc_r8,		3	;1C 034 INC E	   
 	dw	z80_opcode_dec_r8,		3	;1D 035 DEC E	 
 	dw	z80_opcode_mov_r8_i8,		3	;1E 036 LD E,n	  
-	dw	z80_opcode_unimplemented,	3	;1F 037 RRA	 
+	dw	z80_opcode_rr_r8,		7	;1F 037 RRA	 
 	dw	z80_opcode_jr_cc_a8,		0	;20 040 JR NZ,d	 
 	dw	z80_opcode_mov_r16_i16,		4	;21 041 LD HL,nn 
 	dw	z80_opcode_mov_a16_hl,		4	;22 042 LD (nn),HL
@@ -237,13 +237,13 @@ foldmid
 	dw	z80_opcode_mov_r8_i8,		4	;26 046 LD H,n	  
 	dw	z80_opcode_unimplemented,	4	;27 047 DAA	 
 	dw	z80_opcode_jr_cc_a8,		1	;28 050 JR Z,d	 
-	dw	z80_opcode_unimplemented,	5	;29 051 ADD HL,HL
+	dw	z80_opcode_fast_add_hl_r16,	4	;29 051 ADD HL,HL
 	dw	z80_opcode_mov_hl_a16,		5	;2A 052 LD HL,(nn)
 	dw	z80_opcode_dec_r16,		4	;2B 053 DEC HL	  
 	dw	z80_opcode_inc_r8,		5	;2C 054 INC L	   
 	dw	z80_opcode_dec_r8,		5	;2D 055 DEC L	 
 	dw	z80_opcode_mov_r8_i8,		5	;2E 056 LD L,n	  
-	dw	z80_opcode_unimplemented,	5	;2F 057 CPL	 
+	dw	z80_opcode_cpl,			5	;2F 057 CPL	 
 	dw	z80_opcode_jr_cc_a8,		2	;30 060 JR NC,d	 
 	dw	z80_opcode_mov_littleendian_r16_i16,20	;31 061 LD SP,nn 
 	dw	z80_opcode_mov_a16_a,		6	;32 062 LD (nn),A 
@@ -251,15 +251,15 @@ foldmid
 	dw	z80_opcode_inc_m8,		6	;34 064 INC (HL)   
 	dw	z80_opcode_dec_m8,		6	;35 065 DEC (HL) 
 	dw	z80_opcode_mov_m_i8,		6	;36 066 LD (HL),n 
-	dw	z80_opcode_unimplemented,	6	;37 067 SCF	 
+	dw	z80_opcode_scf,			6	;37 067 SCF	 
 	dw	z80_opcode_jr_cc_a8,		3	;38 070 JR C,d	 
-	dw	z80_opcode_unimplemented,	7	;39 071 ADD HL,SP
+	dw	z80_opcode_fast_add_littleendian_hl_r16,20;39 071 ADD HL,SP
 	dw	z80_opcode_mov_a_a16,		7	;3A 072 LD A,(nn) 
 	dw	z80_opcode_dec_sp,		7	;3B 073 DEC SP	  
 	dw	z80_opcode_inc_r8,		7	;3C 074 INC A	   
 	dw	z80_opcode_dec_r8,		7	;3D 075 DEC A	 
 	dw	z80_opcode_mov_r8_i8,		7	;3E 076 LD A,n	  
-	dw	z80_opcode_unimplemented,	7	;3F 077 CCF	 
+	dw	z80_opcode_ccf,			7	;3F 077 CCF	 
 	dw	z80_opcode_mov_r8_r8,		00	;40 100 LD B,B	 
 	dw	z80_opcode_mov_r8_r8,		01	;41 101 LD B,C	 
 	dw	z80_opcode_mov_r8_r8,		02	;42 102 LD B,D	  
@@ -417,19 +417,19 @@ foldmid
 	dw	z80_opcode_jmp_cc_a16,		3	;DA 332 JP C,nn	  
 	dw	z80_opcode_unimplemented,	3	;DB 333 IN A,(n)  
 	dw	z80_opcode_call_cc_a16,		3	;DC 334 CALL C,nn  
-	dw	z80_opcode_unimplemented,	3	;DD 335 [IX]
+	dw	z80_dispatcher_ix,		3	;DD 335 [IX]
 	dw	z80_opcode_sbb_i8,		3	;DE 336 SBC A,n	  
 	dw	z80_opcode_rst_nn,		0x18	;DF 337 RST &18	 
 	dw	z80_opcode_ret_cc_a16,		4	;E0 340 RET PO	 
 	dw	z80_opcode_pop_rp,		4	;E1 341 POP HL	 
 	dw	z80_opcode_jmp_cc_a16,		4	;E2 342 JP PO,nn  
-	dw	z80_opcode_unimplemented,	4	;E3 343 EX (SP),HL
+	dw	z80_opcode_xchg_hl_msp,		4	;E3 343 EX (SP),HL
 	dw	z80_opcode_call_cc_a16,		4	;E4 344 CALL PO,nn 
 	dw	z80_opcode_push_rp,		4	;E5 345 PUSH HL	 
 	dw	z80_opcode_and_i8,		4	;E6 346 AND n	  
 	dw	z80_opcode_rst_nn,		0x20	;E7 347 RST &20	 
 	dw	z80_opcode_ret_cc_a16,		5	;E8 350 RET PE	 
-	dw	z80_opcode_unimplemented,	5	;E9 351 JP (HL)	 
+	dw	z80_opcode_jmp_hl,		5	;E9 351 JP (HL)	 
 	dw	z80_opcode_jmp_cc_a16,		5	;EA 352 JP PE,nn  
 	dw	z80_opcode_ex_de_hl,		5	;EB 353 EX DE,HL
 	dw	z80_opcode_call_cc_a16,		5	;EC 354 CALL PE,nn 
@@ -449,7 +449,7 @@ foldmid
 	dw	z80_opcode_jmp_cc_a16,		7	;FA 372 JP M,nn	  
 	dw	z80_opcode_unimplemented,	7	;FB 373 EI	  
 	dw	z80_opcode_call_cc_a16,		7	;FC 374 CALL M,nn 
-	dw	z80_opcode_unimplemented,	7	;FD 375 [IY]
+	dw	z80_dispatcher_iy,		7	;FD 375 [IY]
 	dw	z80_opcode_cmp_i8,		7	;FE 376 CP n	  
 	dw	z80_opcode_rst_nn,		0x38	;FF 377 RST &38	 
 	dw	z80_opcode_unimplemented,	0	;100 400 For catching off-by one errors
@@ -746,6 +746,266 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;FE	376	LDDP (a8),F
 	dw z80_opcode_unimplemented,	0	;FF	377	LDDP (a8),A
 foldend
+
+z80_xy_opcode_table: foldstart ;DD and FD-prefixed opcodes
+foldmid
+	dw	z80_opcode_nop,			0	;00 000            
+	dw	z80_opcode_unimplemented,	0	;01 001            
+	dw	z80_opcode_unimplemented,	0	;02 002             
+	dw	z80_opcode_unimplemented,	0	;03 003             
+	dw	z80_opcode_unimplemented,	0	;04 004            
+	dw	z80_opcode_unimplemented,	0	;05 005             
+	dw	z80_opcode_unimplemented,	0	;06 006             
+	dw	z80_opcode_unimplemented,	0	;07 007            
+	dw	z80_opcode_unimplemented,	1	;08 010            
+	dw	z80_opcode_unimplemented,	1	;09 011 ADD IX,BC  
+	dw	z80_opcode_unimplemented,	1	;0A 012             
+	dw	z80_opcode_unimplemented,	0	;0B 013             
+	dw	z80_opcode_unimplemented,	1	;0C 014            
+	dw	z80_opcode_unimplemented,	1	;0D 015             
+	dw	z80_opcode_unimplemented,	1	;0E 016             
+	dw	z80_opcode_unimplemented,	1	;0F 017            
+	dw	z80_opcode_unimplemented,	2	;10 020            
+	dw	z80_opcode_unimplemented,	2	;11 021            
+	dw	z80_opcode_unimplemented,	2	;12 022             
+	dw	z80_opcode_unimplemented,	2	;13 023             
+	dw	z80_opcode_unimplemented,	2	;14 024            
+	dw	z80_opcode_unimplemented,	2	;15 025             
+	dw	z80_opcode_unimplemented,	2	;16 026             
+	dw	z80_opcode_unimplemented,	2	;17 027            
+	dw	z80_opcode_unimplemented,	3	;18 030            
+	dw	z80_opcode_unimplemented,	3	;19 031 ADD IX,DE  
+	dw	z80_opcode_unimplemented,	3	;1A 032             
+	dw	z80_opcode_unimplemented,	2	;1B 033             
+	dw	z80_opcode_unimplemented,	3	;1C 034            
+	dw	z80_opcode_unimplemented,	3	;1D 035             
+	dw	z80_opcode_unimplemented,	3	;1E 036             
+	dw	z80_opcode_unimplemented,	3	;1F 037            
+	dw	z80_opcode_unimplemented,	0	;20 040            
+	dw	z80_opcode_unimplemented,	4	;21 041 LD IX,nn   
+	dw	z80_opcode_unimplemented,	4	;22 042 LD (nn),IX  
+	dw	z80_opcode_unimplemented,	4	;23 043 INC IX      
+	dw	z80_opcode_unimplemented,	4	;24 044 INC IXH    
+	dw	z80_opcode_unimplemented,	4	;25 045 DEC IXH     
+	dw	z80_opcode_unimplemented,	4	;26 046 LD IXH,n    
+	dw	z80_opcode_unimplemented,	4	;27 047            
+	dw	z80_opcode_unimplemented,	1	;28 050            
+	dw	z80_opcode_unimplemented,	5	;29 051 ADD IX,IX  
+	dw	z80_opcode_unimplemented,	5	;2A 052 LD IX,(nn)  
+	dw	z80_opcode_unimplemented,	4	;2B 053 DEC IX      
+	dw	z80_opcode_unimplemented,	5	;2C 054 INC IXL    
+	dw	z80_opcode_unimplemented,	5	;2D 055 DEC IXL     
+	dw	z80_opcode_unimplemented,	5	;2E 056 LD IXL,n    
+	dw	z80_opcode_unimplemented,	5	;2F 057            
+	dw	z80_opcode_unimplemented,	2	;30 060            
+	dw	z80_opcode_unimplemented,	20	;31 061            
+	dw	z80_opcode_unimplemented,	6	;32 062             
+	dw	z80_opcode_unimplemented,	6	;33 063             
+	dw	z80_opcode_unimplemented,	6	;34 064 INC (IX+d) 
+	dw	z80_opcode_unimplemented,	6	;35 065 DEC (IX+d)  
+	dw	z80_opcode_unimplemented,	6	;36 066 LD (IX+d),n 
+	dw	z80_opcode_unimplemented,	6	;37 067            
+	dw	z80_opcode_unimplemented,	3	;38 070            
+	dw	z80_opcode_unimplemented,	7	;39 071 ADD IX,SP  
+	dw	z80_opcode_unimplemented,	7	;3A 072             
+	dw	z80_opcode_unimplemented,	7	;3B 073             
+	dw	z80_opcode_unimplemented,	7	;3C 074            
+	dw	z80_opcode_unimplemented,	7	;3D 075             
+	dw	z80_opcode_unimplemented,	7	;3E 076             
+	dw	z80_opcode_unimplemented,	7	;3F 077            
+	dw	z80_opcode_unimplemented,	0	;40 100            
+	dw	z80_opcode_unimplemented,	0	;41 101            
+	dw	z80_opcode_unimplemented,	0	;42 102             
+	dw	z80_opcode_unimplemented,	0	;43 103             
+	dw	z80_opcode_unimplemented,	0	;44 104 LD B,IXH   
+	dw	z80_opcode_unimplemented,	0	;45 105 LD B,IXL    
+	dw	z80_opcode_unimplemented,	0	;46 106 LD B,(IX+d) 
+	dw	z80_opcode_unimplemented,	0	;47 107            
+	dw	z80_opcode_unimplemented,	1	;48 110            
+	dw	z80_opcode_unimplemented,	1	;49 111            
+	dw	z80_opcode_unimplemented,	1	;4A 112             
+	dw	z80_opcode_unimplemented,	1	;4B 113             
+	dw	z80_opcode_unimplemented,	1	;4C 114 LD C,IXH   
+	dw	z80_opcode_unimplemented,	1	;4D 115 LD C,IXL    
+	dw	z80_opcode_unimplemented,	1	;4E 116 LD C,(IX+d) 
+	dw	z80_opcode_unimplemented,	1	;4F 117            
+	dw	z80_opcode_unimplemented,	2	;50 120            
+	dw	z80_opcode_unimplemented,	2	;51 121            
+	dw	z80_opcode_unimplemented,	2	;52 122             
+	dw	z80_opcode_unimplemented,	2	;53 123             
+	dw	z80_opcode_unimplemented,	2	;54 124 LD D,IXH   
+	dw	z80_opcode_unimplemented,	2	;55 125 LD D,IXL    
+	dw	z80_opcode_unimplemented,	2	;56 126 LD D,(IX+d) 
+	dw	z80_opcode_unimplemented,	2	;57 127            
+	dw	z80_opcode_unimplemented,	3	;58 130            
+	dw	z80_opcode_unimplemented,	3	;59 131            
+	dw	z80_opcode_unimplemented,	3	;5A 132             
+	dw	z80_opcode_unimplemented,	3	;5B 133             
+	dw	z80_opcode_unimplemented,	3	;5C 134 LD E,IXH   
+	dw	z80_opcode_unimplemented,	3	;5D 135 LD E,IXL    
+	dw	z80_opcode_unimplemented,	3	;5E 136 LD E,(IX+d) 
+	dw	z80_opcode_unimplemented,	3	;5F 137            
+	dw	z80_opcode_unimplemented,	4	;60 140 LD IXH,B   
+	dw	z80_opcode_unimplemented,	4	;61 141 LD IXH,C   
+	dw	z80_opcode_unimplemented,	4	;62 142 LD IXH,D    
+	dw	z80_opcode_unimplemented,	4	;63 143 LD IXH,E    
+	dw	z80_opcode_unimplemented,	4	;64 144 LD IXH,IXH 
+	dw	z80_opcode_unimplemented,	4	;65 145 LD IXH,IXL  
+	dw	z80_opcode_unimplemented,	4	;66 146 LD H,(IX+d) 
+	dw	z80_opcode_unimplemented,	4	;67 147 LD IXH,A   
+	dw	z80_opcode_unimplemented,	5	;68 150 LD IXL,B   
+	dw	z80_opcode_unimplemented,	5	;69 151 LD IXL,C   
+	dw	z80_opcode_unimplemented,	5	;6A 152 LD IXL,D    
+	dw	z80_opcode_unimplemented,	5	;6B 153 LD IXL,E    
+	dw	z80_opcode_unimplemented,	5	;6C 154 LD IXL,IXH 
+	dw	z80_opcode_unimplemented,	5	;6D 155 LD IXL,IXL  
+	dw	z80_opcode_unimplemented,	5	;6E 156 LD L,(IX+d) 
+	dw	z80_opcode_unimplemented,	5	;6F 157 LD IXL,A   
+	dw	z80_opcode_unimplemented,	6	;70 160 LD (IX+d),B
+	dw	z80_opcode_unimplemented,	6	;71 161 LD (IX+d),C
+	dw	z80_opcode_unimplemented,	6	;72 162 LD (IX+d),D 
+	dw	z80_opcode_unimplemented,	6	;73 163 LD (IX+d),E 
+	dw	z80_opcode_unimplemented,	6	;74 164 LD (IX+d),H
+	dw	z80_opcode_unimplemented,	6	;75 165 LD (IX+d),L 
+	dw	z80_opcode_unimplemented,	6	;76 166             
+	dw	z80_opcode_unimplemented,	6	;77 167 LD (IX+d),A
+	dw	z80_opcode_unimplemented,	7	;78 170            
+	dw	z80_opcode_unimplemented,	7	;79 171            
+	dw	z80_opcode_unimplemented,	7	;7A 172             
+	dw	z80_opcode_unimplemented,	7	;7B 173             
+	dw	z80_opcode_unimplemented,	7	;7C 174 LD A,IXH   
+	dw	z80_opcode_unimplemented,	7	;7D 175 LD A,IXL    
+	dw	z80_opcode_unimplemented,	7	;7E 176 LD A,(IX+d) 
+	dw	z80_opcode_unimplemented,	7	;7F 177            
+	dw	z80_opcode_unimplemented,		;80 200            
+	dw	z80_opcode_unimplemented,		;81 201            
+	dw	z80_opcode_unimplemented,	2	;82 202             
+	dw	z80_opcode_unimplemented,	3	;83 203             
+	dw	z80_opcode_unimplemented,	4	;84 204 ADD A,IXH  
+	dw	z80_opcode_unimplemented,	5	;85 205 ADD A,IXL   
+	dw	z80_opcode_unimplemented,	6	;86 206 ADD A,(IX+d)
+	dw	z80_opcode_unimplemented,	7	;87 207            
+	dw	z80_opcode_unimplemented,	0	;88 210            
+	dw	z80_opcode_unimplemented,	1	;89 211            
+	dw	z80_opcode_unimplemented,	2	;8A 212             
+	dw	z80_opcode_unimplemented,	3	;8B 213             
+	dw	z80_opcode_unimplemented,	4	;8C 214 ADC A,IXH  
+	dw	z80_opcode_unimplemented,	5	;8D 215 ADC A,IXL   
+	dw	z80_opcode_unimplemented,	6	;8E 216 ADC A,(IX+d)
+	dw	z80_opcode_unimplemented,	7	;8F 217            
+	dw	z80_opcode_unimplemented,	0	;90 220            
+	dw	z80_opcode_unimplemented,	1	;91 221            
+	dw	z80_opcode_unimplemented,	2	;92 222             
+	dw	z80_opcode_unimplemented,	3	;93 223             
+	dw	z80_opcode_unimplemented,	4	;94 224 SUB A,IXH  
+	dw	z80_opcode_unimplemented,	5	;95 225 SUB A,IXL   
+	dw	z80_opcode_unimplemented,	6	;96 226 SUB A,(IX+d)
+	dw	z80_opcode_unimplemented,	7	;97 227            
+	dw	z80_opcode_unimplemented,	0	;98 230            
+	dw	z80_opcode_unimplemented,	1	;99 231            
+	dw	z80_opcode_unimplemented,	2	;9A 232             
+	dw	z80_opcode_unimplemented,	3	;9B 233             
+	dw	z80_opcode_unimplemented,	4	;9C 234 SBC A,IXH  
+	dw	z80_opcode_unimplemented,	5	;9D 235 SBC A,IXL   
+	dw	z80_opcode_unimplemented,	6	;9E 236 SBC A,(IX+d)
+	dw	z80_opcode_unimplemented,	7	;9F 237            
+	dw	z80_opcode_unimplemented,	0	;A0 240            
+	dw	z80_opcode_unimplemented,	1	;A1 241            
+	dw	z80_opcode_unimplemented,	2	;A2 242             
+	dw	z80_opcode_unimplemented,	3	;A3 243             
+	dw	z80_opcode_unimplemented,	4	;A4 244 AND IXH    
+	dw	z80_opcode_unimplemented,	5	;A5 245 AND IXL     
+	dw	z80_opcode_unimplemented,	6	;A6 246 AND (IX+d)  
+	dw	z80_opcode_unimplemented,	7	;A7 247            
+	dw	z80_opcode_unimplemented,	0	;A8 250            
+	dw	z80_opcode_unimplemented,	1	;A9 251            
+	dw	z80_opcode_unimplemented,	2	;AA 252             
+	dw	z80_opcode_unimplemented,	3	;AB 253             
+	dw	z80_opcode_unimplemented,	4	;AC 254 XOR IXH    
+	dw	z80_opcode_unimplemented,	5	;AD 255 XOR IXL     
+	dw	z80_opcode_unimplemented,	6	;AE 256 XOR (IX+d)  
+	dw	z80_opcode_unimplemented,	7	;AF 257            
+	dw	z80_opcode_unimplemented,	0	;B0 260            
+	dw	z80_opcode_unimplemented,	1	;B1 261            
+	dw	z80_opcode_unimplemented,	2	;B2 262             
+	dw	z80_opcode_unimplemented,	3	;B3 263             
+	dw	z80_opcode_unimplemented,	4	;B4 264 OR IXH     
+	dw	z80_opcode_unimplemented,	5	;B5 265 OR IXL      
+	dw	z80_opcode_unimplemented,	6	;B6 266 OR (IX+d)   
+	dw	z80_opcode_unimplemented,	7	;B7 267            
+	dw	z80_opcode_unimplemented,	0	;B8 270            
+	dw	z80_opcode_unimplemented,	1	;B9 271            
+	dw	z80_opcode_unimplemented,	2	;BA 272             
+	dw	z80_opcode_unimplemented,	3	;BB 273             
+	dw	z80_opcode_unimplemented,	4	;BC 274 CP IXH     
+	dw	z80_opcode_unimplemented,	5	;BD 275 CP IXL      
+	dw	z80_opcode_unimplemented,	6	;BE 276 CP (IX+d)   
+	dw	z80_opcode_unimplemented,	7	;BF 277            
+	dw	z80_opcode_unimplemented,	0	;C0 300            
+	dw	z80_opcode_unimplemented,	0	;C1 301            
+	dw	z80_opcode_unimplemented,	0	;C2 302             
+	dw	z80_opcode_unimplemented,	0	;C3 303             
+	dw	z80_opcode_unimplemented,	0	;C4 304            
+	dw	z80_opcode_unimplemented,	0	;C5 305             
+	dw	z80_opcode_unimplemented,	0	;C6 306             
+	dw	z80_opcode_unimplemented,	0x00	;C7 307            
+	dw	z80_opcode_unimplemented,	1	;C8 310            
+	dw	z80_opcode_unimplemented,	1	;C9 311	           
+	dw	z80_opcode_unimplemented,	1	;CA 312             
+	dw	z80_opcode_unimplemented,	1	;CB 313             
+	dw	z80_opcode_unimplemented,	1	;CC 314            
+	dw	z80_opcode_unimplemented,	1	;CD 315	            
+	dw	z80_opcode_unimplemented,	1	;CE 316             
+	dw	z80_opcode_unimplemented,	0x08	;CF 317            
+	dw	z80_opcode_unimplemented,	2	;D0 320            
+	dw	z80_opcode_unimplemented,	2	;D1 321            
+	dw	z80_opcode_unimplemented,	2	;D2 322             
+	dw	z80_opcode_unimplemented,	2	;D3 323             
+	dw	z80_opcode_unimplemented,	2	;D4 324            
+	dw	z80_opcode_unimplemented,	2	;D5 325             
+	dw	z80_opcode_unimplemented,	2	;D6 326             
+	dw	z80_opcode_unimplemented,	0x10	;D7 327            
+	dw	z80_opcode_unimplemented,	3	;D8 330            
+	dw	z80_opcode_unimplemented,	3	;D9 331            
+	dw	z80_opcode_unimplemented,	3	;DA 332             
+	dw	z80_opcode_unimplemented,	3	;DB 333             
+	dw	z80_opcode_unimplemented,	3	;DC 334            
+	dw	z80_opcode_unimplemented,	3	;DD 335             
+	dw	z80_opcode_unimplemented,	3	;DE 336             
+	dw	z80_opcode_unimplemented,	0x18	;DF 337            
+	dw	z80_opcode_unimplemented,	4	;E0 340            
+	dw	z80_opcode_unimplemented,	4	;E1 341 POP IX     
+	dw	z80_opcode_unimplemented,	4	;E2 342             
+	dw	z80_opcode_unimplemented,	4	;E3 343 EX (SP),IX  
+	dw	z80_opcode_unimplemented,	4	;E4 344            
+	dw	z80_opcode_unimplemented,	4	;E5 345 PUSH IX     
+	dw	z80_opcode_unimplemented,	4	;E6 346             
+	dw	z80_opcode_unimplemented,	0x20	;E7 347            
+	dw	z80_opcode_unimplemented,	5	;E8 350            
+	dw	z80_opcode_unimplemented,	5	;E9 351 JP (IX)    
+	dw	z80_opcode_unimplemented,	5	;EA 352             
+	dw	z80_opcode_unimplemented,	5	;EB 353             
+	dw	z80_opcode_unimplemented,	5	;EC 354            
+	dw	z80_opcode_unimplemented,	0	;ED 355             
+	dw	z80_opcode_unimplemented,	5	;EE 356             
+	dw	z80_opcode_unimplemented,	0x28	;EF 357            
+	dw	z80_opcode_unimplemented,	6	;F0 360            
+	dw	z80_opcode_unimplemented,	6	;F1 361            
+	dw	z80_opcode_unimplemented,	6	;F2 362             
+	dw	z80_opcode_unimplemented,	6	;F3 363             
+	dw	z80_opcode_unimplemented,	6	;F4 364            
+	dw	z80_opcode_unimplemented,	6	;F5 365             
+	dw	z80_opcode_unimplemented,	6	;F6 366             
+	dw	z80_opcode_unimplemented,	0x30	;F7 367            
+	dw	z80_opcode_unimplemented,	7	;F8 370            
+	dw	z80_opcode_unimplemented,	7	;F9 371 LD SP,IX   
+	dw	z80_opcode_unimplemented,	7	;FA 372             
+	dw	z80_opcode_unimplemented,	7	;FB 373             
+	dw	z80_opcode_unimplemented,	7	;FC 374            
+	dw	z80_opcode_unimplemented,	7	;FD 375             
+	dw	z80_opcode_unimplemented,	7	;FE 376             
+	dw	z80_opcode_unimplemented,	0x38	;FF 377                                    
+foldend
 z80_condcodes_to_flagmask:	;XOR and AND values for condition codes
 	db	0x00,0x40	;NZ
 	db	0xFF,0x40	;Z
@@ -904,6 +1164,61 @@ z80_dispatcher_ext:	proc
 	jmp	tx					;call handler
 	ret	
 	endp
+z80_dispatcher_ix:	proc
+	mov	tx,	z80_r	;inc	[z80_r]		;increment Z80
+	mov	a,	[tx]				;refresh register
+	inc	a
+	mov	[tx],	a
+	mov	c,	[si]	;movzx	c,	[si++]	;fetch Z80 command
+	mov	d,	0
+	inc	si
+	mov	ab,	z80_xy_opcode_table		;load table base
+	clc			;sal	cd,	2	;compute table offset
+	shl	c
+	shl	d
+	shl	c
+	shl	d
+	add	a,	c	;add	ab,	cd	;compute effective address (EA)
+	add	b,	d
+	mov	di,	ab				;place EA into DI
+	mov	a,	[di]	;mov	ab,	[di++]	;fetch handler ptr from
+	inc	di		;mov	tx,	ab	;opcode table into AB&TX
+	mov	b,	[di]
+	inc	di
+	mov	c,	[di]				;fetch handler parameter into C
+	mov	di,	z80_ix				;pass XY base as a parameter
+	mov	tx,	ab	;jmp	ab		;call handler
+	jmp	tx			
+	ret	
+	endp
+z80_dispatcher_iy:	proc
+	mov	tx,	z80_r	;inc	[z80_r]		;increment Z80
+	mov	a,	[tx]				;refresh register
+	inc	a
+	mov	[tx],	a
+	mov	c,	[si]	;movzx	c,	[si++]	;fetch Z80 command
+	mov	d,	0
+	inc	si
+	mov	ab,	z80_xy_opcode_table		;load table base
+	clc			;sal	cd,	2	;compute table offset
+	shl	c
+	shl	d
+	shl	c
+	shl	d
+	add	a,	c	;add	ab,	cd	;compute effective address (EA)
+	add	b,	d
+	mov	di,	ab				;place EA into DI
+	mov	a,	[di]	;mov	ab,	[di++]	;fetch handler ptr from
+	inc	di		;mov	tx,	ab	;opcode table into AB&TX
+	mov	b,	[di]
+	inc	di
+	mov	c,	[di]				;fetch handler parameter into C
+	mov	di,	z80_iy				;pass XY base as a parameter
+	mov	tx,	ab	;jmp	ab		;call handler
+	jmp	tx			
+	ret	
+	endp
+
 z80_opcode_nop:	proc
 	;As opcode handlers are usually not calling other subrouties,
 	;no additional enter and leave code is needed.
@@ -1658,6 +1973,12 @@ z80_opcode_jmp_a16:	proc
 	mov	si,	ab				;set PC to the address
 	ret
 	endp
+z80_opcode_jmp_hl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	si,	ab				
+	ret
+	endp
 z80_opcode_ex_de_hl:	proc 
 	mov	di,	z80_d	
 	mov	a,	[di]	;mov	ab,	[di]
@@ -2070,6 +2391,235 @@ z80_opcode_dec_sp:	proc
 	stb	z80_sp+1
 	ret
 	endp
+z80_opcode_rlc_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	mov	b,	[di]
+	mov	a,	0
+	add	b,	b
+	mov	d,	1
+	adc	b,	a
+	nop
+	and	d,	b
+	mov	[di],	b
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	or	a,	d
+	sta	z80_f
+	ret
+	endp
+z80_opcode_rrc_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	xor	a,	a
+	xor	b,	b
+	mov	c,	a
+	mov	d,	a
+	;--
+	mov	a,	[di]
+	clc
+	shr	a	
+	shl	b
+	clc
+	mov	d,	b
+	shr	b
+	nop
+	shr	b
+	nop
+	or	a,	b
+	mov	[di],	a
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	or	a,	d
+	sta	z80_f
+	ret
+	endp
+z80_opcode_rl_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	ldc	z80_f		;mov	c,	[z80_f]
+	mov	d,	1	;and	c,	1
+	and	c,	d
+	;--
+	mov	a,	[di]
+	clc
+	shl	a
+	mov	d,	0
+	shl	d
+	add	a,	c
+	;--
+	mov	[di],	a	;result into A
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	or	a,	d
+	sta	z80_f
+	ret			
+	endp
+z80_opcode_rr_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	ldc	z80_f		;mov	c,	[z80_f]
+	mov	d,	1	;and	c,	1
+	and	c,	d
+	;--
+	mov	a,	[di]
+	mov	d,	0
+	clc
+	shr	c
+	shr	a
+	shl	d
+	;--
+	mov	[di],	a	;result into A
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	or	a,	d
+	sta	z80_f
+	ret			
+	endp
+z80_opcode_fast_add_hl_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	mov	d,	[di]
+	inc	di
+	mov	c,	[di]
+	lda	z80_l
+	ldb	z80_h
+	add	c,	a
+	adc	d,	b
+	mov	[di],	c
+	dec	di
+	mov	[di],	d
+	ret
+	endp
+z80_opcode_fast_sub_hl_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	mov	d,	[di]
+	inc	di
+	mov	c,	[di]
+	lda	z80_l
+	ldb	z80_h
+	sub	c,	a
+	sbb	d,	b
+	mov	[di],	c
+	dec	di
+	mov	[di],	d
+	ret
+	endp
+z80_opcode_fast_add_littleendian_hl_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	mov	c,	[di]
+	inc	di
+	mov	d,	[di]
+	lda	z80_l
+	ldb	z80_h
+	add	c,	a
+	adc	d,	b
+	mov	[di],	d
+	dec	di
+	mov	[di],	c
+	ret
+	endp
+z80_opcode_fast_sub_littleendian_hl_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	mov	c,	[di]
+	inc	di
+	mov	d,	[di]
+	lda	z80_l
+	ldb	z80_h
+	sub	c,	a
+	sbb	d,	b
+	mov	[di],	d
+	dec	di
+	mov	[di],	c
+	ret
+	endp
+z80_opcode_cpl:	proc
+	mov	tx,	z80_a
+	mov	a,	[tx]
+	mov	d,	0xFF
+	xor	a,	d
+	mov	[tx],	a
+	endp
+z80_opcode_scf:	proc
+	mov	tx,	z80_f
+	mov	a,	[tx]
+	mov	d,	1
+	or	a,	d
+	mov	[tx],	a
+	endp
+z80_opcode_ccf:	proc
+	mov	tx,	z80_f
+	mov	a,	[tx]
+	mov	d,	1
+	xor	a,	d
+	mov	[tx],	a
+	endp
+z80_opcode_xchg_hl_msp:	proc
+	lda	z80_sp		;mov	di,	ab,	[z80_sp]
+	ldb	z80_sp+1	
+	mov	di,	ab
+	mov	a,	[di]	;mov	ab,	[di]
+	inc	di
+	mov	b,	[di]
+	ldc	z80_h		;mov	cd,	[z80_hl]
+	ldd	z80_l
+	sta	z80_h		;mov	[z80_hl],	ab
+	stb	z80_l
+	mov	[di],	d	;mov	[di],	cd
+	dec	di
+	mov	[di],	c
+	ret
+	endp
+	
+z80_opcode_djnz_a8:	proc
+	lodsb			;mov	a,	[si++]
+	ldb	z80_b
+	dec	b
+	stb	z80_b
+	jz	z80_opcode_djnz_a8.ret
+	mov	b,	a	;movsx	cd,	a
+	mov	c,	a
+	add	b,	b
+	mov	b,	0
+	mov	d,	0
+	sbb	d,	b
+	mov	ab,	si	;mov	ab,	si	;add	si,	cd
+	add	a,	c	;adc	ab,	cd	;do the relative jump
+	adc	b,	d
+	nop
+	mov	si,	ab	;mov	si,	ab
+z80_opcode_djnz_a8.ret:
+	ret
+	endp
 z80_opcode_debug:	proc
 	;Debug opcode, displays internal state.
 	;Speed of execution is not relevant - it interfaces with SIO anyways.
@@ -2407,4 +2957,4 @@ os_terminate:	proc
 end: 
 .segment EndOfRom
 TopRomAddress:
-;
+; 
