@@ -819,7 +819,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	0	;43 103             
 	dw	z80_opcode_unimplemented,	0	;44 104 LD B,IXH   
 	dw	z80_opcode_unimplemented,	0	;45 105 LD B,IXL    
-	dw	z80_opcode_unimplemented,	0	;46 106 LD B,(IX+d) 
+	dw	z80_opcode_mov_r8_dxy,		0	;46 106 LD B,(IX+d) 
 	dw	z80_opcode_unimplemented,	0	;47 107            
 	dw	z80_opcode_unimplemented,	1	;48 110            
 	dw	z80_opcode_unimplemented,	1	;49 111            
@@ -827,7 +827,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	1	;4B 113             
 	dw	z80_opcode_unimplemented,	1	;4C 114 LD C,IXH   
 	dw	z80_opcode_unimplemented,	1	;4D 115 LD C,IXL    
-	dw	z80_opcode_unimplemented,	1	;4E 116 LD C,(IX+d) 
+	dw	z80_opcode_mov_r8_dxy,		1	;4E 116 LD C,(IX+d) 
 	dw	z80_opcode_unimplemented,	1	;4F 117            
 	dw	z80_opcode_unimplemented,	2	;50 120            
 	dw	z80_opcode_unimplemented,	2	;51 121            
@@ -835,7 +835,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	2	;53 123             
 	dw	z80_opcode_unimplemented,	2	;54 124 LD D,IXH   
 	dw	z80_opcode_unimplemented,	2	;55 125 LD D,IXL    
-	dw	z80_opcode_unimplemented,	2	;56 126 LD D,(IX+d) 
+	dw	z80_opcode_mov_r8_dxy,		2	;56 126 LD D,(IX+d) 
 	dw	z80_opcode_unimplemented,	2	;57 127            
 	dw	z80_opcode_unimplemented,	3	;58 130            
 	dw	z80_opcode_unimplemented,	3	;59 131            
@@ -843,7 +843,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;5B 133             
 	dw	z80_opcode_unimplemented,	3	;5C 134 LD E,IXH   
 	dw	z80_opcode_unimplemented,	3	;5D 135 LD E,IXL    
-	dw	z80_opcode_unimplemented,	3	;5E 136 LD E,(IX+d) 
+	dw	z80_opcode_mov_r8_dxy,		3	;5E 136 LD E,(IX+d) 
 	dw	z80_opcode_unimplemented,	3	;5F 137            
 	dw	z80_opcode_unimplemented,	4	;60 140 LD IXH,B   
 	dw	z80_opcode_unimplemented,	4	;61 141 LD IXH,C   
@@ -851,7 +851,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	4	;63 143 LD IXH,E    
 	dw	z80_opcode_unimplemented,	4	;64 144 LD IXH,IXH 
 	dw	z80_opcode_unimplemented,	4	;65 145 LD IXH,IXL  
-	dw	z80_opcode_unimplemented,	4	;66 146 LD H,(IX+d) 
+	dw	z80_opcode_mov_r8_dxy,		4	;66 146 LD H,(IX+d) 
 	dw	z80_opcode_unimplemented,	4	;67 147 LD IXH,A   
 	dw	z80_opcode_unimplemented,	5	;68 150 LD IXL,B   
 	dw	z80_opcode_unimplemented,	5	;69 151 LD IXL,C   
@@ -859,23 +859,23 @@ foldmid
 	dw	z80_opcode_unimplemented,	5	;6B 153 LD IXL,E    
 	dw	z80_opcode_unimplemented,	5	;6C 154 LD IXL,IXH 
 	dw	z80_opcode_unimplemented,	5	;6D 155 LD IXL,IXL  
-	dw	z80_opcode_unimplemented,	5	;6E 156 LD L,(IX+d) 
+	dw	z80_opcode_mov_r8_dxy,		5	;6E 156 LD L,(IX+d) 
 	dw	z80_opcode_unimplemented,	5	;6F 157 LD IXL,A   
-	dw	z80_opcode_unimplemented,	6	;70 160 LD (IX+d),B
-	dw	z80_opcode_unimplemented,	6	;71 161 LD (IX+d),C
-	dw	z80_opcode_unimplemented,	6	;72 162 LD (IX+d),D 
-	dw	z80_opcode_unimplemented,	6	;73 163 LD (IX+d),E 
-	dw	z80_opcode_unimplemented,	6	;74 164 LD (IX+d),H
-	dw	z80_opcode_unimplemented,	6	;75 165 LD (IX+d),L 
+	dw	z80_opcode_mov_dxy_r8,		0	;70 160 LD (IX+d),B
+	dw	z80_opcode_mov_dxy_r8,		1	;71 161 LD (IX+d),C
+	dw	z80_opcode_mov_dxy_r8,		2	;72 162 LD (IX+d),D 
+	dw	z80_opcode_mov_dxy_r8,		3	;73 163 LD (IX+d),E 
+	dw	z80_opcode_mov_dxy_r8,		4	;74 164 LD (IX+d),H
+	dw	z80_opcode_mov_dxy_r8,		5	;75 165 LD (IX+d),L 
 	dw	z80_opcode_unimplemented,	6	;76 166             
-	dw	z80_opcode_unimplemented,	6	;77 167 LD (IX+d),A
+	dw	z80_opcode_mov_dxy_r8,		7	;77 167 LD (IX+d),A
 	dw	z80_opcode_unimplemented,	7	;78 170            
 	dw	z80_opcode_unimplemented,	7	;79 171            
 	dw	z80_opcode_unimplemented,	7	;7A 172             
 	dw	z80_opcode_unimplemented,	7	;7B 173             
 	dw	z80_opcode_unimplemented,	7	;7C 174 LD A,IXH   
 	dw	z80_opcode_unimplemented,	7	;7D 175 LD A,IXL    
-	dw	z80_opcode_unimplemented,	7	;7E 176 LD A,(IX+d) 
+	dw	z80_opcode_mov_r8_dxy,		7	;7E 176 LD A,(IX+d) 
 	dw	z80_opcode_unimplemented,	7	;7F 177            
 	dw	z80_opcode_unimplemented,	0	;80 200            
 	dw	z80_opcode_unimplemented,	0	;81 201            
@@ -1594,6 +1594,7 @@ z80_opcode_add_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_add_r8.tappoint:
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
 	mov	a,	[tx]	;add	[tx],	[di]
@@ -1610,6 +1611,7 @@ z80_opcode_sub_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_sub_r8.tappoint:
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
 	mov	a,	[tx]	;add	[tx],	[di]
@@ -1626,6 +1628,7 @@ z80_opcode_adc_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_adc_r8.tappoint:
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
 	ldc	z80_f		;mov	c,	[z80_f]
@@ -1648,6 +1651,7 @@ z80_opcode_sbb_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_sbb_r8.tappoint:
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
 	mov	b,	[di]
@@ -1669,6 +1673,7 @@ z80_opcode_and_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_and_r8.tappoint:
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
 	mov	a,	[tx]	;add	[tx],	[di]
@@ -1688,6 +1693,7 @@ z80_opcode_xor_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_xor_r8.tappoint:
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
 	mov	a,	[tx]	;add	[tx],	[di]
@@ -1707,6 +1713,7 @@ z80_opcode_or_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_or_r8.tappoint:
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
 	mov	a,	[tx]	;add	[tx],	[di]
@@ -1726,6 +1733,7 @@ z80_opcode_cmp_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_cmp_r8.tappoint:
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	;--
 	mov	a,	[tx]	;add	[tx],	[di]
@@ -2657,6 +2665,7 @@ z80_opcode_rlc_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_rlc_r8.tappoint:
 	;--
 	mov	b,	[di]
 	mov	a,	0
@@ -2679,7 +2688,7 @@ z80_opcode_rrc_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
-	;--
+z80_opcode_rrc_r8.tappoint:
 	xor	a,	a
 	xor	b,	b
 	mov	c,	a
@@ -2710,6 +2719,7 @@ z80_opcode_rl_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_rl_r8.tappoint:
 	;--
 	ldc	z80_f		;mov	c,	[z80_f]
 	mov	d,	1	;and	c,	1
@@ -2735,6 +2745,7 @@ z80_opcode_rr_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_rr_r8.tappoint:
 	;--
 	ldc	z80_f		;mov	c,	[z80_f]
 	mov	d,	1	;and	c,	1
@@ -2760,6 +2771,7 @@ z80_opcode_sla_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_sla_r8.tappoint:
 	;--
 	mov	b,	[di]
 	mov	d,	0
@@ -2779,6 +2791,7 @@ z80_opcode_sll_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_sll_r8.tappoint:
 	;--
 	mov	b,	[di]
 	mov	d,	0
@@ -2800,6 +2813,7 @@ z80_opcode_sra_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_sra_r8.tappoint:
 	;--
 	mov	b,	[di]
 	clc
@@ -2824,6 +2838,7 @@ z80_opcode_srl_r8:	proc
 	add	a,	c
 	incc	b
 	mov	di,	ab
+z80_opcode_srl_r8.tappoint:
 	;--
 	mov	b,	[di]
 	clc
@@ -3076,6 +3091,61 @@ z80_opcode_res_r8.maskgenend:
 	sta	z80_f
 	ret
 	endp
+z80_eval_ea_dxy:	proc
+	;DI	XY Base
+	;SI++	Displacement
+	;Breaks	AB
+	;Returns:
+	;DI	Effective address
+	push	c
+	push	d
+	mov	a,	[di]	;mov	di,	ab,	[di]	;dereference DI
+	inc	di
+	mov	b,	[di]
+	mov	di,	ab
+	mov	c,	[si]
+	inc	si
+	mov	b,	c	;movsx	cd,	c
+	add	b,	b	;stomps	b
+	mov	b,	0
+	mov	d,	0
+	sbb	d,	b
+	mov	ab,	di	;add	di,	cd
+	add	ab,	cd
+	mov	di,	ab
+	pop	d
+	pop	c
+	ret
+	endp
+z80_opcode_mov_r8_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy		;lea	di,	[[di]+c]
+	mov	ab,	z80_registers	;lea	tx,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	tx,	ab
+	;--
+	mov	a,	[di]
+	mov	[tx],	a
+	;--
+	pop	ra
+	ret
+	endp
+z80_opcode_mov_dxy_r8:	proc
+	push	ra
+	call	z80_eval_ea_dxy		;lea	di,	[[di]+c]
+	mov	ab,	z80_registers	;lea	tx,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	tx,	ab
+	;--
+	mov	a,	[tx]
+	mov	[di],	a
+	;--
+	pop	ra
+	ret
+	endp
+	
 z180_mlt_r16:	proc
 	push	ra
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
