@@ -565,7 +565,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;49	111	OUT (C),C  
 	dw z80_opcode_unimplemented,	0	;4A	112	ADC HL,BC  
 	dw z80_opcode_unimplemented,	0	;4B	113	LD BC,(nn) 
-	dw z80_opcode_unimplemented,	0	;4C	114	MLT BC	   
+	dw z180_mlt_r16,		0	;4C	114	MLT BC	   
 	dw z80_opcode_unimplemented,	0	;4D	115	RETI	   
 	dw z80_opcode_unimplemented,	0	;4E	116	im 0	   
 	dw z80_opcode_unimplemented,	0	;4F	117	LD R,A	   
@@ -581,7 +581,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;59	131	OUT (C),E  
 	dw z80_opcode_unimplemented,	0	;5A	132	ADC HL,DE  
 	dw z80_opcode_unimplemented,	0	;5B	133	LD DE,(nn) 
-	dw z80_opcode_unimplemented,	0	;5C	134	MLT DE	   
+	dw z180_mlt_r16,		2	;5C	134	MLT DE	   
 	dw z80_opcode_unimplemented,	0	;5D	135		   
 	dw z80_opcode_unimplemented,	0	;5E	136	IM 2	   
 	dw z80_opcode_unimplemented,	0	;5F	137	LD A,R	   
@@ -597,7 +597,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;69	151	OUT (C),L  
 	dw z80_opcode_unimplemented,	0	;6A	152	ADC HL,HL  
 	dw z80_opcode_unimplemented,	0	;6B	153	LD HL,(nn) 
-	dw z80_opcode_unimplemented,	0	;6C	154	MLT HL	   
+	dw z180_mlt_r16,		4	;6C	154	MLT HL	   
 	dw z80_opcode_unimplemented,	0	;6D	155	LD MB,A	   
 	dw z80_opcode_unimplemented,	0	;6E	156	LD A,MB	   
 	dw z80_opcode_unimplemented,	0	;6F	157	RLD	   
@@ -613,7 +613,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;79	171	OUT (C),A  
 	dw z80_opcode_unimplemented,	0	;7A	172	ADC HL,SP  
 	dw z80_opcode_unimplemented,	0	;7B	173	LD SP,(nn) 
-	dw z80_opcode_unimplemented,	0	;7C	174	MLT SP	   
+	dw z180_mlt_sp,			0	;7C	174	MLT SP	   
 	dw z80_opcode_unimplemented,	0	;7D	175	STMIX	   
 	dw z80_opcode_unimplemented,	0	;7E	176	RSMIX	   
 	dw z80_opcode_unimplemented,	0	;7F	177	ld r,r	   
@@ -3074,6 +3074,38 @@ z80_opcode_res_r8.maskgenend:
 	mov	tl,	a
 	mov	a,	[tx]
 	sta	z80_f
+	ret
+	endp
+z180_mlt_r16:	proc
+	push	ra
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	nop
+	mov	di,	ab	
+	;--
+	mov	a,	[di]
+	inc	di
+	mov	b,	[di]
+	call	math_multiply_8_8
+	mov	[di],	c
+	dec	di
+	mov	[di],	d
+	;--
+	pop	ra
+	ret
+	endp
+z180_mlt_sp:	proc
+	push	ra
+	mov	di,	z80_sp
+	mov	a,	[di]
+	inc	di
+	mov	b,	[di]
+	call	math_multiply_8_8
+	mov	[di],	d
+	dec	di
+	mov	[di],	c
+	pop	ra
 	ret
 	endp
 z80_opcode_debug:	proc
