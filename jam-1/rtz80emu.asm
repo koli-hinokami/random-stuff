@@ -883,7 +883,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;83 203             
 	dw	z80_opcode_unimplemented,	4	;84 204 ADD A,IXH  
 	dw	z80_opcode_unimplemented,	5	;85 205 ADD A,IXL   
-	dw	z80_opcode_unimplemented,	6	;86 206 ADD A,(IX+d)
+	dw	z80_opcode_add_dxy,		6	;86 206 ADD A,(IX+d)
 	dw	z80_opcode_unimplemented,	7	;87 207            
 	dw	z80_opcode_unimplemented,	0	;88 210            
 	dw	z80_opcode_unimplemented,	1	;89 211            
@@ -891,7 +891,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;8B 213             
 	dw	z80_opcode_unimplemented,	4	;8C 214 ADC A,IXH  
 	dw	z80_opcode_unimplemented,	5	;8D 215 ADC A,IXL   
-	dw	z80_opcode_unimplemented,	6	;8E 216 ADC A,(IX+d)
+	dw	z80_opcode_adc_dxy,		6	;8E 216 ADC A,(IX+d)
 	dw	z80_opcode_unimplemented,	7	;8F 217            
 	dw	z80_opcode_unimplemented,	0	;90 220            
 	dw	z80_opcode_unimplemented,	1	;91 221            
@@ -899,7 +899,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;93 223             
 	dw	z80_opcode_unimplemented,	4	;94 224 SUB A,IXH  
 	dw	z80_opcode_unimplemented,	5	;95 225 SUB A,IXL   
-	dw	z80_opcode_unimplemented,	6	;96 226 SUB A,(IX+d)
+	dw	z80_opcode_sub_dxy,		6	;96 226 SUB A,(IX+d)
 	dw	z80_opcode_unimplemented,	7	;97 227            
 	dw	z80_opcode_unimplemented,	0	;98 230            
 	dw	z80_opcode_unimplemented,	1	;99 231            
@@ -907,7 +907,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;9B 233             
 	dw	z80_opcode_unimplemented,	4	;9C 234 SBC A,IXH  
 	dw	z80_opcode_unimplemented,	5	;9D 235 SBC A,IXL   
-	dw	z80_opcode_unimplemented,	6	;9E 236 SBC A,(IX+d)
+	dw	z80_opcode_sbb_dxy,		6	;9E 236 SBC A,(IX+d)
 	dw	z80_opcode_unimplemented,	7	;9F 237            
 	dw	z80_opcode_unimplemented,	0	;A0 240            
 	dw	z80_opcode_unimplemented,	1	;A1 241            
@@ -915,7 +915,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;A3 243             
 	dw	z80_opcode_unimplemented,	4	;A4 244 AND IXH    
 	dw	z80_opcode_unimplemented,	5	;A5 245 AND IXL     
-	dw	z80_opcode_unimplemented,	6	;A6 246 AND (IX+d)  
+	dw	z80_opcode_and_dxy,		6	;A6 246 AND (IX+d)  
 	dw	z80_opcode_unimplemented,	7	;A7 247            
 	dw	z80_opcode_unimplemented,	0	;A8 250            
 	dw	z80_opcode_unimplemented,	1	;A9 251            
@@ -923,7 +923,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;AB 253             
 	dw	z80_opcode_unimplemented,	4	;AC 254 XOR IXH    
 	dw	z80_opcode_unimplemented,	5	;AD 255 XOR IXL     
-	dw	z80_opcode_unimplemented,	6	;AE 256 XOR (IX+d)  
+	dw	z80_opcode_xor_dxy,		6	;AE 256 XOR (IX+d)  
 	dw	z80_opcode_unimplemented,	7	;AF 257            
 	dw	z80_opcode_unimplemented,	0	;B0 260            
 	dw	z80_opcode_unimplemented,	1	;B1 261            
@@ -931,7 +931,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;B3 263             
 	dw	z80_opcode_unimplemented,	4	;B4 264 OR IXH     
 	dw	z80_opcode_unimplemented,	5	;B5 265 OR IXL      
-	dw	z80_opcode_unimplemented,	6	;B6 266 OR (IX+d)   
+	dw	z80_opcode_or_dxy,		6	;B6 266 OR (IX+d)   
 	dw	z80_opcode_unimplemented,	7	;B7 267            
 	dw	z80_opcode_unimplemented,	0	;B8 270            
 	dw	z80_opcode_unimplemented,	1	;B9 271            
@@ -939,7 +939,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	3	;BB 273             
 	dw	z80_opcode_unimplemented,	4	;BC 274 CP IXH     
 	dw	z80_opcode_unimplemented,	5	;BD 275 CP IXL      
-	dw	z80_opcode_unimplemented,	6	;BE 276 CP (IX+d)   
+	dw	z80_opcode_cmp_dxy,		6	;BE 276 CP (IX+d)   
 	dw	z80_opcode_unimplemented,	7	;BF 277            
 	dw	z80_opcode_unimplemented,	0	;C0 300            
 	dw	z80_opcode_unimplemented,	0	;C1 301            
@@ -3146,6 +3146,63 @@ z80_opcode_mov_dxy_r8:	proc
 	ret
 	endp
 	
+z80_opcode_add_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy
+	pop	ra
+	jmp	z80_opcode_add_r8.tappoint
+	ret
+	endp
+z80_opcode_sub_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy
+	pop	ra
+	jmp	z80_opcode_sub_r8.tappoint
+	ret
+	endp
+z80_opcode_adc_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy
+	pop	ra
+	jmp	z80_opcode_adc_r8.tappoint
+	ret
+	endp
+z80_opcode_sbb_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy
+	pop	ra
+	jmp	z80_opcode_sbb_r8.tappoint
+	ret
+	endp
+z80_opcode_and_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy
+	pop	ra
+	jmp	z80_opcode_and_r8.tappoint
+	ret
+	endp
+z80_opcode_xor_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy
+	pop	ra
+	jmp	z80_opcode_xor_r8.tappoint
+	ret
+	endp
+z80_opcode_or_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy
+	pop	ra
+	jmp	z80_opcode_or_r8.tappoint
+	ret
+	endp
+z80_opcode_cmp_dxy:	proc
+	push	ra
+	call	z80_eval_ea_dxy
+	pop	ra
+	jmp	z80_opcode_cmp_r8.tappoint
+	ret
+	endp
+
 z180_mlt_r16:	proc
 	push	ra
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
