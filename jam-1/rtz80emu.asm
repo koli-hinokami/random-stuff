@@ -63,7 +63,7 @@ foldend
 foldstart
 .entry entry
 .export 0x0000 TopRomAddress
-.origin 0x6800
+.origin 0x9000
 .segment DataRO
 foldend
 ;			,,.............................,,
@@ -877,8 +877,8 @@ foldmid
 	dw	z80_opcode_unimplemented,	7	;7D 175 LD A,IXL    
 	dw	z80_opcode_unimplemented,	7	;7E 176 LD A,(IX+d) 
 	dw	z80_opcode_unimplemented,	7	;7F 177            
-	dw	z80_opcode_unimplemented,		;80 200            
-	dw	z80_opcode_unimplemented,		;81 201            
+	dw	z80_opcode_unimplemented,	0	;80 200            
+	dw	z80_opcode_unimplemented,	0	;81 201            
 	dw	z80_opcode_unimplemented,	2	;82 202             
 	dw	z80_opcode_unimplemented,	3	;83 203             
 	dw	z80_opcode_unimplemented,	4	;84 204 ADD A,IXH  
@@ -1060,13 +1060,15 @@ foldend
 ;				   ::Code::
 ;				   ''''''''
 entry:	proc
-	;nop		;Byte at $0 must be a nop, but I am loading to $7000.
+	;nop		;Byte at $0 must be a nop, but I am loading to further.
 			;Address $0 is taken care of by Z80 software.
 	push	ra
-	mov	si,	msg_wrongentrypoint
-	call	uart_write
+	;mov	si,	msg_wrongentrypoint
+	;call	uart_write
+	call	load_intelhex
 	pop	ra
-	ret
+	jmp	start
+	;ret
 	;nop
 	endp
 start:	proc
@@ -2945,6 +2947,107 @@ native_debug.loop:
 	ret
 	endp
 
+load_intelhex:	proc
+	push	ra
+	mov	si,	load_intelhex.welcome
+	call	uart_write
+load_intelhex.loop:
+	mov	si,	load_intelhex.prompt
+	call	uart_write
+	call	uart_read_char_wait
+	call	Uart_Write_Char
+	mov	d,	58
+	cmp	a,	d
+	jne	load_intelhex.ret
+load_intelhex.readsize:
+	call	rtl_readhex8
+	mov	c,	a
+load_intelhex.readaddr:
+	call	rtl_readhex8
+	mov	b,	a
+	call	rtl_readhex8
+	mov	di,	ab
+load_intelhex.readtype:
+	call	rtl_readhex8
+	test	a
+	jnz	load_intelhex.ret
+load_intelhex.readdata:
+	mov	b,	0
+	;c is initialize as size
+load_intelhex.readdata.loop:
+	call	rtl_readhex8
+	stosb
+	add	b,	a
+	dec	c
+	jnz	load_intelhex.readdata.loop
+load_intelhex.checksum:
+	test	b
+	;jnz	os_terminate
+load_intelhex.wait_cr:
+	call	uart_read_char_wait
+	call	Uart_Write_Char
+	mov	d,	13
+	cmp	a,	d
+	jnz	load_intelhex.wait_cr
+	jmp	load_intelhex.loop
+load_intelhex.ret:	
+	pop	ra
+	ret
+	endp
+load_intelhex.welcome: db " Type in an Intel HEX dump ",13,10,0
+load_intelhex.prompt: db ">",0
+rtl_readhex8:	proc
+	push	ra
+	push	b
+	push	c
+	push	d
+	
+	mov	c,	2
+	mov	b,	0
+rtl_readhex8.loop:
+	call	UART_Read_Char_wait
+	call	Uart_Write_Char
+	mov	d,	97
+	cmp	a,	d
+	jb	rtl_readhex8.notlowercase
+	
+	mov	d,	87
+	sub	a,	d
+	jmp	rtl_readhex8.gotdigit
+rtl_readhex8.notlowercase:
+	mov	d,	65
+	cmp	a,	d
+	jb	rtl_readhex8.notuppercase
+	mov	d,	55
+	sub	a,	d
+	jmp	rtl_readhex8.gotdigit
+rtl_readhex8.notuppercase:
+	mov	d,	48
+	sub	a,	d
+rtl_readhex8.gotdigit:
+	clc
+	nop
+	shl	b
+	nop
+	shl	b
+	nop
+	shl	b
+	nop
+	shl	b
+	nop
+	add	b,	a
+	dec	c
+	
+	jnz	rtl_readhex8.loop
+rtl_readhex8.ret:
+	mov	a,	b
+	pop	d
+	pop	c
+	pop	b
+	pop	ra
+	ret
+	endp
+	
 os_terminate:	proc
 	mov	si,	msg_terminated
 	call	uart_write
