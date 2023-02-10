@@ -33,7 +33,7 @@ foldstart
 ;	  | | '-'-'- Force-zeroed
 ;	  | '- Implemented
 ;	  '- Implemented
-;
+;	By the way, most complex commands are DD CB dd 0F and DD CB dd BF
 ;==============================================================================
 ;				 ,,............
 ;				 ::Memory map::
@@ -1040,38 +1040,38 @@ foldmid
 	dw	z80_opcode_rr_r8,		5	;1D 035 RR L     
 	dw	z80_opcode_unimplemented,	6	;1E 036 RR (HL)  
 	dw	z80_opcode_rr_r8,		7	;1F 037 RR A   
-	dw	z80_opcode_unimplemented,	0	;20 040 SLA B    
-	dw	z80_opcode_unimplemented,	1	;21 041 SLA C    
-	dw	z80_opcode_unimplemented,	2	;22 042 SLA D    
-	dw	z80_opcode_unimplemented,	3	;23 043 SLA E    
-	dw	z80_opcode_unimplemented,	4	;24 044 SLA H    
-	dw	z80_opcode_unimplemented,	5	;25 045 SLA L    
+	dw	z80_opcode_sla_r8,		0	;20 040 SLA B    
+	dw	z80_opcode_sla_r8,		1	;21 041 SLA C    
+	dw	z80_opcode_sla_r8,		2	;22 042 SLA D    
+	dw	z80_opcode_sla_r8,		3	;23 043 SLA E    
+	dw	z80_opcode_sla_r8,		4	;24 044 SLA H    
+	dw	z80_opcode_sla_r8,		5	;25 045 SLA L    
 	dw	z80_opcode_unimplemented,	6	;26 046 SLA (HL) 
-	dw	z80_opcode_unimplemented,	7	;27 047 SLA A  
-	dw	z80_opcode_unimplemented,	0	;28 050 SRA B    
-	dw	z80_opcode_unimplemented,	1	;29 051 SRA C    
-	dw	z80_opcode_unimplemented,	2	;2A 052 SRA D    
-	dw	z80_opcode_unimplemented,	3	;2B 053 SRA E    
-	dw	z80_opcode_unimplemented,	4	;2C 054 SRA H    
-	dw	z80_opcode_unimplemented,	5	;2D 055 SRA L    
+	dw	z80_opcode_sla_r8,		7	;27 047 SLA A  
+	dw	z80_opcode_sra_r8,		0	;28 050 SRA B    
+	dw	z80_opcode_sra_r8,		1	;29 051 SRA C    
+	dw	z80_opcode_sra_r8,		2	;2A 052 SRA D    
+	dw	z80_opcode_sra_r8,		3	;2B 053 SRA E    
+	dw	z80_opcode_sra_r8,		4	;2C 054 SRA H    
+	dw	z80_opcode_sra_r8,		5	;2D 055 SRA L    
 	dw	z80_opcode_unimplemented,	6	;2E 056 SRA (HL) 
-	dw	z80_opcode_unimplemented,	7	;2F 057 SRA A  
-	dw	z80_opcode_unimplemented,	0	;30 060 sls b    
-	dw	z80_opcode_unimplemented,	1	;31 061 sls c    
-	dw	z80_opcode_unimplemented,	2	;32 062 sls d    
-	dw	z80_opcode_unimplemented,	3	;33 063 sls e    
-	dw	z80_opcode_unimplemented,	4	;34 064 sls h    
-	dw	z80_opcode_unimplemented,	5	;35 065 sls l    
-	dw	z80_opcode_unimplemented,	6	;36 066 sls (hl) 
-	dw	z80_opcode_unimplemented,	7	;37 067 sls a  
-	dw	z80_opcode_unimplemented,	0	;38 070 SRL B    
-	dw	z80_opcode_unimplemented,	1	;39 071 SRL C    
-	dw	z80_opcode_unimplemented,	2	;3A 072 SRL D    
-	dw	z80_opcode_unimplemented,	3	;3B 073 SRL E    
-	dw	z80_opcode_unimplemented,	4	;3C 074 SRL H    
-	dw	z80_opcode_unimplemented,	5	;3D 075 SRL L    
+	dw	z80_opcode_sra_r8,		7	;2F 057 SRA A  
+	dw	z80_opcode_sll_r8,		0	;30 060 SLL B    
+	dw	z80_opcode_sll_r8,		1	;31 061 SLL C    
+	dw	z80_opcode_sll_r8,		2	;32 062 SLL D    
+	dw	z80_opcode_sll_r8,		3	;33 063 SLL E    
+	dw	z80_opcode_sll_r8,		4	;34 064 SLL H    
+	dw	z80_opcode_sll_r8,		5	;35 065 SLL L    
+	dw	z80_opcode_unimplemented,	6	;36 066 SLL (HL) 
+	dw	z80_opcode_sll_r8,		7	;37 067 SLL A  
+	dw	z80_opcode_srl_r8,		0	;38 070 SRL B    
+	dw	z80_opcode_srl_r8,		1	;39 071 SRL C    
+	dw	z80_opcode_srl_r8,		2	;3A 072 SRL D    
+	dw	z80_opcode_srl_r8,		3	;3B 073 SRL E    
+	dw	z80_opcode_srl_r8,		4	;3C 074 SRL H    
+	dw	z80_opcode_srl_r8,		5	;3D 075 SRL L    
 	dw	z80_opcode_unimplemented,	6	;3E 076 SRL (HL) 
-	dw	z80_opcode_unimplemented,	7	;3F 077 SRL A  
+	dw	z80_opcode_srl_r8,		7	;3F 077 SRL A  
 	dw	z80_opcode_bit_r8,		0 	;40 100 BIT 0,B  
 	dw	z80_opcode_bit_r8,		1 	;41 101 BIT 0,C  
 	dw	z80_opcode_bit_r8,		2 	;42 102 BIT 0,D  
@@ -2668,7 +2668,7 @@ z80_opcode_rlc_r8:	proc
 	mov	[di],	b
 	;--
 	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
+	mov	tl,	b
 	mov	a,	[tx]
 	or	a,	d
 	sta	z80_f
@@ -2755,6 +2755,92 @@ z80_opcode_rr_r8:	proc
 	sta	z80_f
 	ret			
 	endp
+z80_opcode_sla_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	mov	b,	[di]
+	mov	d,	0
+	add	b,	b
+	adc	d,	d
+	mov	[di],	b
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	b
+	mov	a,	[tx]
+	or	a,	d
+	sta	z80_f
+	ret
+	endp
+z80_opcode_sll_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	mov	b,	[di]
+	mov	d,	0
+	add	b,	b
+	adc	d,	d
+	inc	b
+	mov	[di],	b
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	b
+	mov	a,	[tx]
+	or	a,	d
+	sta	z80_f
+	ret
+	endp
+
+z80_opcode_sra_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	mov	b,	[di]
+	clc
+	mov	a,	b
+	shr	b
+	mov	d,	0x80
+	and	a,	d
+	mov	d,	1
+	or	b,	a
+	and	d,	a
+	mov	[di],	b
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	b
+	mov	a,	[tx]
+	or	a,	d
+	sta	z80_f
+	ret
+	endp
+z80_opcode_srl_r8:	proc
+	mov	ab,	z80_registers;lea di,	[ab+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	mov	b,	[di]
+	clc
+	mov	a,	b
+	shr	b
+	mov	d,	1
+	and	d,	a
+	mov	[di],	b
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	b
+	mov	a,	[tx]
+	or	a,	d
+	sta	z80_f
+	ret
+	endp
+
 z80_opcode_fast_add_hl_r16:	proc
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
 	add	a,	c	
