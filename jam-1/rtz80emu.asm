@@ -749,7 +749,7 @@ foldend
 
 z80_xy_opcode_table: foldstart ;DD and FD-prefixed opcodes
 foldmid
-	dw	z80_opcode_nop,			0	;00 000            
+	dw	z80_opcode_unimplemented,	0	;00 000            
 	dw	z80_opcode_unimplemented,	0	;01 001            
 	dw	z80_opcode_unimplemented,	0	;02 002             
 	dw	z80_opcode_unimplemented,	0	;03 003             
@@ -1005,6 +1005,265 @@ foldmid
 	dw	z80_opcode_unimplemented,	7	;FD 375             
 	dw	z80_opcode_unimplemented,	7	;FE 376             
 	dw	z80_opcode_unimplemented,	0x38	;FF 377                                    
+foldend
+z80_esh_opcode_table: foldstart ;CB-prefixed opcodes
+foldmid
+	dw	z80_opcode_rlc_r8,		0	;00 000 RLC B    
+	dw	z80_opcode_rlc_r8,		1	;01 001 RLC C    
+	dw	z80_opcode_rlc_r8,		2	;02 002 RLC D    
+	dw	z80_opcode_rlc_r8,		3	;03 003 RLC E    
+	dw	z80_opcode_rlc_r8,		4	;04 004 RLC H    
+	dw	z80_opcode_rlc_r8,		5	;05 005 RLC L    
+	dw	z80_opcode_unimplemented,	6	;06 006 RLC (HL) 
+	dw	z80_opcode_rlc_r8,		7	;07 007 RLC A  
+	dw	z80_opcode_rrc_r8,		0	;08 010 RRC B    
+	dw	z80_opcode_rrc_r8,		1	;09 011 RRC C    
+	dw	z80_opcode_rrc_r8,		2	;0A 012 RRC D    
+	dw	z80_opcode_rrc_r8,		3	;0B 013 RRC E    
+	dw	z80_opcode_rrc_r8,		4	;0C 014 RRC H    
+	dw	z80_opcode_rrc_r8,		5	;0D 015 RRC L    
+	dw	z80_opcode_unimplemented,	6	;0E 016 RRC (HL) 
+	dw	z80_opcode_rrc_r8,		7	;0F 017 RRC A  
+	dw	z80_opcode_rl_r8,		0	;10 020 RL B     
+	dw	z80_opcode_rl_r8,		1	;11 021 RL C     
+	dw	z80_opcode_rl_r8,		2	;12 022 RL D     
+	dw	z80_opcode_rl_r8,		3	;13 023 RL E     
+	dw	z80_opcode_rl_r8,		4	;14 024 RL H     
+	dw	z80_opcode_rl_r8,		5	;15 025 RL L     
+	dw	z80_opcode_unimplemented,	6	;16 026 RL (HL)  
+	dw	z80_opcode_rl_r8,		7	;17 027 RL A   
+	dw	z80_opcode_rr_r8,		0	;18 030 RR B     
+	dw	z80_opcode_rr_r8,		1	;19 031 RR C     
+	dw	z80_opcode_rr_r8,		2	;1A 032 RR D     
+	dw	z80_opcode_rr_r8,		3	;1B 033 RR E     
+	dw	z80_opcode_rr_r8,		4	;1C 034 RR H     
+	dw	z80_opcode_rr_r8,		5	;1D 035 RR L     
+	dw	z80_opcode_unimplemented,	6	;1E 036 RR (HL)  
+	dw	z80_opcode_rr_r8,		7	;1F 037 RR A   
+	dw	z80_opcode_unimplemented,	0	;20 040 SLA B    
+	dw	z80_opcode_unimplemented,	1	;21 041 SLA C    
+	dw	z80_opcode_unimplemented,	2	;22 042 SLA D    
+	dw	z80_opcode_unimplemented,	3	;23 043 SLA E    
+	dw	z80_opcode_unimplemented,	4	;24 044 SLA H    
+	dw	z80_opcode_unimplemented,	5	;25 045 SLA L    
+	dw	z80_opcode_unimplemented,	6	;26 046 SLA (HL) 
+	dw	z80_opcode_unimplemented,	7	;27 047 SLA A  
+	dw	z80_opcode_unimplemented,	0	;28 050 SRA B    
+	dw	z80_opcode_unimplemented,	1	;29 051 SRA C    
+	dw	z80_opcode_unimplemented,	2	;2A 052 SRA D    
+	dw	z80_opcode_unimplemented,	3	;2B 053 SRA E    
+	dw	z80_opcode_unimplemented,	4	;2C 054 SRA H    
+	dw	z80_opcode_unimplemented,	5	;2D 055 SRA L    
+	dw	z80_opcode_unimplemented,	6	;2E 056 SRA (HL) 
+	dw	z80_opcode_unimplemented,	7	;2F 057 SRA A  
+	dw	z80_opcode_unimplemented,	0	;30 060 sls b    
+	dw	z80_opcode_unimplemented,	1	;31 061 sls c    
+	dw	z80_opcode_unimplemented,	2	;32 062 sls d    
+	dw	z80_opcode_unimplemented,	3	;33 063 sls e    
+	dw	z80_opcode_unimplemented,	4	;34 064 sls h    
+	dw	z80_opcode_unimplemented,	5	;35 065 sls l    
+	dw	z80_opcode_unimplemented,	6	;36 066 sls (hl) 
+	dw	z80_opcode_unimplemented,	7	;37 067 sls a  
+	dw	z80_opcode_unimplemented,	0	;38 070 SRL B    
+	dw	z80_opcode_unimplemented,	1	;39 071 SRL C    
+	dw	z80_opcode_unimplemented,	2	;3A 072 SRL D    
+	dw	z80_opcode_unimplemented,	3	;3B 073 SRL E    
+	dw	z80_opcode_unimplemented,	4	;3C 074 SRL H    
+	dw	z80_opcode_unimplemented,	5	;3D 075 SRL L    
+	dw	z80_opcode_unimplemented,	6	;3E 076 SRL (HL) 
+	dw	z80_opcode_unimplemented,	7	;3F 077 SRL A  
+	dw	z80_opcode_bit_r8,		0 	;40 100 BIT 0,B  
+	dw	z80_opcode_bit_r8,		1 	;41 101 BIT 0,C  
+	dw	z80_opcode_bit_r8,		2 	;42 102 BIT 0,D  
+	dw	z80_opcode_bit_r8,		3 	;43 103 BIT 0,E  
+	dw	z80_opcode_bit_r8,		4 	;44 104 BIT 0,H  
+	dw	z80_opcode_bit_r8,		5 	;45 105 BIT 0,L  
+	dw	z80_opcode_unimplemented,	6 	;46 106 BIT 0,(HL
+	dw	z80_opcode_bit_r8,		7 	;47 107 BIT 0,A
+	dw	z80_opcode_bit_r8,		8 	;48 110 BIT 1,B  
+	dw	z80_opcode_bit_r8,		9 	;49 111 BIT 1,C  
+	dw	z80_opcode_bit_r8,		10	;4A 112 BIT 1,D  
+	dw	z80_opcode_bit_r8,		11	;4B 113 BIT 1,E  
+	dw	z80_opcode_bit_r8,		12	;4C 114 BIT 1,H  
+	dw	z80_opcode_bit_r8,		13	;4D 115 BIT 1,L  
+	dw	z80_opcode_unimplemented,	14	;4E 116 BIT 1,(HL
+	dw	z80_opcode_bit_r8,		15	;4F 117 BIT 1,A
+	dw	z80_opcode_bit_r8,		16	;50 120 BIT 2,B  
+	dw	z80_opcode_bit_r8,		17	;51 121 BIT 2,C  
+	dw	z80_opcode_bit_r8,		18	;52 122 BIT 2,D  
+	dw	z80_opcode_bit_r8,		19	;53 123 BIT 2,E  
+	dw	z80_opcode_bit_r8,		20	;54 124 BIT 2,H  
+	dw	z80_opcode_bit_r8,		21	;55 125 BIT 2,L  
+	dw	z80_opcode_unimplemented,	22	;56 126 BIT 2,(HL
+	dw	z80_opcode_bit_r8,		23	;57 127 BIT 2,A
+	dw	z80_opcode_bit_r8,		24	;58 130 BIT 3,B  
+	dw	z80_opcode_bit_r8,		25	;59 131 BIT 3,C  
+	dw	z80_opcode_bit_r8,		26	;5A 132 BIT 3,D  
+	dw	z80_opcode_bit_r8,		27	;5B 133 BIT 3,E  
+	dw	z80_opcode_bit_r8,		28	;5C 134 BIT 3,H  
+	dw	z80_opcode_bit_r8,		29	;5D 135 BIT 3,L  
+	dw	z80_opcode_unimplemented,	30	;5E 136 BIT 3,(HL
+	dw	z80_opcode_bit_r8,		31	;5F 137 BIT 3,A
+	dw	z80_opcode_bit_r8,		32	;60 140 BIT 4,B  
+	dw	z80_opcode_bit_r8,		33	;61 141 BIT 4,C  
+	dw	z80_opcode_bit_r8,		34	;62 142 BIT 4,D  
+	dw	z80_opcode_bit_r8,		35	;63 143 BIT 4,E  
+	dw	z80_opcode_bit_r8,		36	;64 144 BIT 4,H  
+	dw	z80_opcode_bit_r8,		37	;65 145 BIT 4,L  
+	dw	z80_opcode_unimplemented,	38	;66 146 BIT 4,(HL
+	dw	z80_opcode_bit_r8,		39	;67 147 BIT 4,A
+	dw	z80_opcode_bit_r8,		40	;68 150 BIT 5,B  
+	dw	z80_opcode_bit_r8,		41	;69 151 BIT 5,C  
+	dw	z80_opcode_bit_r8,		42	;6A 152 BIT 5,D  
+	dw	z80_opcode_bit_r8,		43	;6B 153 BIT 5,E  
+	dw	z80_opcode_bit_r8,		44	;6C 154 BIT 5,H  
+	dw	z80_opcode_bit_r8,		45	;6D 155 BIT 5,L  
+	dw	z80_opcode_unimplemented,	46	;6E 156 BIT 5,(HL
+	dw	z80_opcode_bit_r8,		47	;6F 157 BIT 5,A
+	dw	z80_opcode_bit_r8,		48	;70 160 BIT 6,B  
+	dw	z80_opcode_bit_r8,		49	;71 161 BIT 6,C  
+	dw	z80_opcode_bit_r8,		50	;72 162 BIT 6,D  
+	dw	z80_opcode_bit_r8,		51	;73 163 BIT 6,E  
+	dw	z80_opcode_bit_r8,		52	;74 164 BIT 6,H  
+	dw	z80_opcode_bit_r8,		53	;75 165 BIT 6,L  
+	dw	z80_opcode_unimplemented,	54	;76 166 BIT 6,(HL
+	dw	z80_opcode_bit_r8,		55	;77 167 BIT 6,A
+	dw	z80_opcode_bit_r8,		56	;78 170 BIT 7,B  
+	dw	z80_opcode_bit_r8,		57	;79 171 BIT 7,C  
+	dw	z80_opcode_bit_r8,		58	;7A 172 BIT 7,D  
+	dw	z80_opcode_bit_r8,		59	;7B 173 BIT 7,E  
+	dw	z80_opcode_bit_r8,		60	;7C 174 BIT 7,H  
+	dw	z80_opcode_bit_r8,		61	;7D 175 BIT 7,L  
+	dw	z80_opcode_unimplemented,	62	;7E 176 BIT 7,(HL
+	dw	z80_opcode_bit_r8,		63	;7F 177 BIT 7,A
+	dw	z80_opcode_res_r8,		0 	;80 200 RES 0,B  
+	dw	z80_opcode_res_r8,		1 	;81 201 RES 0,C  
+	dw	z80_opcode_res_r8,		2 	;82 202 RES 0,D  
+	dw	z80_opcode_res_r8,		3 	;83 203 RES 0,E  
+	dw	z80_opcode_res_r8,		4 	;84 204 RES 0,H  
+	dw	z80_opcode_res_r8,		5 	;85 205 RES 0,L  
+	dw	z80_opcode_unimplemented,	6 	;86 206 RES 0,(HL
+	dw	z80_opcode_res_r8,		7 	;87 207 RES 0,A
+	dw	z80_opcode_res_r8,		8 	;88 210 RES 1,B  
+	dw	z80_opcode_res_r8,		9 	;89 211 RES 1,C  
+	dw	z80_opcode_res_r8,		10	;8A 212 RES 1,D  
+	dw	z80_opcode_res_r8,		11	;8B 213 RES 1,E  
+	dw	z80_opcode_res_r8,		12	;8C 214 RES 1,H  
+	dw	z80_opcode_res_r8,		13	;8D 215 RES 1,L  
+	dw	z80_opcode_unimplemented,	14	;8E 216 RES 1,(HL
+	dw	z80_opcode_res_r8,		15	;8F 217 RES 1,A
+	dw	z80_opcode_res_r8,		16	;90 220 RES 2,B  
+	dw	z80_opcode_res_r8,		17	;91 221 RES 2,C  
+	dw	z80_opcode_res_r8,		18	;92 222 RES 2,D  
+	dw	z80_opcode_res_r8,		19	;93 223 RES 2,E  
+	dw	z80_opcode_res_r8,		20	;94 224 RES 2,H  
+	dw	z80_opcode_res_r8,		21	;95 225 RES 2,L  
+	dw	z80_opcode_unimplemented,	22	;96 226 RES 2,(HL
+	dw	z80_opcode_res_r8,		23	;97 227 RES 2,A
+	dw	z80_opcode_res_r8,		24	;98 230 RES 3,B  
+	dw	z80_opcode_res_r8,		25	;99 231 RES 3,C  
+	dw	z80_opcode_res_r8,		26	;9A 232 RES 3,D  
+	dw	z80_opcode_res_r8,		27	;9B 233 RES 3,E  
+	dw	z80_opcode_res_r8,		28	;9C 234 RES 3,H  
+	dw	z80_opcode_res_r8,		29	;9D 235 RES 3,L  
+	dw	z80_opcode_unimplemented,	30	;9E 236 RES 3,(HL
+	dw	z80_opcode_res_r8,		31	;9F 237 RES 3,A
+	dw	z80_opcode_res_r8,		32	;A0 240 RES 4,B  
+	dw	z80_opcode_res_r8,		33	;A1 241 RES 4,C  
+	dw	z80_opcode_res_r8,		34	;A2 242 RES 4,D  
+	dw	z80_opcode_res_r8,		35	;A3 243 RES 4,E  
+	dw	z80_opcode_res_r8,		36	;A4 244 RES 4,H  
+	dw	z80_opcode_res_r8,		37	;A5 245 RES 4,L  
+	dw	z80_opcode_unimplemented,	38	;A6 246 RES 4,(HL
+	dw	z80_opcode_res_r8,		39	;A7 247 RES 4,A
+	dw	z80_opcode_res_r8,		40	;A8 250 RES 5,B  
+	dw	z80_opcode_res_r8,		41	;A9 251 RES 5,C  
+	dw	z80_opcode_res_r8,		42	;AA 252 RES 5,D  
+	dw	z80_opcode_res_r8,		43	;AB 253 RES 5,E  
+	dw	z80_opcode_res_r8,		44	;AC 254 RES 5,H  
+	dw	z80_opcode_res_r8,		45	;AD 255 RES 5,L  
+	dw	z80_opcode_unimplemented,	46	;AE 256 RES 5,(HL
+	dw	z80_opcode_res_r8,		47	;AF 257 RES 5,A
+	dw	z80_opcode_res_r8,		48	;B0 260 RES 6,B  
+	dw	z80_opcode_res_r8,		49	;B1 261 RES 6,C  
+	dw	z80_opcode_res_r8,		50	;B2 262 RES 6,D  
+	dw	z80_opcode_res_r8,		51	;B3 263 RES 6,E  
+	dw	z80_opcode_res_r8,		52	;B4 264 RES 6,H  
+	dw	z80_opcode_res_r8,		53	;B5 265 RES 6,L  
+	dw	z80_opcode_unimplemented,	54	;B6 266 RES 6,(HL
+	dw	z80_opcode_res_r8,		55	;B7 267 RES 6,A
+	dw	z80_opcode_res_r8,		56	;B8 270 RES 7,B  
+	dw	z80_opcode_res_r8,		57	;B9 271 RES 7,C  
+	dw	z80_opcode_res_r8,		58	;BA 272 RES 7,D  
+	dw	z80_opcode_res_r8,		59	;BB 273 RES 7,E  
+	dw	z80_opcode_res_r8,		60	;BC 274 RES 7,H  
+	dw	z80_opcode_res_r8,		61	;BD 275 RES 7,L  
+	dw	z80_opcode_unimplemented,	62	;BE 276 RES 7,(HL
+	dw	z80_opcode_res_r8,		63	;BF 277 RES 7,A
+	dw	z80_opcode_set_r8,		0 	;C0 300 SET 0,B  
+	dw	z80_opcode_set_r8,		1 	;C1 301 SET 0,C  
+	dw	z80_opcode_set_r8,		2 	;C2 302 SET 0,D  
+	dw	z80_opcode_set_r8,		3 	;C3 303 SET 0,E  
+	dw	z80_opcode_set_r8,		4 	;C4 304 SET 0,H  
+	dw	z80_opcode_set_r8,		5 	;C5 305 SET 0,L  
+	dw	z80_opcode_unimplemented,	6 	;C6 306 SET 0,(HL
+	dw	z80_opcode_set_r8,		7 	;C7 307 SET 0,A
+	dw	z80_opcode_set_r8,		8 	;C8 310 SET 1,B  
+	dw	z80_opcode_set_r8,		9 	;C9 311	SET 1,C  
+	dw	z80_opcode_set_r8,		10	;CA 312 SET 1,D  
+	dw	z80_opcode_set_r8,		11	;CB 313 SET 1,E  
+	dw	z80_opcode_set_r8,		12	;CC 314 SET 1,H  
+	dw	z80_opcode_set_r8,		13	;CD 315	SET 1,L  
+	dw	z80_opcode_unimplemented,	14	;CE 316 SET 1,(HL
+	dw	z80_opcode_set_r8,		15	;CF 317 SET 1,A
+	dw	z80_opcode_set_r8,		16	;D0 320 SET 2,B  
+	dw	z80_opcode_set_r8,		17	;D1 321 SET 2,C  
+	dw	z80_opcode_set_r8,		18	;D2 322 SET 2,D  
+	dw	z80_opcode_set_r8,		19	;D3 323 SET 2,E  
+	dw	z80_opcode_set_r8,		20	;D4 324 SET 2,H  
+	dw	z80_opcode_set_r8,		21	;D5 325 SET 2,L  
+	dw	z80_opcode_unimplemented,	22	;D6 326 SET 2,(HL
+	dw	z80_opcode_set_r8,		23	;D7 327 SET 2,A
+	dw	z80_opcode_set_r8,		24	;D8 330 SET 3,B  
+	dw	z80_opcode_set_r8,		25	;D9 331 SET 3,C  
+	dw	z80_opcode_set_r8,		26	;DA 332 SET 3,D  
+	dw	z80_opcode_set_r8,		27	;DB 333 SET 3,E  
+	dw	z80_opcode_set_r8,		28	;DC 334 SET 3,H  
+	dw	z80_opcode_set_r8,		29	;DD 335 SET 3,L  
+	dw	z80_opcode_unimplemented,	30	;DE 336 SET 3,(HL
+	dw	z80_opcode_set_r8,		31	;DF 337 SET 3,A
+	dw	z80_opcode_set_r8,		32	;E0 340 SET 4,B  
+	dw	z80_opcode_set_r8,		33	;E1 341 SET 4,C  
+	dw	z80_opcode_set_r8,		34	;E2 342 SET 4,D  
+	dw	z80_opcode_set_r8,		35	;E3 343 SET 4,E  
+	dw	z80_opcode_set_r8,		36	;E4 344 SET 4,H  
+	dw	z80_opcode_set_r8,		37	;E5 345 SET 4,L  
+	dw	z80_opcode_unimplemented,	38	;E6 346 SET 4,(HL
+	dw	z80_opcode_set_r8,		39	;E7 347 SET 4,A
+	dw	z80_opcode_set_r8,		40	;E8 350 SET 5,B  
+	dw	z80_opcode_set_r8,		41	;E9 351 SET 5,C  
+	dw	z80_opcode_set_r8,		42	;EA 352 SET 5,D  
+	dw	z80_opcode_set_r8,		43	;EB 353 SET 5,E  
+	dw	z80_opcode_set_r8,		44	;EC 354 SET 5,H  
+	dw	z80_opcode_set_r8,		45	;ED 355 SET 5,L  
+	dw	z80_opcode_unimplemented,	46	;EE 356 SET 5,(HL
+	dw	z80_opcode_set_r8,		47	;EF 357 SET 5,A
+	dw	z80_opcode_set_r8,		48	;F0 360 SET 6,B  
+	dw	z80_opcode_set_r8,		49	;F1 361 SET 6,C  
+	dw	z80_opcode_set_r8,		50	;F2 362 SET 6,D  
+	dw	z80_opcode_set_r8,		51	;F3 363 SET 6,E  
+	dw	z80_opcode_set_r8,		52	;F4 364 SET 6,H  
+	dw	z80_opcode_set_r8,		53	;F5 365 SET 6,L  
+	dw	z80_opcode_unimplemented,	54	;F6 366 SET 6,(HL
+	dw	z80_opcode_set_r8,		55	;F7 367 SET 6,A
+	dw	z80_opcode_set_r8,		56	;F8 370 SET 7,B  
+	dw	z80_opcode_set_r8,		57	;F9 371 SET 7,C  
+	dw	z80_opcode_set_r8,		58	;FA 372 SET 7,D  
+	dw	z80_opcode_set_r8,		59	;FB 373 SET 7,E  
+	dw	z80_opcode_set_r8,		60	;FC 374 SET 7,H  
+	dw	z80_opcode_set_r8,		61	;FD 375 SET 7,L  
+	dw	z80_opcode_unimplemented,	62	;FE 376 SET 7,(HL
+	dw	z80_opcode_set_r8,		63	;FF 377 SET 7,A                                     
 foldend
 z80_condcodes_to_flagmask:	;XOR and AND values for condition codes
 	db	0x00,0x40	;NZ
@@ -1679,7 +1938,7 @@ z80_opcode_and_i8:	proc
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	mov	a,	[tx]	;add	[tx],	[di]
 	mov	b,	[si]
-	nop
+	inc	si
 	and	a,	b
 	mov	[tx],	a
 	mov	th,	z80_signzeroparity/256
@@ -1692,7 +1951,7 @@ z80_opcode_xor_i8:	proc
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	mov	a,	[tx]	;add	[tx],	[di]
 	mov	b,	[si]
-	nop
+	inc	si
 	xor	a,	b
 	mov	[tx],	a
 	mov	th,	z80_signzeroparity/256
@@ -1705,7 +1964,7 @@ z80_opcode_or_i8:	proc
 	mov	tx,	z80_a	;mov	tx,	z80_a
 	mov	a,	[tx]	;add	[tx],	[di]
 	mov	b,	[si]
-	nop
+	inc	si
 	or	a,	b
 	mov	[tx],	a
 	mov	th,	z80_signzeroparity/256
@@ -2622,6 +2881,115 @@ z80_opcode_djnz_a8:	proc
 z80_opcode_djnz_a8.ret:
 	ret
 	endp
+z80_opcode_bit_r8:	proc
+	;Split C into C=C[0:2] and D=C[3:5]
+	mov	d,	c	;shr	c,	3	;mov	d,	c
+	shr	c					
+	mov	a,	7				;and	d,	7
+	shr	c
+	and	d,	a
+	shr	c
+	nop
+	and	c,	a	;and	c,	7
+	;--
+	mov	b,	1			
+	test	d		;shl	b,	d
+	jnz	z80_opcode_bit_r8.maskgenend
+z80_opcode_bit_r8.maskgenloop:
+	add	b,	b
+	dec	d
+	jnz	z80_opcode_bit_r8.maskgenloop
+	mov	d,	b	;;Mask into D
+z80_opcode_bit_r8.maskgenend:
+	;--
+	mov	ab,	z80_registers;lea di,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	mov	a,	[di]
+	nop
+	and	a,	d	;Mask the bit	
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	sta	z80_f
+	ret
+	endp
+z80_opcode_set_r8:	proc
+	;Split C into C=C[0:2] and D=C[3:5]
+	mov	d,	c	;shr	c,	3	;mov	d,	c
+	shr	c					
+	mov	a,	7				;and	d,	7
+	shr	c
+	and	d,	a
+	shr	c
+	nop
+	and	c,	a	;and	c,	7
+	;--
+	mov	b,	1			
+	test	d		;shl	b,	d
+	jnz	z80_opcode_set_r8.maskgenend
+z80_opcode_set_r8.maskgenloop:
+	add	b,	b
+	dec	d
+	jnz	z80_opcode_set_r8.maskgenloop
+	mov	d,	b	;;Mask into D
+z80_opcode_set_r8.maskgenend:
+	;--
+	mov	ab,	z80_registers;lea di,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	mov	a,	[di]
+	nop
+	or	a,	d	;Set the bit	
+	mov	[di],	a
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	sta	z80_f
+	ret
+	endp
+z80_opcode_res_r8:	proc
+	;Split C into C=C[0:2] and D=C[3:5]
+	mov	d,	c	;shr	c,	3	;mov	d,	c
+	shr	c					
+	mov	a,	7				;and	d,	7
+	shr	c
+	and	d,	a
+	shr	c
+	nop
+	and	c,	a	;and	c,	7
+	;--
+	mov	b,	1			
+	test	d		;shl	b,	d
+	jnz	z80_opcode_res_r8.maskgenend
+z80_opcode_res_r8.maskgenloop:
+	add	b,	b
+	dec	d
+	jnz	z80_opcode_res_r8.maskgenloop
+	mov	d,	b	;;Mask into D
+z80_opcode_res_r8.maskgenend:
+	;--
+	mov	ab,	z80_registers;lea di,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	mov	a,	[di]
+	mov	b,	0xFF	;Reset the bit
+	xor	d,	a
+	nop
+	and	a,	d	
+	mov	[di],	a
+	;--
+	mov	th,	z80_signzeroparity/256
+	mov	tl,	a
+	mov	a,	[tx]
+	sta	z80_f
+	ret
+	endp
 z80_opcode_debug:	proc
 	;Debug opcode, displays internal state.
 	;Speed of execution is not relevant - it interfaces with SIO anyways.
@@ -2840,13 +3208,13 @@ z80_opcode_debug:	proc
 	foldend
 	call	uart_write
 	;==
-	mov	di,	0
- z80_opcode_debug.delayloop:
-	dec	di
-	mov	ab,	di
-	nop
-	or	a,	b
-	jnz	z80_opcode_debug.delayloop
+;	mov	di,	0
+; z80_opcode_debug.delayloop:
+;	dec	di
+;	mov	ab,	di
+;	nop
+;	or	a,	b
+;	jnz	z80_opcode_debug.delayloop
 	pop	si
 	pop	ra
 	ret
@@ -2995,7 +3363,7 @@ load_intelhex.ret:
 	ret
 	endp
 load_intelhex.welcome: db " Type in an Intel HEX dump ",13,10,0
-load_intelhex.prompt: db ">",0
+load_intelhex.prompt: db 13,10,">",0
 rtl_readhex8:	proc
 	push	ra
 	push	b
