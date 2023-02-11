@@ -399,7 +399,7 @@ foldmid
 	dw	z80_opcode_ret_cc_a16,		1	;C8 310 RET Z	 
 	dw	z80_opcode_ret,			1	;C9 311	RET
 	dw	z80_opcode_jmp_cc_a16,		1	;CA 312 JP Z,nn	  
-	dw	z80_opcode_unimplemented,	1	;CB 313 [ESH]
+	dw	z80_dispatcher_esh,		1	;CB 313 [ESH]
 	dw	z80_opcode_call_cc_a16,		1	;CC 314 CALL Z,nn  
 	dw	z80_opcode_call_a16,		1	;CD 315	CALL nn
 	dw	z80_opcode_sub_i8,		1	;CE 316 ADC A,n	  
@@ -452,7 +452,6 @@ foldmid
 	dw	z80_dispatcher_iy,		7	;FD 375 [IY]
 	dw	z80_opcode_cmp_i8,		7	;FE 376 CP n	  
 	dw	z80_opcode_rst_nn,		0x38	;FF 377 RST &38	 
-	dw	z80_opcode_unimplemented,	0	;100 400 For catching off-by one errors
 foldend
 z80_ext_opcode_table: foldstart	;ED-prefixed opcodes
 ;	       0/8	   1/9	       2/A	    3/B		 4/C	     5/D	  6/E	       7/F
@@ -1014,7 +1013,7 @@ foldmid
 	dw	z80_opcode_rlc_r8,		3	;03 003 RLC E    
 	dw	z80_opcode_rlc_r8,		4	;04 004 RLC H    
 	dw	z80_opcode_rlc_r8,		5	;05 005 RLC L    
-	dw	z80_opcode_unimplemented,	6	;06 006 RLC (HL) 
+	dw	z80_opcode_rlc_mhl,		6	;06 006 RLC (HL) 
 	dw	z80_opcode_rlc_r8,		7	;07 007 RLC A  
 	dw	z80_opcode_rrc_r8,		0	;08 010 RRC B    
 	dw	z80_opcode_rrc_r8,		1	;09 011 RRC C    
@@ -1022,7 +1021,7 @@ foldmid
 	dw	z80_opcode_rrc_r8,		3	;0B 013 RRC E    
 	dw	z80_opcode_rrc_r8,		4	;0C 014 RRC H    
 	dw	z80_opcode_rrc_r8,		5	;0D 015 RRC L    
-	dw	z80_opcode_unimplemented,	6	;0E 016 RRC (HL) 
+	dw	z80_opcode_rrc_mhl,		6	;0E 016 RRC (HL) 
 	dw	z80_opcode_rrc_r8,		7	;0F 017 RRC A  
 	dw	z80_opcode_rl_r8,		0	;10 020 RL B     
 	dw	z80_opcode_rl_r8,		1	;11 021 RL C     
@@ -1030,7 +1029,7 @@ foldmid
 	dw	z80_opcode_rl_r8,		3	;13 023 RL E     
 	dw	z80_opcode_rl_r8,		4	;14 024 RL H     
 	dw	z80_opcode_rl_r8,		5	;15 025 RL L     
-	dw	z80_opcode_unimplemented,	6	;16 026 RL (HL)  
+	dw	z80_opcode_rl_mhl,		6	;16 026 RL (HL)  
 	dw	z80_opcode_rl_r8,		7	;17 027 RL A   
 	dw	z80_opcode_rr_r8,		0	;18 030 RR B     
 	dw	z80_opcode_rr_r8,		1	;19 031 RR C     
@@ -1038,7 +1037,7 @@ foldmid
 	dw	z80_opcode_rr_r8,		3	;1B 033 RR E     
 	dw	z80_opcode_rr_r8,		4	;1C 034 RR H     
 	dw	z80_opcode_rr_r8,		5	;1D 035 RR L     
-	dw	z80_opcode_unimplemented,	6	;1E 036 RR (HL)  
+	dw	z80_opcode_rr_mhl,		6	;1E 036 RR (HL)  
 	dw	z80_opcode_rr_r8,		7	;1F 037 RR A   
 	dw	z80_opcode_sla_r8,		0	;20 040 SLA B    
 	dw	z80_opcode_sla_r8,		1	;21 041 SLA C    
@@ -1046,7 +1045,7 @@ foldmid
 	dw	z80_opcode_sla_r8,		3	;23 043 SLA E    
 	dw	z80_opcode_sla_r8,		4	;24 044 SLA H    
 	dw	z80_opcode_sla_r8,		5	;25 045 SLA L    
-	dw	z80_opcode_unimplemented,	6	;26 046 SLA (HL) 
+	dw	z80_opcode_sla_mhl,		6	;26 046 SLA (HL) 
 	dw	z80_opcode_sla_r8,		7	;27 047 SLA A  
 	dw	z80_opcode_sra_r8,		0	;28 050 SRA B    
 	dw	z80_opcode_sra_r8,		1	;29 051 SRA C    
@@ -1054,7 +1053,7 @@ foldmid
 	dw	z80_opcode_sra_r8,		3	;2B 053 SRA E    
 	dw	z80_opcode_sra_r8,		4	;2C 054 SRA H    
 	dw	z80_opcode_sra_r8,		5	;2D 055 SRA L    
-	dw	z80_opcode_unimplemented,	6	;2E 056 SRA (HL) 
+	dw	z80_opcode_sra_mhl,		6	;2E 056 SRA (HL) 
 	dw	z80_opcode_sra_r8,		7	;2F 057 SRA A  
 	dw	z80_opcode_sll_r8,		0	;30 060 SLL B    
 	dw	z80_opcode_sll_r8,		1	;31 061 SLL C    
@@ -1062,7 +1061,7 @@ foldmid
 	dw	z80_opcode_sll_r8,		3	;33 063 SLL E    
 	dw	z80_opcode_sll_r8,		4	;34 064 SLL H    
 	dw	z80_opcode_sll_r8,		5	;35 065 SLL L    
-	dw	z80_opcode_unimplemented,	6	;36 066 SLL (HL) 
+	dw	z80_opcode_sll_mhl,		6	;36 066 SLL (HL) 
 	dw	z80_opcode_sll_r8,		7	;37 067 SLL A  
 	dw	z80_opcode_srl_r8,		0	;38 070 SRL B    
 	dw	z80_opcode_srl_r8,		1	;39 071 SRL C    
@@ -1070,7 +1069,7 @@ foldmid
 	dw	z80_opcode_srl_r8,		3	;3B 073 SRL E    
 	dw	z80_opcode_srl_r8,		4	;3C 074 SRL H    
 	dw	z80_opcode_srl_r8,		5	;3D 075 SRL L    
-	dw	z80_opcode_unimplemented,	6	;3E 076 SRL (HL) 
+	dw	z80_opcode_srl_mhl,		6	;3E 076 SRL (HL) 
 	dw	z80_opcode_srl_r8,		7	;3F 077 SRL A  
 	dw	z80_opcode_bit_r8,		0 	;40 100 BIT 0,B  
 	dw	z80_opcode_bit_r8,		1 	;41 101 BIT 0,C  
@@ -1408,6 +1407,33 @@ z80_dispatcher_ext:	proc
 	mov	d,	0
 	inc	si
 	mov	ab,	z80_ext_opcode_table		;load table base
+	clc			;sal	cd,	2	;compute table offset
+	shl	c
+	shl	d
+	shl	c
+	shl	d
+	add	a,	c	;add	ab,	cd	;compute effective address (EA)
+	add	b,	d
+	mov	di,	ab				;place EA into DI
+	mov	a,	[di]	;mov	ab,	[di++]	;fetch handler ptr from
+	mov	tl,	a	;mov	tx,	ab	;opcode table into AB&TX
+	inc	di
+	mov	b,	[di]
+	mov	th,	b
+	inc	di
+	mov	c,	[di]				;fetch handler parameter into C
+	jmp	tx					;call handler
+	ret	
+	endp
+z80_dispatcher_esh:	proc
+	mov	tx,	z80_r	;inc	[z80_r]		;increment Z80
+	mov	a,	[tx]				;refresh register
+	inc	a
+	mov	[tx],	a
+	mov	c,	[si]	;movzx	c,	[si++]	;fetch Z80 command
+	mov	d,	0
+	inc	si
+	mov	ab,	z80_esh_opcode_table		;load table base
 	clc			;sal	cd,	2	;compute table offset
 	shl	c
 	shl	d
@@ -3211,6 +3237,63 @@ z80_opcode_fast_sub_xy_r16:	proc
 	mov	[di],	c	;writeback
 	dec	si
 	mov	[di],	d
+	ret
+	endp
+
+z80_opcode_rlc_mhl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	di,	ab
+	jmp	z80_opcode_rlc_r8.tappoint
+	ret
+	endp
+z80_opcode_rrc_mhl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	di,	ab
+	jmp	z80_opcode_rrc_r8.tappoint
+	ret
+	endp
+z80_opcode_rr_mhl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	di,	ab
+	jmp	z80_opcode_rr_r8.tappoint
+	ret
+	endp
+z80_opcode_rl_mhl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	di,	ab
+	jmp	z80_opcode_rl_r8.tappoint
+	ret
+	endp
+z80_opcode_sla_mhl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	di,	ab
+	jmp	z80_opcode_sla_r8.tappoint
+	ret
+	endp
+z80_opcode_sll_mhl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	di,	ab
+	jmp	z80_opcode_sll_r8.tappoint
+	ret
+	endp
+z80_opcode_sra_mhl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	di,	ab
+	jmp	z80_opcode_sra_r8.tappoint
+	ret
+	endp
+z80_opcode_srl_mhl:	proc
+	lda	z80_l
+	ldb	z80_h
+	mov	di,	ab
+	jmp	z80_opcode_srl_r8.tappoint
 	ret
 	endp
 
