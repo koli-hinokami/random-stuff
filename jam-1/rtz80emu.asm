@@ -439,7 +439,7 @@ foldmid
 	dw	z80_opcode_ret_cc_a16,		6	;F0 360 RET P	 
 	dw	z80_opcode_pop_rp,		6	;F1 361 POP AF	 
 	dw	z80_opcode_jmp_cc_a16,		6	;F2 362 JP P,nn	  
-	dw	z80_opcode_unimplemented,	6	;F3 363 DI	  
+	dw	z80_opcode_di,			6	;F3 363 DI	  
 	dw	z80_opcode_call_cc_a16,		6	;F4 364 CALL P,nn  
 	dw	z80_opcode_push_rp,		6	;F5 365 PUSH AF	 
 	dw	z80_opcode_or_i8,		6	;F6 366 OR n	  
@@ -447,7 +447,7 @@ foldmid
 	dw	z80_opcode_ret_cc_a16,		7	;F8 370 RET M	 
 	dw	z80_opcode_mov_sp_hl,		7	;F9 371 LD SP,HL 
 	dw	z80_opcode_jmp_cc_a16,		7	;FA 372 JP M,nn	  
-	dw	z80_opcode_unimplemented,	7	;FB 373 EI	  
+	dw	z80_opcode_ei,			7	;FB 373 EI	  
 	dw	z80_opcode_call_cc_a16,		7	;FC 374 CALL M,nn 
 	dw	z80_dispatcher_iy,		7	;FD 375 [IY]
 	dw	z80_opcode_cmp_i8,		7	;FE 376 CP n	  
@@ -558,7 +558,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;43	103	LD (nn),BC 
 	dw z80_opcode_unimplemented,	0	;44	104	NEG	   
 	dw z80_opcode_unimplemented,	0	;45	105	RETN	   
-	dw z80_opcode_unimplemented,	0	;46	106	IM 0	   
+	dw z80_opcode_im,		0	;46	106	IM 0	   
 	dw z80_opcode_unimplemented,	0	;47	107	LD I,A	   
 	dw z80_opcode_unimplemented,	0	;48	110	IN C,(C)   
 	dw z80_opcode_unimplemented,	0	;49	111	OUT (C),C  
@@ -566,7 +566,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;4B	113	LD BC,(nn) 
 	dw z180_mlt_r16,		0	;4C	114	MLT BC	   
 	dw z80_opcode_unimplemented,	0	;4D	115	RETI	   
-	dw z80_opcode_unimplemented,	0	;4E	116	im 0	   
+	dw z80_opcode_im,		3	;4E	116	im 0	   
 	dw z80_opcode_unimplemented,	0	;4F	117	LD R,A	   
 	dw z80_opcode_unimplemented,	0	;50	120	IN D,(C)   
 	dw z80_opcode_unimplemented,	0	;51	121	OUT (C),D  
@@ -574,7 +574,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;53	123	LD (nn),DE 
 	dw z80_opcode_unimplemented,	0	;54	124	LEA IX,IY+d
 	dw z80_opcode_unimplemented,	0	;55	125	LEA IY,IX+d
-	dw z80_opcode_unimplemented,	0	;56	126	IM 1	   
+	dw z80_opcode_im,		1	;56	126	IM 1	   
 	dw z80_opcode_unimplemented,	0	;57	127	LD A,I	   
 	dw z80_opcode_unimplemented,	0	;58	130	IN E,(C)   
 	dw z80_opcode_unimplemented,	0	;59	131	OUT (C),E  
@@ -582,7 +582,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;5B	133	LD DE,(nn) 
 	dw z180_mlt_r16,		2	;5C	134	MLT DE	   
 	dw z80_opcode_unimplemented,	0	;5D	135		   
-	dw z80_opcode_unimplemented,	0	;5E	136	IM 2	   
+	dw z80_opcode_im,		2	;5E	136	IM 2	   
 	dw z80_opcode_unimplemented,	0	;5F	137	LD A,R	   
 	dw z80_opcode_unimplemented,	0	;60	140	IN H,(C)   
 	dw z80_opcode_unimplemented,	0	;61	141	OUT (C),H  
@@ -1312,7 +1312,8 @@ z80_sp:	dw	0x0040		;End of CP/M TPA and start of CCP (aka command.com)
 ;z80_pc:	dw	0	;Is offloaded to SI, taking the RT intention
 z80_i:	db	0
 z80_r:	db	0
-z80_iff:	db	0	;I'm not sure if IFF0/1 are needed
+z80_iff:	db	0	
+z80_queued_int:	db	0
 foldend
 .segment Code
 ;				   ,,....,,
@@ -1361,6 +1362,21 @@ emuloop:	proc
 emuloop.main:
 	;native command		macro command		comment
 	;---	--	--	===	==	=	-=-=-=-=-=-=-=-
+	lda	z80_queued_int				;if theres queued int.
+	test	a
+	jnz	emuloop.noint
+	mov	c,	a				;handle it
+	call	z80_dointerrupt
+	lda	0
+	sta	z80_queued_int
+emuloop.noint:
+	mov	b,	vga_vblank			;if vblank started
+	in	a,	vga	;tstio	
+	and	a,	b
+	jz	emuloop.novblankint
+	mov	a,	0x30				;issue interrupt
+	sta	z80_queued_int
+emuloop.novblankint:
 	mov	tx,	z80_r	;inc	[z80_r]		;increment Z80
 	mov	a,	[tx]				;refresh register
 	inc	a
@@ -2200,12 +2216,13 @@ z80_generateflags_16.no_z:
 	endp
 
 z80_opcode_call_a16:	proc
-	ldb	z80_sp		;mov	di,	[z80_sp];setup stack pointer
-	lda	z80_sp+1
-	mov	di,	ab
 	lodsb			;lodsw	ab,	[si++]	;fetch address for call
 	mov	b,	[si]
 	inc	si
+z80_opcode_call_a16.tappoint:
+	ldd	z80_sp		;mov	di,	[z80_sp];setup stack pointer
+	ldc	z80_sp+1
+	mov	di,	cd
 	nop
 	mov	cd,	si	;mov	[--di],	si	;store return address
 	dec	di		
@@ -3452,7 +3469,86 @@ z80_opcode_peekch:	proc
 	sta	z80_a
 	ret
 	endp
-
+z80_opcode_im:	proc
+	lda	z80_iff
+	mov	b,	c	;mov	b,	c	;and	a,	0x0F
+	mov	d,	0x0F				
+	add	b,	b 	;shl	b,	4
+	and	a,	d
+	add	b,	b 	
+	nop
+	add	b,	b 	
+	nop
+	add	b,	b 	
+	nop
+	or	a,	b	;or	a,	b
+	sta	z80_iff
+	ret
+	endp
+z80_opcode_ei:	proc
+	lda	z80_iff
+	mov	d,	0x03	;EI enables both IFF2 and IFF1
+	or	a,	d
+	sta	z80_iff
+	endp
+z80_opcode_di:	proc
+	lda	z80_iff
+	mov	d,	0xFC	;DI disables both IFF2 and IFF1
+	and	a,	d
+	sta	z80_iff
+	endp
+z80_dointerrupt:	proc
+	;C	int. number
+	push	ra
+	mov	tx,	z80_iff
+	lda	z80_iff			;bit	0,	z80_iff
+	shr	a			
+	jnlc	z80_dointerrupt.ret	;ret	z=nlc
+	mov	tx,	z80_iff
+	mov	a,	[tx]		;and	[z80_iff], 0xFE
+	and	0xFE			; = res 0, [z80_iff]
+	mov	[tx],	a
+	;lda	z80_iff			;mov	a,	[z80_iff]
+	clc				;shr	a,	4
+	nop				;and	a,	3
+	shr	a
+	nop
+	shr	a
+	nop
+	shr	a
+	nop
+	shr	a
+	mov	b,	0x3
+	and	a,	b
+	jnz	z80_dointerrupt.im0
+	dec	a
+	jnz	z80_dointerrupt.im1
+	dec	a
+	jnz	z80_dointerrupt.im2	
+	;jz	z80_dointerrupt.im3
+	jmp	os_terminate
+z80_dointerrupt.im0:
+	mov	d,	0x38
+	and	c,	d
+	call	z80_opcode_rst_nn
+	jmp	z80_dointerrupt.ret
+z80_dointerrupt.im1:
+	mov	c,	0x38
+	call	z80_opcode_rst_nn
+	jmp	z80_dointerrupt.ret
+z80_dointerrupt.im2:
+	ldb	z80_i		;mov	dih,	[z80_i]
+	mov	a,	c	;mov	dil,	c
+	mov	di,	ab
+	mov	a,	[di]	;mov	ab,	[di]
+	inc	di
+	mov	b,	[di]
+	call	z80_opcode_call_a16.tappoint
+	;jmp	z80_dointerrupt.ret
+z80_dointerrupt.ret:
+	pop	ra
+	ret
+	endp
 z180_mlt_r16:	proc
 	push	ra
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
