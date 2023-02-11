@@ -407,7 +407,7 @@ foldmid
 	dw	z80_opcode_ret_cc_a16,		2	;D0 320 RET NC	 
 	dw	z80_opcode_pop_rp,		2	;D1 321 POP DE	 
 	dw	z80_opcode_jmp_cc_a16,		2	;D2 322 JP NC,nn  
-	dw	z80_opcode_unimplemented,	2	;D3 323 OUT (n),A 
+	dw	z80_opcode_out_a8_r8,		7	;D3 323 OUT (n),A 
 	dw	z80_opcode_call_cc_a16,		2	;D4 324 CALL NC,nn 
 	dw	z80_opcode_push_rp,		2	;D5 325 PUSH DE	 
 	dw	z80_opcode_adc_i8,		2	;D6 326 SUB A,n	  
@@ -1365,7 +1365,7 @@ emuloop.main:
 	mov	a,	[tx]				;refresh register
 	inc	a
 	mov	[tx],	a
-	call	z80_opcode_debug			;do debug output
+	;call	z80_opcode_debug			;do debug output
 	;call	native_debug
 	mov	c,	[si]	;movzx	c,	[si++]	;fetch Z80 command
 	mov	d,	0
@@ -2370,25 +2370,34 @@ z80_opcode_ncall_a16:	proc
 	;Do a subroutine call to a native subroutine.
 	push	ra
 	push	si	;SI needs to be preserved - native subrouties are likely 
-			;to use it.
+	;--
 	lodsb			;mov	ab,	[si++]
 	mov	b,	[si]
 	inc	si
 	mov	di,	ab	
+	;--
+	mov	cd,	z80_registers;Giving Z80 registers base as a parameter
+				;Giving Z80 PC in Native SI is implied
+	lda	z80_a		;Give Z80 A in Native A			
 	call	di		;The native call to a native subroutine
-	pop	si	;Restoration of SI - native subroutine likely destroyed it
+	;--
+	pop	si	
 	pop	ra
 	ret
 	endp
 z80_opcode_ncall_hl:	proc
 	push	ra
-	push	si	;SI needs to be preserved - native subrouties are likely 
-			;to use it.
+	push	si	
+	;--
 	lda	z80_l
 	ldb	z80_h
 	mov	di,	ab	
-	call	di		;The native call to a native subroutine
-	pop	si	;Restoration of SI - native subroutine likely destroyed it
+	;--
+	mov	cd,	z80_registers
+	lda	z80_a
+	call	di	
+	;--
+	pop	si	
 	pop	ra
 	ret
 	endp
@@ -3300,6 +3309,19 @@ z80_opcode_srl_mhl:	proc
 	ret
 	endp
 
+z80_opcode_out_a8_r8:	proc
+	push	ra
+	mov	ab,	z80_registers;lea di,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+	;--
+	inc	si		;skip port address
+	mov	a,	[di]	;fetch register
+	call	uart_write_char	;do output to UART
+	pop	ra
+	ret
+	endp
 z180_mlt_r16:	proc
 	push	ra
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
