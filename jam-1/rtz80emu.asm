@@ -27,7 +27,7 @@ foldstart
 ;	  s z - H - v/P N c
 ;	  | | | | | | | | |
 ;	  | | | | | | | | '- Implemented
-;	  | | | | | | | '- Implemented
+;	  | | | | | | | '- Implemented/Force-zeroed, varies from place to place
 ;	  | | | | | | '-- Implemented
 ;	  | | | | | '-- Implemented
 ;	  | | '-'-'- Force-zeroed
@@ -205,7 +205,7 @@ foldmid
 	dw	z80_opcode_mov_r8_i8,		0	;06 006 LD B,n	  
 	dw	z80_opcode_rlc_r8,		7	;07 007 RLCA	 
 	dw	z80_opcode_ex_af_af,		1	;08 010 EX AF,AF 
-	dw	z80_opcode_fast_add_hl_r16,	0	;09 011 ADD HL,BC
+	dw	z80_opcode_add_hl_r16,		0	;09 011 ADD HL,BC
 	dw	z80_opcode_mov_a_mbc,		1	;0A 012 LD A,(BC) 
 	dw	z80_opcode_dec_r16,		0	;0B 013 DEC BC	  
 	dw	z80_opcode_inc_r8,		1	;0C 014 INC C	   
@@ -221,7 +221,7 @@ foldmid
 	dw	z80_opcode_mov_r8_i8,		2	;16 026 LD D,n	  
 	dw	z80_opcode_rl_r8,		7	;17 027 RLA	 
 	dw	z80_opcode_jr_a8,		3	;18 030 JR d	 
-	dw	z80_opcode_fast_add_hl_r16,	2	;19 031 ADD HL,DE
+	dw	z80_opcode_add_hl_r16,		2	;19 031 ADD HL,DE
 	dw	z80_opcode_mov_a_mde,		3	;1A 032 LD A,(DE) 
 	dw	z80_opcode_dec_r16,		2	;1B 033 DEC DE	  
 	dw	z80_opcode_inc_r8,		3	;1C 034 INC E	   
@@ -237,7 +237,7 @@ foldmid
 	dw	z80_opcode_mov_r8_i8,		4	;26 046 LD H,n	  
 	dw	z80_opcode_unimplemented,	4	;27 047 DAA	 
 	dw	z80_opcode_jr_cc_a8,		1	;28 050 JR Z,d	 
-	dw	z80_opcode_fast_add_hl_r16,	4	;29 051 ADD HL,HL
+	dw	z80_opcode_add_hl_r16,		4	;29 051 ADD HL,HL
 	dw	z80_opcode_mov_hl_a16,		5	;2A 052 LD HL,(nn)
 	dw	z80_opcode_dec_r16,		4	;2B 053 DEC HL	  
 	dw	z80_opcode_inc_r8,		5	;2C 054 INC L	   
@@ -247,15 +247,15 @@ foldmid
 	dw	z80_opcode_jr_cc_a8,		2	;30 060 JR NC,d	 
 	dw	z80_opcode_mov_r16_i16,		20	;31 061 LD SP,nn 
 	dw	z80_opcode_mov_a16_a,		6	;32 062 LD (nn),A 
-	dw	z80_opcode_inc_sp,		6	;33 063 INC SP	  
+	dw	z80_opcode_inc_r16,		20	;33 063 INC SP	  
 	dw	z80_opcode_inc_m8,		6	;34 064 INC (HL)   
 	dw	z80_opcode_dec_m8,		6	;35 065 DEC (HL) 
 	dw	z80_opcode_mov_m_i8,		6	;36 066 LD (HL),n 
 	dw	z80_opcode_scf,			6	;37 067 SCF	 
 	dw	z80_opcode_jr_cc_a8,		3	;38 070 JR C,d	 
-	dw	z80_opcode_fast_add_hl_r16,	20	;39 071 ADD HL,SP
+	dw	z80_opcode_add_hl_r16,		20	;39 071 ADD HL,SP
 	dw	z80_opcode_mov_a_a16,		7	;3A 072 LD A,(nn) 
-	dw	z80_opcode_dec_sp,		7	;3B 073 DEC SP	  
+	dw	z80_opcode_dec_r16,		20	;3B 073 DEC SP	  
 	dw	z80_opcode_inc_r8,		7	;3C 074 INC A	   
 	dw	z80_opcode_dec_r8,		7	;3D 075 DEC A	 
 	dw	z80_opcode_mov_r8_i8,		7	;3E 076 LD A,n	  
@@ -554,7 +554,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;3F	077	LD (HL),IX 
 	dw z80_opcode_unimplemented,	0	;40	100	IN B,(C)   
 	dw z80_opcode_unimplemented,	0	;41	101	OUT (C),B  
-	dw z80_opcode_fast_sub_hl_r16,	2	;42	102	SBC HL,BC  
+	dw z80_opcode_sbb_hl_r16,	2	;42	102	SBC HL,BC  
 	dw z80_opcode_unimplemented,	0	;43	103	LD (nn),BC 
 	dw z80_opcode_unimplemented,	0	;44	104	NEG	   
 	dw z80_opcode_unimplemented,	0	;45	105	RETN	   
@@ -562,7 +562,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;47	107	LD I,A	   
 	dw z80_opcode_unimplemented,	0	;48	110	IN C,(C)   
 	dw z80_opcode_unimplemented,	0	;49	111	OUT (C),C  
-	dw z80_opcode_fast_add_hl_r16,	0	;4A	112	ADC HL,BC  
+	dw z80_opcode_adc_hl_r16,	0	;4A	112	ADC HL,BC  
 	dw z80_opcode_unimplemented,	0	;4B	113	LD BC,(nn) 
 	dw z180_mlt_r16,		0	;4C	114	MLT BC	   
 	dw z80_opcode_unimplemented,	0	;4D	115	RETI	   
@@ -570,7 +570,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;4F	117	LD R,A	   
 	dw z80_opcode_unimplemented,	0	;50	120	IN D,(C)   
 	dw z80_opcode_unimplemented,	0	;51	121	OUT (C),D  
-	dw z80_opcode_fast_sub_hl_r16,	2	;52	122	SBC HL,DE  
+	dw z80_opcode_sbb_hl_r16,	2	;52	122	SBC HL,DE  
 	dw z80_opcode_unimplemented,	0	;53	123	LD (nn),DE 
 	dw z80_opcode_unimplemented,	0	;54	124	LEA IX,IY+d
 	dw z80_opcode_unimplemented,	0	;55	125	LEA IY,IX+d
@@ -578,7 +578,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;57	127	LD A,I	   
 	dw z80_opcode_unimplemented,	0	;58	130	IN E,(C)   
 	dw z80_opcode_unimplemented,	0	;59	131	OUT (C),E  
-	dw z80_opcode_fast_add_hl_r16,	2	;5A	132	ADC HL,DE  
+	dw z80_opcode_adc_hl_r16,	2	;5A	132	ADC HL,DE  
 	dw z80_opcode_unimplemented,	0	;5B	133	LD DE,(nn) 
 	dw z180_mlt_r16,		2	;5C	134	MLT DE	   
 	dw z80_opcode_unimplemented,	0	;5D	135		   
@@ -586,7 +586,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;5F	137	LD A,R	   
 	dw z80_opcode_unimplemented,	0	;60	140	IN H,(C)   
 	dw z80_opcode_unimplemented,	0	;61	141	OUT (C),H  
-	dw z80_opcode_fast_sub_hl_r16,	4	;62	142	SBC HL,HL  
+	dw z80_opcode_sbb_hl_r16,	4	;62	142	SBC HL,HL  
 	dw z80_opcode_unimplemented,	0	;63	143	LD (nn),HL 
 	dw z80_opcode_unimplemented,	0	;64	144	TST A,n	   
 	dw z80_opcode_unimplemented,	0	;65	145	PEA IX+d   
@@ -594,7 +594,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;67	147	RRD	   
 	dw z80_opcode_unimplemented,	0	;68	150	IN L,(C)   
 	dw z80_opcode_unimplemented,	0	;69	151	OUT (C),L  
-	dw z80_opcode_fast_add_hl_r16,	4	;6A	152	ADC HL,HL  
+	dw z80_opcode_adc_hl_r16,	4	;6A	152	ADC HL,HL  
 	dw z80_opcode_unimplemented,	0	;6B	153	LD HL,(nn) 
 	dw z180_mlt_r16,		4	;6C	154	MLT HL	   
 	dw z80_opcode_unimplemented,	0	;6D	155	LD MB,A	   
@@ -602,7 +602,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;6F	157	RLD	   
 	dw z80_opcode_unimplemented,	0	;70	160	IN F,(C)   Note that IN (HL),(C) becomes reality!
 	dw z80_opcode_unimplemented,	0	;71	161	OUT (C),F  
-	dw z80_opcode_fast_sub_hl_r16,	20	;72	162	SBC HL,SP  
+	dw z80_opcode_sbb_hl_r16,	20	;72	162	SBC HL,SP  
 	dw z80_opcode_unimplemented,	0	;73	163	LD (nn),SP 
 	dw z80_opcode_unimplemented,	0	;74	164	TSTIO n	   
 	dw z80_opcode_unimplemented,	0	;75	165		   
@@ -610,7 +610,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;77	167	ld i,i	   
 	dw z80_opcode_unimplemented,	0	;78	170	IN A,(C)   
 	dw z80_opcode_unimplemented,	0	;79	171	OUT (C),A  
-	dw z80_opcode_fast_add_hl_r16,	20	;7A	172	ADC HL,SP  
+	dw z80_opcode_adc_hl_r16,	20	;7A	172	ADC HL,SP  
 	dw z80_opcode_unimplemented,	0	;7B	173	LD SP,(nn) 
 	dw z180_mlt_r16,		20	;7C	174	MLT SP	   
 	dw z80_opcode_unimplemented,	0	;7D	175	STMIX	   
@@ -703,10 +703,10 @@ foldmid
 	dw z80_opcode_undefined,	0	;D4	324		   
 	dw z80_opcode_undefined,	0	;D5	325		   
 	dw z80_opcode_undefined,	0	;D6	326		   
-	dw z80_opcode_unimplemented,	0	;D7	327	LD HL,I	   
-	dw z80_opcode_undefined,	0	;D8	330		   
-	dw z80_opcode_undefined,	0	;D9	331		   
-	dw z80_opcode_undefined,	0	;DA	332		   
+	dw z80_opcode_unimplemented,	0	;D7	327	ld hl,i
+	dw z80_opcode_putch,		0	;D8	330	PUTCH	   
+	dw z80_opcode_getch,		0	;D9	331	GETCH   
+	dw z80_opcode_peekch,		0	;DA	332	PEEKCH   
 	dw z80_opcode_undefined,	0	;DB	333		   
 	dw z80_opcode_undefined,	0	;DC	334		   
 	dw z80_opcode_undefined,	0	;DD	335		   
@@ -789,7 +789,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	4	;26 046 LD IXH,n    
 	dw	z80_opcode_unimplemented,	4	;27 047            
 	dw	z80_opcode_unimplemented,	1	;28 050            
-	dw	z80_opcode_fast_add_xy_r16,	4	;29 051 ADD IX,IX  
+	dw	z80_opcode_fast_add_xy_r16,	4	;29 051 ADD IX,IX  Currently is ADD IX,HL
 	dw	z80_opcode_unimplemented,	5	;2A 052 LD IX,(nn)  
 	dw	z80_opcode_unimplemented,	4	;2B 053 DEC IX      
 	dw	z80_opcode_unimplemented,	5	;2C 054 INC IXL    
@@ -2163,6 +2163,42 @@ z80_generateflags.no_z:
 	;s z 0 0 0 v n c
 	ret
 	endp
+z80_generateflags_16:	proc
+	;Parameters:
+	;AB	Result
+	;FL.C	-.- Flags to write to Z80 flags register
+	;FL.V	-'
+	;Returns:
+	;Breaks:
+	;All GPRs + FL + TX
+	;--
+	;Generate Carry and Overflow from hardware flags
+	;Additions are delayed because in "sequential IF switch block"
+	;the variable for switch (the flags) must not be changed.
+	mov	d,	0
+	jno	z80_generateflags_16.no_c
+	mov	d,	4
+z80_generateflags_16.no_c:
+	jno	z80_generateflags_16.no_v
+	inc	d
+z80_generateflags_16.no_v:	
+	;Generate sign
+	test	b
+	jns	z80_generateflags_16.no_s
+	mov	c,	0x80
+	or	d,	c
+z80_generateflags_16.no_s:
+	;Generate zero
+	or	a,	b	;Old trick to check if both bytes are zero
+	jnz	z80_generateflags_16.no_z
+	mov	c,	0x40
+	or	d,	c
+z80_generateflags_16.no_z:
+	std	z80_f
+	;s z 0 0 0 v 0 c
+	ret
+	endp
+
 z80_opcode_call_a16:	proc
 	ldb	z80_sp		;mov	di,	[z80_sp];setup stack pointer
 	lda	z80_sp+1
@@ -2925,6 +2961,85 @@ z80_opcode_fast_sub_hl_r16:	proc
 	std	z80_h
 	ret
 	endp
+z80_opcode_add_hl_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	;--
+	mov	d,	[di]
+	inc	di
+	mov	c,	[di]
+	lda	z80_l
+	ldb	z80_h
+	add	c,	a
+	adc	d,	b
+	stc	z80_l
+	std	z80_h
+	;--
+	jmp	z80_generateflags_16
+	ret
+	endp
+z80_opcode_adc_hl_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	;--
+	lda	z80_f		;mov	c,	[z80_f]
+	mov	b,	1	;and	c,	1
+	and	b,	a
+	;--
+	shr	b		;Shift Z80 carry into Native arithmetic carry
+	nop
+	shr	b
+	nop
+	add	b,	b
+	;--
+	mov	d,	[di]
+	inc	di
+	mov	c,	[di]
+	;--
+	lda	z80_l
+	ldb	z80_h
+	adc	c,	a
+	adc	d,	b
+	stc	z80_l
+	std	z80_h
+	;--
+	jmp	z80_generateflags_16
+	ret
+	endp
+z80_opcode_sbb_hl_r16:	proc
+	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+	add	a,	c	
+	incc	b
+	mov	di,	ab	
+	;--
+	lda	z80_f		;mov	c,	[z80_f]
+	mov	b,	1	;and	c,	1
+	and	b,	a
+	;--
+	shr	b		;Shift Z80 carry into Native arithmetic carry
+	nop
+	shr	b
+	nop
+	add	b,	b
+	;--
+	mov	d,	[di]
+	inc	di		;16 bit increments do not touch flags in any way
+	mov	c,	[di]
+	;--
+	lda	z80_l
+	ldb	z80_h
+	sbb	c,	a
+	sbb	d,	b
+	stc	z80_l
+	std	z80_h
+	;--
+	jmp	z80_generateflags_16
+	ret
+	endp
 z80_opcode_cpl:	proc
 	mov	tx,	z80_a
 	mov	a,	[tx]
@@ -3322,6 +3437,22 @@ z80_opcode_out_a8_r8:	proc
 	pop	ra
 	ret
 	endp
+z80_opcode_putch:	proc
+	lda	z80_a
+	call	uart_write_char
+	ret
+	endp
+z80_opcode_getch:	proc
+	call	uart_read_char_wait
+	sta	z80_a
+	ret
+	endp
+z80_opcode_peekch:	proc
+	call	uart_read_char
+	sta	z80_a
+	ret
+	endp
+
 z180_mlt_r16:	proc
 	push	ra
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
