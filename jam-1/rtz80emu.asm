@@ -2255,6 +2255,7 @@ z80_opcode_pop_rp:	proc
 	mov	a,	[si]	;mov	[di],	[si++]
 	mov	[di],	a
 	inc	si
+	nop
 	mov	ab,	si	;mov	[z80_sp],	ab,	si
 	stb	z80_sp
 	sta	z80_sp+1
@@ -2432,8 +2433,8 @@ z80_opcode_call_cc_a16:	proc
 	and	c,	d
 	jnz	z80_opcode_call_cc_a16.ret
 	push	ab		;mov	di,	[z80_sp];setup stack pointer
-	lda	z80_sp		
-	ldb	z80_sp+1
+	ldb	z80_sp		
+	lda	z80_sp+1
 	mov	di,	ab
 	pop	ab
 	mov	cd,	si	;mov	[--di],	si	;store return address
@@ -2443,8 +2444,8 @@ z80_opcode_call_cc_a16:	proc
 	mov	[di],	c
 	mov	si,	ab	;switch pc to the fetched address
 	mov	ab,	di	;mov	[z80_sp],di	;store changed sp
-	sta	z80_sp
-	stb	z80_sp+1
+	stb	z80_sp
+	sta	z80_sp+1
 z80_opcode_call_cc_a16.ret:
 	ret
 	endp
@@ -2466,8 +2467,8 @@ z80_opcode_ret_cc_a16:	proc
 	jnz	z80_opcode_ret_cc_a16.ret
 	mov	si,	ab
 z80_opcode_ret_cc_a16.ret:
-	lda	z80_sp		;mov	di,	[z80_sp];setup stack pointer
-	ldb	z80_sp+1
+	ldb	z80_sp		;mov	di,	[z80_sp];setup stack pointer
+	lda	z80_sp+1
 	mov	di,	ab
 	mov	a,	[di]	;mov	si,	[di++]	;fetch return address
 	inc	di					;and jump there
@@ -2475,8 +2476,8 @@ z80_opcode_ret_cc_a16.ret:
 	inc	di
 	mov	si,	ab
 	mov	ab,	di	;mov	[z80_sp],di	;store changed sp
-	sta	z80_sp
-	stb	z80_sp+1
+	stb	z80_sp
+	sta	z80_sp+1
 	ret
 	endp
 z80_opcode_rst_nn:	proc
@@ -2961,12 +2962,14 @@ z80_opcode_djnz_a8:	proc
 	jz	z80_opcode_djnz_a8.ret
 	mov	b,	a	;movsx	cd,	a
 	mov	c,	a
-	add	b,	b
-	mov	b,	0
+	mov	a,	0x80
+	xor	b,	a
+	mov	a,	0
 	mov	d,	0
-	sbb	d,	b
+	add	b,	b
+	sbb	d,	a
 	mov	ab,	si	;mov	ab,	si	;add	si,	cd
-	add	a,	c	;adc	ab,	cd	;do the relative jump
+	add	a,	c	;add	ab,	cd	;do the relative jump
 	adc	b,	d
 	nop
 	mov	si,	ab	;mov	si,	ab
