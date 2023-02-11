@@ -245,7 +245,7 @@ foldmid
 	dw	z80_opcode_mov_r8_i8,		5	;2E 056 LD L,n	  
 	dw	z80_opcode_cpl,			5	;2F 057 CPL	 
 	dw	z80_opcode_jr_cc_a8,		2	;30 060 JR NC,d	 
-	dw	z80_opcode_mov_littleendian_r16_i16,20	;31 061 LD SP,nn 
+	dw	z80_opcode_mov_r16_i16,		20	;31 061 LD SP,nn 
 	dw	z80_opcode_mov_a16_a,		6	;32 062 LD (nn),A 
 	dw	z80_opcode_inc_sp,		6	;33 063 INC SP	  
 	dw	z80_opcode_inc_m8,		6	;34 064 INC (HL)   
@@ -253,7 +253,7 @@ foldmid
 	dw	z80_opcode_mov_m_i8,		6	;36 066 LD (HL),n 
 	dw	z80_opcode_scf,			6	;37 067 SCF	 
 	dw	z80_opcode_jr_cc_a8,		3	;38 070 JR C,d	 
-	dw	z80_opcode_fast_add_littleendian_hl_r16,20;39 071 ADD HL,SP
+	dw	z80_opcode_fast_add_hl_r16,	20	;39 071 ADD HL,SP
 	dw	z80_opcode_mov_a_a16,		7	;3A 072 LD A,(nn) 
 	dw	z80_opcode_dec_sp,		7	;3B 073 DEC SP	  
 	dw	z80_opcode_inc_r8,		7	;3C 074 INC A	   
@@ -613,7 +613,7 @@ foldmid
 	dw z80_opcode_unimplemented,	0	;79	171	OUT (C),A  
 	dw z80_opcode_unimplemented,	0	;7A	172	ADC HL,SP  
 	dw z80_opcode_unimplemented,	0	;7B	173	LD SP,(nn) 
-	dw z180_mlt_sp,			0	;7C	174	MLT SP	   
+	dw z180_mlt_r16,		20	;7C	174	MLT SP	   
 	dw z80_opcode_unimplemented,	0	;7D	175	STMIX	   
 	dw z80_opcode_unimplemented,	0	;7E	176	RSMIX	   
 	dw z80_opcode_unimplemented,	0	;7F	177	ld r,r	   
@@ -1308,7 +1308,8 @@ z80_ixl: db	0
 z80_iy:;dw	0
 z80_iyh: db	0
 z80_iyl: db	0
-z80_sp:	dw	0x4000		;End of CP/M TPA and start of CCP (aka command.com)
+z80_sp:	dw	0x0040		;End of CP/M TPA and start of CCP (aka command.com)
+				;Note that SP is now big-endian as all the registers!
 ;z80_pc:	dw	0	;Is offloaded to SI, taking the RT intention
 z80_i:	db	0
 z80_r:	db	0
@@ -2137,8 +2138,8 @@ z80_generateflags.no_z:
 	ret
 	endp
 z80_opcode_call_a16:	proc
-	lda	z80_sp		;mov	di,	[z80_sp];setup stack pointer
-	ldb	z80_sp+1
+	ldb	z80_sp		;mov	di,	[z80_sp];setup stack pointer
+	lda	z80_sp+1
 	mov	di,	ab
 	lodsb			;lodsw	ab,	[si++]	;fetch address for call
 	mov	b,	[si]
@@ -2151,13 +2152,13 @@ z80_opcode_call_a16:	proc
 	mov	[di],	c
 	mov	si,	ab	;switch pc to the fetched address
 	mov	ab,	di	;mov	[z80_sp],di	;store changed sp
-	sta	z80_sp
-	stb	z80_sp+1
+	stb	z80_sp
+	sta	z80_sp+1
 	ret
 	endp
 z80_opcode_ret:		proc
-	lda	z80_sp		;mov	di,	[z80_sp];setup stack pointer
-	ldb	z80_sp+1
+	ldb	z80_sp		;mov	di,	[z80_sp];setup stack pointer
+	lda	z80_sp+1
 	mov	di,	ab
 	mov	a,	[di]	;mov	si,	[di++]	;fetch return address
 	inc	di					;and jump there
@@ -2165,8 +2166,8 @@ z80_opcode_ret:		proc
 	inc	di
 	mov	si,	ab
 	mov	ab,	di	;mov	[z80_sp],di	;store changed sp
-	sta	z80_sp
-	stb	z80_sp+1
+	stb	z80_sp
+	sta	z80_sp+1
 	ret
 	endp
 z80_opcode_push_rp:	proc
@@ -2194,8 +2195,8 @@ z80_opcode_push_rp:	proc
 	incc	b
 	nop
 	mov	di,	ab	
-	lda	z80_sp		;mov	si,	ab,	[z80_sp]
-	ldb	z80_sp+1	;optimizable
+	ldb	z80_sp		;mov	si,	ab,	[z80_sp]
+	lda	z80_sp+1	;optimizable
 	mov	si,	ab
 	dec	si		;mov	word	[--si],	[di]
 	mov	a,	[di]	
@@ -2206,8 +2207,8 @@ z80_opcode_push_rp:	proc
 	mov	[si],	a	
 	nop
 	mov	ab,	si	;mov	[z80_sp],	ab,	si
-	sta	z80_sp
-	stb	z80_sp+1
+	stb	z80_sp
+	sta	z80_sp+1
 	pop	si
 	ret
 	endp
@@ -2217,8 +2218,8 @@ z80_opcode_pop_rp:	proc
 	add	a,	c	
 	incc	b
 	mov	di,	ab	
-	lda	z80_sp		;mov	si,	ab,	[z80_sp]
-	ldb	z80_sp+1	;optimizable
+	ldb	z80_sp		;mov	si,	ab,	[z80_sp]
+	lda	z80_sp+1	;optimizable
 	mov	si,	ab
 	inc	di		;mov	[di+1],	[si++]
 	mov	a,	[si]
@@ -2229,8 +2230,8 @@ z80_opcode_pop_rp:	proc
 	mov	[di],	a
 	inc	si
 	mov	ab,	si	;mov	[z80_sp],	ab,	si
-	sta	z80_sp
-	stb	z80_sp+1
+	stb	z80_sp
+	sta	z80_sp+1
 	pop	si
 	ret
 	endp
@@ -3309,8 +3310,8 @@ z80_opcode_debug:	proc
 	;---
 	call	uart_write
 	mov	di,	si
-	lda	z80_sp
-	ldb	z80_sp+1
+	lda	z80_sp+1
+	ldb	z80_sp
 	call	math_itoahex_16
 	call	uart_write
 	mov	si,	di
