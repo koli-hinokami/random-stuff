@@ -1792,247 +1792,103 @@ z80_opcode_add_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	add	a,	b
-	mov	[tx],	a	;result into A
-	mov	b,	0	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_add_r8.tappoint
+	ret
 	endp
 z80_opcode_sub_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	sub	a,	b
-	mov	[tx],	a	;result into A
-	mov	b,	1	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_sub_r8.tappoint
 	endp
 z80_opcode_adc_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	;--
-	ldc	z80_f		;mov	c,	[z80_f]
-	mov	d,	1	;and	c,	1
-	and	c,	d
-	;--
-	mov	b,	[di]
-	mov	a,	[tx]	
-	nop
-	add	b,	c
-	nop
-	add	a,	b
-	mov	[tx],	a	;result into A
-	mov	b,	0	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_adc_r8.tappoint
+	ret
 	endp
 z80_opcode_sbb_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	;--
-	ldc	z80_f		;mov	c,	[z80_f]
-	mov	d,	1	;and	c,	1
-	and	c,	d
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	sub	a,	b
-	nop
-	sbb	a,	c
-	mov	[tx],	a	;result into A
-	mov	b,	1	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_sbb_r8.tappoint
 	endp
 z80_opcode_and_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	and	a,	b
-	mov	[tx],	a	;result into A
-	;--
-	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
-	mov	a,	[tx]
-	sta	z80_f
-	ret			
+	jmp	z80_opcode_and_r8.tappoint
+	ret
 	endp
 z80_opcode_xor_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	xor	a,	b
-	mov	[tx],	a	;result into A
-	;--
-	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
-	mov	a,	[tx]
-	sta	z80_f
+	jmp	z80_opcode_xor_r8.tappoint
 	ret		
 	endp
 z80_opcode_or_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	or	a,	b
-	mov	[tx],	a	;result into A
-	;--
-	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
-	mov	a,	[tx]
-	sta	z80_f
+	jmp	z80_opcode_or_r8.tappoint
 	ret
 	endp
 z80_opcode_cmp_m8:	proc
 	ldb	z80_h		;mov	di,	ab,	[z80_hl]
 	lda	z80_l
 	mov	di,	ab
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	;--
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[di]
-	nop
-	sub	a,	b
-	nop;mov	[tx],	a	;result into A
-	mov	b,	1	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_cmp_r8.tappoint
+	ret
 	endp
 z80_opcode_add_i8:	proc
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[si]
+	mov	di,	si
 	inc	si
-	add	a,	b
-	mov	[tx],	a	;result into A
-	mov	b,	0	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_add_r8.tappoint
+	ret
 	endp
 z80_opcode_sub_i8:	proc
-	mov	tx,	z80_a	
-	mov	a,	[tx]	
-	mov	b,	[si]
+	mov	di,	si
 	inc	si
-	sub	a,	b
-	mov	[tx],	a	;result into A
-	mov	b,	1	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_sub_r8.tappoint
+	ret
 	endp
 z80_opcode_adc_i8:	proc
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	ldc	z80_f		;mov	c,	[z80_f]
-	mov	d,	1	;and	c,	1
-	and	c,	d
-	;--
-	mov	b,	[si]
-	mov	a,	[tx]	
-	nop
-	add	b,	c
+	mov	di,	si
 	inc	si
-	add	a,	b
-	mov	[tx],	a	;result into A
-	mov	b,	0	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_adc_r8.tappoint
+	ret
 	endp
 z80_opcode_sbb_i8:	proc
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	ldc	z80_f		;mov	c,	[z80_f]
-	mov	d,	1	;and	c,	1
-	and	c,	d
-	;--
-	mov	b,	[si]
-	mov	a,	[tx]	
+	mov	di,	si
 	inc	si
-	add	b,	c
-	nop
-	sub	a,	b
-	mov	[tx],	a	;result into A
-	mov	b,	1	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_sbb_r8.tappoint
+	ret
 	endp
 z80_opcode_and_i8:	proc
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[si]
+	mov	di,	si
 	inc	si
-	and	a,	b
-	mov	[tx],	a
-	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
-	mov	a,	[tx]
-	sta	z80_f
-	ret			
+	jmp	z80_opcode_and_r8.tappoint
+	ret
 	endp
 z80_opcode_xor_i8:	proc
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[si]
+	mov	di,	si
 	inc	si
-	xor	a,	b
-	mov	[tx],	a
-	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
-	mov	a,	[tx]
-	sta	z80_f
-	ret				
+	jmp	z80_opcode_xor_r8.tappoint
+	ret
 	endp
 z80_opcode_or_i8:	proc
-	mov	tx,	z80_a	;mov	tx,	z80_a
-	mov	a,	[tx]	;add	[tx],	[di]
-	mov	b,	[si]
+	mov	di,	si
 	inc	si
-	or	a,	b
-	mov	[tx],	a
-	mov	th,	z80_signzeroparity/256
-	mov	tl,	a
-	mov	a,	[tx]
-	sta	z80_f
-	ret			
+	jmp	z80_opcode_or_r8.tappoint
+	ret
 	endp
 z80_opcode_cmp_i8:	proc
-	mov	tx,	z80_a	
-	mov	a,	[tx]	
-	mov	b,	[si]
+	mov	di,	si
 	inc	si
-	sub	a,	b	;result into A
-	mov	b,	1	;N flag into B
-	jmp	z80_generateflags;Do flags generation
-	ret			;return is on flags generation subroutine
+	jmp	z80_opcode_cmp_r8.tappoint
+	ret
 	endp
 z80_opcode_fast_inc_r8:	proc
 	mov	ab,	z80_registers;lea tx,	[ab+c]
