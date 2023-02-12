@@ -784,16 +784,16 @@ foldmid
 	dw	z80_opcode_mov_xy_i16,		4	;21 041 LD IX,nn   
 	dw	z80_opcode_mov_a16_xy,		4	;22 042 LD (nn),IX  
 	dw	z80_opcode_inc_xy,		4	;23 043 INC IX      
-	dw	z80_opcode_unimplemented,	4	;24 044 INC IXH    
-	dw	z80_opcode_unimplemented,	4	;25 045 DEC IXH     
+	dw	z80_opcode_inc_xyh,		4	;24 044 INC IXH    
+	dw	z80_opcode_dec_xyh,		4	;25 045 DEC IXH     
 	dw	z80_opcode_mov_xyh_i8,		4	;26 046 LD IXH,n    
 	dw	z80_opcode_unimplemented,	4	;27 047            
 	dw	z80_opcode_unimplemented,	1	;28 050            
 	dw	z80_opcode_fast_add_xy_r16,	4	;29 051 ADD IX,IX  Currently is ADD IX,HL
 	dw	z80_opcode_mov_xy_a16,		5	;2A 052 LD IX,(nn)  
 	dw	z80_opcode_dec_xy,		4	;2B 053 DEC IX      
-	dw	z80_opcode_unimplemented,	5	;2C 054 INC IXL    
-	dw	z80_opcode_unimplemented,	5	;2D 055 DEC IXL     
+	dw	z80_opcode_inc_xyl,		5	;2C 054 INC IXL    
+	dw	z80_opcode_dec_xyl,		5	;2D 055 DEC IXL     
 	dw	z80_opcode_mov_xyl_i8,		5	;2E 056 LD IXL,n    
 	dw	z80_opcode_unimplemented,	5	;2F 057            
 	dw	z80_opcode_unimplemented,	2	;30 060            
@@ -951,7 +951,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	1	;C8 310            
 	dw	z80_opcode_unimplemented,	1	;C9 311	           
 	dw	z80_opcode_unimplemented,	1	;CA 312             
-	dw	z80_opcode_unimplemented,	1	;CB 313             
+	dw	z80_opcode_unimplemented,	1	;CB 313 [XY] [ESH]	The [XY+d] shifts and bitops.
 	dw	z80_opcode_unimplemented,	1	;CC 314            
 	dw	z80_opcode_unimplemented,	1	;CD 315	            
 	dw	z80_opcode_unimplemented,	1	;CE 316             
@@ -3560,6 +3560,30 @@ z80_opcode_or_xyl:	proc
 z80_opcode_cmp_xyl:	proc
 	inc	di
 	jmp	z80_opcode_cmp_r8.tappoint
+	endp
+z80_opcode_inc_xyh:	proc
+	mov	tx,	di
+	jmp	z80_opcode_inc_r8.tappoint
+	ret
+	endp
+z80_opcode_dec_xyh:	proc
+	mov	tx,	di
+	jmp	z80_opcode_dec_r8.tappoint
+	ret
+	endp
+z80_opcode_inc_xyl:	proc
+	inc	di
+	nop
+	mov	tx,	di
+	jmp	z80_opcode_inc_r8.tappoint
+	ret
+	endp
+z80_opcode_dec_xyl:	proc
+	inc	di
+	nop
+	mov	tx,	di
+	jmp	z80_opcode_dec_r8.tappoint
+	ret
 	endp
 z80_opcode_putch:	proc
 	lda	z80_a
