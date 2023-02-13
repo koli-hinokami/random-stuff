@@ -56,6 +56,18 @@ foldstart
 ;		| F800 | Native stack in Shadow RAM		   |
 ;		| FFFF | End of address space			   |
 ;		+------+-------------------------------------------+
+;=============================================================================
+;			     ,,..................,,
+;			     ::What is a tappoint::
+;			     ''''''''''''''''''''''
+;		A tappoint is a code optimization technique, used to reduce
+;	code size. An ending block of an subroutine is replaced with jump to
+;	tappoint of another subroutine that have exactly same code from 
+;	tappoint to return. In handlers of heavy opcodes (anywhere from a dozen
+;	to a hundred and more), is placed after the operand-dependent
+;	calculations are done, presumably after effective address calculation
+;	of an (or the) operand.
+;=============================================================================
 foldend
 ;				    ,,.......,,
 ;				    ::Headers::
@@ -63,7 +75,7 @@ foldend
 foldstart
 .entry entry
 .export 0x0000 TopRomAddress
-.origin 0x9000
+.origin 0x4000
 .segment DataRO
 foldend
 ;			,,.............................,,
@@ -951,7 +963,7 @@ foldmid
 	dw	z80_opcode_unimplemented,	1	;C8 310            
 	dw	z80_opcode_unimplemented,	1	;C9 311	           
 	dw	z80_opcode_unimplemented,	1	;CA 312             
-	dw	z80_opcode_unimplemented,	1	;CB 313 [XY] [ESH]	The [XY+d] shifts and bitops.
+	dw	z80_dispatcher_xy_esh,		1	;CB 313 [XY] [ESH]	The [XY+d] shifts and bitops.
 	dw	z80_opcode_unimplemented,	1	;CC 314            
 	dw	z80_opcode_unimplemented,	1	;CD 315	            
 	dw	z80_opcode_unimplemented,	1	;CE 316             
@@ -1264,6 +1276,266 @@ foldmid
 	dw	z80_opcode_unimplemented,	62	;FE 376 SET 7,(HL
 	dw	z80_opcode_set_r8,		63	;FF 377 SET 7,A                                     
 foldend
+z80_xy_esh_opcode_table: foldstart ;DDCB and FDCB-prefixed opcodes
+foldmid
+	dw	z80_opcode_unimplemented,	0	;00 000 rlc (ix+n),b  
+	dw	z80_opcode_unimplemented,	0	;01 001 rlc (ix+n),c  
+	dw	z80_opcode_unimplemented,	0	;02 002 rlc (ix+n),d  
+	dw	z80_opcode_unimplemented,	0	;03 003 rlc (ix+n),e  
+	dw	z80_opcode_rlc_xyh,		0	;04 004 RLC IXH    
+	dw	z80_opcode_rlc_xyl,		0	;05 005 RLC IXL    
+	dw	z80_opcode_rlc_dxy,		0	;06 006 RLC (IX+n)  
+	dw	z80_opcode_unimplemented,	0	;07 007 rlc (ix+n,a)  
+	dw	z80_opcode_unimplemented,	0	;08 010 rrc (ix+n),b  
+	dw	z80_opcode_unimplemented,	0	;09 011 rrc (ix+n),c  
+	dw	z80_opcode_unimplemented,	0	;0A 012 rrc (ix+n),d  
+	dw	z80_opcode_unimplemented,	0	;0B 013 rrc (ix+n),e  
+	dw	z80_opcode_rrc_xyh,		0	;0C 014 RRC IXH    
+	dw	z80_opcode_rrc_xyl,		0	;0D 015 RRC IXL    
+	dw	z80_opcode_rrc_dxy,		0	;0E 016 RRC (IX+n)  
+	dw	z80_opcode_unimplemented,	0	;0F 017 rrc (ix+n),a  
+	dw	z80_opcode_unimplemented,	0	;10 020 rl (ix+n),b   
+	dw	z80_opcode_unimplemented,	0	;11 021 rl (ix+n),c   
+	dw	z80_opcode_unimplemented,	0	;12 022 rl (ix+n),d   
+	dw	z80_opcode_unimplemented,	0	;13 023 rl (rc+n),e   
+	dw	z80_opcode_rl_xyh,		0	;14 024 RL IXH     
+	dw	z80_opcode_rl_xyl,		0	;15 025 RL IXL     
+	dw	z80_opcode_rl_dxy,		0	;16 026 RL (IX+n)   
+	dw	z80_opcode_unimplemented,	0	;17 027 rl (ix+n),a   
+	dw	z80_opcode_unimplemented,	0	;18 030 rr (ix+n),b   
+	dw	z80_opcode_unimplemented,	0	;19 031 rr (ix+n),c   
+	dw	z80_opcode_unimplemented,	0	;1A 032 rr (ix+n),d   
+	dw	z80_opcode_unimplemented,	0	;1B 033 rr (ix+n),e   
+	dw	z80_opcode_rr_xyh,		0	;1C 034 RR IXH     
+	dw	z80_opcode_rr_xyl,		0	;1D 035 RR IXL     
+	dw	z80_opcode_rr_dxy,		0	;1E 036 RR (IX+n)   
+	dw	z80_opcode_unimplemented,	0	;1F 037 rr (ix+n),a   
+	dw	z80_opcode_unimplemented,	0	;20 040 sla (ix+n),b  
+	dw	z80_opcode_unimplemented,	0	;21 041 sla (ix+n),c  
+	dw	z80_opcode_unimplemented,	0	;22 042 sla (ix+n),d  
+	dw	z80_opcode_unimplemented,	0	;23 043 sla (ix+n),e  
+	dw	z80_opcode_sla_xyh,		0	;24 044 SLA IXH    
+	dw	z80_opcode_sla_xyl,		0	;25 045 SLA IXL    
+	dw	z80_opcode_sla_dxy,		0	;26 046 SLA (IX+n)  
+	dw	z80_opcode_unimplemented,	0	;27 047 sla (ix+n),a  
+	dw	z80_opcode_unimplemented,	0	;28 050 sra (ix+n),b  
+	dw	z80_opcode_unimplemented,	0	;29 051 sra (ix+n),c  
+	dw	z80_opcode_unimplemented,	0	;2A 052 sra (ix+n),d  
+	dw	z80_opcode_unimplemented,	0	;2B 053 sra (ix+n),e  
+	dw	z80_opcode_sra_xyh,		0	;2C 054 SRA IXH    
+	dw	z80_opcode_sra_xyl,		0	;2D 055 SRA IXL    
+	dw	z80_opcode_sra_dxy,		0	;2E 056 SRA (IX+n)  
+	dw	z80_opcode_unimplemented,	0	;2F 057 sra (ix+n),a  
+	dw	z80_opcode_unimplemented,	0	;30 060 sll (ix+n),b  
+	dw	z80_opcode_unimplemented,	0	;31 061 sll (ix+n),c  
+	dw	z80_opcode_unimplemented,	0	;32 062 sll (ix+n),d  
+	dw	z80_opcode_unimplemented,	0	;33 063 sll (ix+n),e  
+	dw	z80_opcode_sll_xyh,		0	;34 064 SLL IXH    
+	dw	z80_opcode_sll_xyl,		0	;35 065 SLL IXL    
+	dw	z80_opcode_sll_dxy,		0	;36 066 SLL (IX+n)  
+	dw	z80_opcode_unimplemented,	0	;37 067 sll (ix+n),a  
+	dw	z80_opcode_unimplemented,	0	;38 070 srl (ix+n),b  
+	dw	z80_opcode_unimplemented,	0	;39 071 srl (ix+n),c  
+	dw	z80_opcode_unimplemented,	0	;3A 072 srl (ix+n),d  
+	dw	z80_opcode_unimplemented,	0	;3B 073 srl (ix+n),e  
+	dw	z80_opcode_srl_xyh,		0	;3C 074 SRL IXH    
+	dw	z80_opcode_srl_xyl,		0	;3D 075 SRL IXL    
+	dw	z80_opcode_srl_dxy,		0	;3E 076 SRL (IX+n)  
+	dw	z80_opcode_unimplemented,	0	;3F 077 srl (ix+n),a  
+	dw	z80_opcode_unimplemented,	0	;40 100 bit 0,(ix+n)  
+	dw	z80_opcode_unimplemented,	0	;41 101 bit 0,(ix+n)  
+	dw	z80_opcode_unimplemented,	0	;42 102 bit 0,(ix+n)  
+	dw	z80_opcode_unimplemented,	0	;43 103 bit 0,(ix+n)  
+	dw	z80_opcode_bit_xyh,		0	;44 104 BIT 0,IXH  
+	dw	z80_opcode_bit_xyl,		0	;45 105 BIT 0,IXL  
+	dw	z80_opcode_bit_dxy,		0	;46 106 BIT 0,(IX+n)
+	dw	z80_opcode_unimplemented,	0	;47 107 bit 0,(ix+n)  
+	dw	z80_opcode_unimplemented,	1	;48 110 bit 1,(ix+n)  
+	dw	z80_opcode_unimplemented,	1	;49 111 bit 1,(ix+n)  
+	dw	z80_opcode_unimplemented,	1	;4A 112 bit 1,(ix+n)  
+	dw	z80_opcode_unimplemented,	1	;4B 113 bit 1,(ix+n)  
+	dw	z80_opcode_bit_xyh,		1	;4C 114 BIT 1,IXH  
+	dw	z80_opcode_bit_xyl,		1	;4D 115 BIT 1,IXL  
+	dw	z80_opcode_bit_dxy,		1	;4E 116 BIT 1,(IX+n)
+	dw	z80_opcode_unimplemented,	1	;4F 117 bit 1,(ix+n)  
+	dw	z80_opcode_unimplemented,	2	;50 120 bit 2,(ix+n)  
+	dw	z80_opcode_unimplemented,	2	;51 121 bit 2,(ix+n)  
+	dw	z80_opcode_unimplemented,	2	;52 122 bit 2,(ix+n)  
+	dw	z80_opcode_unimplemented,	2	;53 123 bit 2,(ix+n)  
+	dw	z80_opcode_bit_xyh,		2	;54 124 BIT 2,IXH  
+	dw	z80_opcode_bit_xyl,		2	;55 125 BIT 2,IXL  
+	dw	z80_opcode_bit_dxy,		2	;56 126 BIT 2,(IX+n)
+	dw	z80_opcode_unimplemented,	2	;57 127 bit 2,(ix+n)  
+	dw	z80_opcode_unimplemented,	3	;58 130 bit 3,(ix+n)  
+	dw	z80_opcode_unimplemented,	3	;59 131 bit 3,(ix+n)  
+	dw	z80_opcode_unimplemented,	3	;5A 132 bit 3,(ix+n)  
+	dw	z80_opcode_unimplemented,	3	;5B 133 bit 3,(ix+n)  
+	dw	z80_opcode_bit_xyh,		3	;5C 134 BIT 3,IXH  
+	dw	z80_opcode_bit_xyl,		3	;5D 135 BIT 3,IXL  
+	dw	z80_opcode_bit_dxy,		3	;5E 136 BIT 3,(IX+n)
+	dw	z80_opcode_unimplemented,	3	;5F 137 bit 3,(ix+n)  
+	dw	z80_opcode_unimplemented,	4	;60 140 bit 4,(ix+n)  
+	dw	z80_opcode_unimplemented,	4	;61 141 bit 4,(ix+n)  
+	dw	z80_opcode_unimplemented,	4	;62 142 bit 4,(ix+n)  
+	dw	z80_opcode_unimplemented,	4	;63 143 bit 4,(ix+n)  
+	dw	z80_opcode_bit_xyh,		4	;64 144 BIT 4,IXH  
+	dw	z80_opcode_bit_xyl,		4	;65 145 BIT 4,IXL  
+	dw	z80_opcode_bit_dxy,		4	;66 146 BIT 4,(IX+n)
+	dw	z80_opcode_unimplemented,	4	;67 147 bit 4,(ix+n)  
+	dw	z80_opcode_unimplemented,	5	;68 150 bit 5,(ix+n)  
+	dw	z80_opcode_unimplemented,	5	;69 151 bit 5,(ix+n)  
+	dw	z80_opcode_unimplemented,	5	;6A 152 bit 5,(ix+n)  
+	dw	z80_opcode_unimplemented,	5	;6B 153 bit 5,(ix+n)  
+	dw	z80_opcode_bit_xyh,		5	;6C 154 BIT 5,IXH  
+	dw	z80_opcode_bit_xyl,		5	;6D 155 BIT 5,IXL  
+	dw	z80_opcode_bit_dxy,		5	;6E 156 BIT 5,(IX+n)
+	dw	z80_opcode_unimplemented,	5	;6F 157 bit 5,(ix+n)  
+	dw	z80_opcode_unimplemented,	6	;70 160 bit 6,(ix+n)  
+	dw	z80_opcode_unimplemented,	6	;71 161 bit 6,(ix+n)  
+	dw	z80_opcode_unimplemented,	6	;72 162 bit 6,(ix+n)  
+	dw	z80_opcode_unimplemented,	6	;73 163 bit 6,(ix+n)  
+	dw	z80_opcode_bit_xyh,		6	;74 164 BIT 6,IXH  
+	dw	z80_opcode_bit_xyl,		6	;75 165 BIT 6,IXL  
+	dw	z80_opcode_bit_dxy,		6	;76 166 BIT 6,(IX+n)
+	dw	z80_opcode_unimplemented,	6	;77 167 bit 6,(ix+n)  
+	dw	z80_opcode_unimplemented,	7	;78 170 bit 7,(ix+n)  
+	dw	z80_opcode_unimplemented,	7	;79 171 bit 7,(ix+n)  
+	dw	z80_opcode_unimplemented,	7	;7A 172 bit 7,(ix+n)  
+	dw	z80_opcode_unimplemented,	7	;7B 173 bit 7,(ix+n)  
+	dw	z80_opcode_bit_xyh,		7	;7C 174 BIT 7,IXH  
+	dw	z80_opcode_bit_xyl,		7	;7D 175 BIT 7,IXL  
+	dw	z80_opcode_bit_dxy,		7	;7E 176 BIT 7,(IX+n)
+	dw	z80_opcode_unimplemented,	7	;7F 177 bit 7,(ix+n)  
+	dw	z80_opcode_unimplemented,	0	;80 200 res 0,(ix+n),b
+	dw	z80_opcode_unimplemented,	0	;81 201 res 0,(ix+n),c
+	dw	z80_opcode_unimplemented,	0	;82 202 res 0,(ix+n),d
+	dw	z80_opcode_unimplemented,	0	;83 203 res 0,(ix+n),e
+	dw	z80_opcode_res_xyh,		0	;84 204 RES 0,IXH  
+	dw	z80_opcode_res_xyl,		0	;85 205 RES 0,IXL  
+	dw	z80_opcode_res_dxy,		0	;86 206 RES 0,(IX+n)
+	dw	z80_opcode_unimplemented,	0	;87 207 res 0,(ix+n),a
+	dw	z80_opcode_unimplemented,	1	;88 210 res 1,(ix+n),b
+	dw	z80_opcode_unimplemented,	1	;89 211 res 1,(ix+n),c
+	dw	z80_opcode_unimplemented,	1	;8A 212 res 1,(ix+n),d
+	dw	z80_opcode_unimplemented,	1	;8B 213 res 1,(ix+n),e
+	dw	z80_opcode_res_xyh,		1	;8C 214 RES 1,IXH  
+	dw	z80_opcode_res_xyl,		1	;8D 215 RES 1,IXL  
+	dw	z80_opcode_res_dxy,		1	;8E 216 RES 1,(IX+n)
+	dw	z80_opcode_unimplemented,	1	;8F 217 res 1,(ix+n),a
+	dw	z80_opcode_unimplemented,	2	;90 220 res 2,(ix+n),b
+	dw	z80_opcode_unimplemented,	2	;91 221 res 2,(ix+n),c
+	dw	z80_opcode_unimplemented,	2	;92 222 res 2,(ix+n),d
+	dw	z80_opcode_unimplemented,	2	;93 223 res 2,(ix+n),e
+	dw	z80_opcode_res_xyh,		2	;94 224 RES 2,IXH  
+	dw	z80_opcode_res_xyl,		2	;95 225 RES 2,IXL  
+	dw	z80_opcode_res_dxy,		2	;96 226 RES 2,(IX+n)
+	dw	z80_opcode_unimplemented,	2	;97 227 res 2,(ix+n),a
+	dw	z80_opcode_unimplemented,	3	;98 230 res 3,(ix+n),b
+	dw	z80_opcode_unimplemented,	3	;99 231 res 3,(ix+n),c
+	dw	z80_opcode_unimplemented,	3	;9A 232 res 3,(ix+n),d
+	dw	z80_opcode_unimplemented,	3	;9B 233 res 3,(ix+n),e
+	dw	z80_opcode_res_xyh,		3	;9C 234 RES 3,IXH  
+	dw	z80_opcode_res_xyl,		3	;9D 235 RES 3,IXL  
+	dw	z80_opcode_res_dxy,		3	;9E 236 RES 3,(IX+n)
+	dw	z80_opcode_unimplemented,	3	;9F 237 res 3,(ix+n),a
+	dw	z80_opcode_unimplemented,	4	;A0 240 res 4,(ix+n),b
+	dw	z80_opcode_unimplemented,	4	;A1 241 res 4,(ix+n),c
+	dw	z80_opcode_unimplemented,	4	;A2 242 res 4,(ix+n),d
+	dw	z80_opcode_unimplemented,	4	;A3 243 res 4,(ix+n),e
+	dw	z80_opcode_res_xyh,		4	;A4 244 RES 4,IXH  
+	dw	z80_opcode_res_xyl,		4	;A5 245 RES 4,IXL  
+	dw	z80_opcode_res_dxy,		4	;A6 246 RES 4,(IX+n)
+	dw	z80_opcode_unimplemented,	4	;A7 247 res 4,(ix+n),a
+	dw	z80_opcode_unimplemented,	5	;A8 250 res 5,(ix+n),b
+	dw	z80_opcode_unimplemented,	5	;A9 251 res 5,(ix+n),c
+	dw	z80_opcode_unimplemented,	5	;AA 252 res 5,(ix+n),d
+	dw	z80_opcode_unimplemented,	5	;AB 253 res 5,(ix+n),e
+	dw	z80_opcode_res_xyh,		5	;AC 254 RES 5,IXH  
+	dw	z80_opcode_res_xyl,		5	;AD 255 RES 5,IXL  
+	dw	z80_opcode_res_dxy,		5	;AE 256 RES 5,(IX+n)
+	dw	z80_opcode_unimplemented,	5	;AF 257 res 5,(ix+n),a
+	dw	z80_opcode_unimplemented,	6	;B0 260 res 6,(ix+n),b
+	dw	z80_opcode_unimplemented,	6	;B1 261 res 6,(ix+n),c
+	dw	z80_opcode_unimplemented,	6	;B2 262 res 6,(ix+n),d
+	dw	z80_opcode_unimplemented,	6	;B3 263 res 6,(ix+n),e
+	dw	z80_opcode_res_xyh,		6	;B4 264 RES 6,IXH  
+	dw	z80_opcode_res_xyl,		6	;B5 265 RES 6,IXL  
+	dw	z80_opcode_res_dxy,		6	;B6 266 RES 6,(IX+n)
+	dw	z80_opcode_unimplemented,	6	;B7 267 res 6,(ix+n),a
+	dw	z80_opcode_unimplemented,	7	;B8 270 res 7,(ix+n),b
+	dw	z80_opcode_unimplemented,	7	;B9 271 res 7,(ix+n),c
+	dw	z80_opcode_unimplemented,	7	;BA 272 res 7,(ix+n),d
+	dw	z80_opcode_unimplemented,	7	;BB 273 res 7,(ix+n),e
+	dw	z80_opcode_res_xyh,		7	;BC 274 RES 7,IXH  
+	dw	z80_opcode_res_xyl,		7	;BD 275 RES 7,IXL  
+	dw	z80_opcode_res_dxy,		7	;BE 276 RES 7,(IX+n)
+	dw	z80_opcode_unimplemented,	7	;BF 277 res 7,(ix+n),a
+	dw	z80_opcode_unimplemented,	0	;C0 300 set 0,(ix+n),b
+	dw	z80_opcode_unimplemented,	0	;C1 301 set 0,(ix+n),c
+	dw	z80_opcode_unimplemented,	0	;C2 302 set 0,(ix+n),d
+	dw	z80_opcode_unimplemented,	0	;C3 303 set 0,(ix+n),e
+	dw	z80_opcode_set_xyh,		0	;C4 304 SET 0,IXH  
+	dw	z80_opcode_set_xyl,		0	;C5 305 SET 0,IXL  
+	dw	z80_opcode_set_dxy,		0	;C6 306 SET 0,(IX+n)
+	dw	z80_opcode_unimplemented,	0	;C7 307 set 0,(ix+n),a
+	dw	z80_opcode_unimplemented,	1	;C8 310 set 1,(ix+n),b
+	dw	z80_opcode_unimplemented,	1	;C9 311	set 1,(ix+n),c
+	dw	z80_opcode_unimplemented,	1	;CA 312 set 1,(ix+n),d
+	dw	z80_opcode_unimplemented,	1	;CB 313 set 1,(ix+n),e
+	dw	z80_opcode_set_xyh,		1	;CC 314 SET 1,IXH  
+	dw	z80_opcode_set_xyl,		1	;CD 315	SET 1,IXL  
+	dw	z80_opcode_set_dxy,		1	;CE 316 SET 1,(IX+n)
+	dw	z80_opcode_unimplemented,	1	;CF 317 set 1,(ix+n),a
+	dw	z80_opcode_unimplemented,	2	;D0 320 set 2,(ix+n),b
+	dw	z80_opcode_unimplemented,	2	;D1 321 set 2,(ix+n),c
+	dw	z80_opcode_unimplemented,	2	;D2 322 set 2,(ix+n),d
+	dw	z80_opcode_unimplemented,	2	;D3 323 set 2,(ix+n),e
+	dw	z80_opcode_set_xyh,		2	;D4 324 SET 2,IXH  
+	dw	z80_opcode_set_xyl,		2	;D5 325 SET 2,IXL  
+	dw	z80_opcode_set_dxy,		2	;D6 326 SET 2,(IX+n)
+	dw	z80_opcode_unimplemented,	2	;D7 327 set 2,(ix+n),a
+	dw	z80_opcode_unimplemented,	3	;D8 330 set 3,(ix+n),b
+	dw	z80_opcode_unimplemented,	3	;D9 331 set 3,(ix+n),c
+	dw	z80_opcode_unimplemented,	3	;DA 332 set 3,(ix+n),d
+	dw	z80_opcode_unimplemented,	3	;DB 333 set 3,(ix+n),e
+	dw	z80_opcode_set_xyh,		3	;DC 334 SET 3,IXH  
+	dw	z80_opcode_set_xyl,		3	;DD 335 SET 3,IXL  
+	dw	z80_opcode_set_dxy,		3	;DE 336 SET 3,(IX+n)
+	dw	z80_opcode_unimplemented,	3	;DF 337 set 3,(ix+n),a
+	dw	z80_opcode_unimplemented,	4	;E0 340 set 4,(ix+n),b
+	dw	z80_opcode_unimplemented,	4	;E1 341 set 4,(ix+n),c
+	dw	z80_opcode_unimplemented,	4	;E2 342 set 4,(ix+n),d
+	dw	z80_opcode_unimplemented,	4	;E3 343 set 4,(ix+n),e
+	dw	z80_opcode_set_xyh,		4	;E4 344 SET 4,IXH  
+	dw	z80_opcode_set_xyl,		4	;E5 345 SET 4,IXL  
+	dw	z80_opcode_set_dxy,		4	;E6 346 SET 4,(IX+n)
+	dw	z80_opcode_unimplemented,	4	;E7 347 set 4,(ix+n),a
+	dw	z80_opcode_unimplemented,	5	;E8 350 set 5,(ix+n),b
+	dw	z80_opcode_unimplemented,	5	;E9 351 set 5,(ix+n),c
+	dw	z80_opcode_unimplemented,	5	;EA 352 set 5,(ix+n),d
+	dw	z80_opcode_unimplemented,	5	;EB 353 set 5,(ix+n),e
+	dw	z80_opcode_set_xyh,		5	;EC 354 SET 5,IXH  
+	dw	z80_opcode_set_xyl,		5	;ED 355 SET 5,IXL  
+	dw	z80_opcode_set_dxy,		5	;EE 356 SET 5,(IX+n)
+	dw	z80_opcode_unimplemented,	5	;EF 357 set 5,(ix+n),a
+	dw	z80_opcode_unimplemented,	6	;F0 360 set 6,(ix+n),b
+	dw	z80_opcode_unimplemented,	6	;F1 361 set 6,(ix+n),c
+	dw	z80_opcode_unimplemented,	6	;F2 362 set 6,(ix+n),d
+	dw	z80_opcode_unimplemented,	6	;F3 363 set 6,(ix+n),e
+	dw	z80_opcode_set_xyh,		6	;F4 364 SET 6,IXH  
+	dw	z80_opcode_set_xyl,		6	;F5 365 SET 6,IXL  
+	dw	z80_opcode_set_dxy,		6	;F6 366 SET 6,(IX+n)
+	dw	z80_opcode_unimplemented,	6	;F7 367 set 6,(ix+n),a
+	dw	z80_opcode_unimplemented,	7	;F8 370 set 7,(ix+n),b
+	dw	z80_opcode_unimplemented,	7	;F9 371 set 7,(ix+n),c
+	dw	z80_opcode_unimplemented,	7	;FA 372 set 7,(ix+n),d
+	dw	z80_opcode_unimplemented,	7	;FB 373 set 7,(ix+n),e
+	dw	z80_opcode_set_xyh,		7	;FC 374 SET 7,IXH  
+	dw	z80_opcode_set_xyl,		7	;FD 375 SET 7,IXL  
+	dw	z80_opcode_set_dxy,		7	;FE 376 SET 7,(IX+n)
+	dw	z80_opcode_unimplemented,	7	;FF 377 set 7,(ix+n),a
+
+foldend
 z80_condcodes_to_flagmask:	;XOR and AND values for condition codes
 	db	0x00,0x40	;NZ
 	db	0xFF,0x40	;Z
@@ -1523,6 +1795,53 @@ z80_dispatcher_iy:	proc
 	ret	
 	endp
 
+z80_dispatcher_xy_esh:	proc
+	mov	b,	[si]	;displacement
+	inc	si
+	mov	a,	[si]	;opcode
+	inc	si
+	;--
+	;Calculate XY+d EA into CD
+	push	a
+	mov	c,	b	;movsx	ab,	b
+	mov	d,	0	;literally stomps everything
+	mov	a,	0
+	add	b,	b
+	sbb	a,	b
+	mov	b,	c 
+	mov	d,	[di]	;mov	cd,	[di]	;dereference DI
+	inc	di
+	mov	c,	[di]
+	dec	di
+	add	cd,	ab	;lea	di,	[ab+cd]
+	pop	a
+	;--
+	push	di
+	push	cd
+	;Fetch the handler ptr. and its parameter
+	mov	cd,	z80_xy_esh_opcode_table;lea di, [z80_xy_esh_opcode_table+a*4]
+	clc
+	mov	b,	0
+	shl	a
+	shl	b
+	shl	a
+	shl	b
+	add	cd,	ab
+	mov	di,	cd
+	mov	a,	[di]
+	inc	di
+	mov	b,	[di]
+	inc	di
+	mov	c,	[di]
+	;Trickery to get AB<TX, B<C and restore DI and CB from stack
+	pop	di
+	mov	tx,	ab
+	mov	b,	c
+	pop	cd
+	;Call handler
+	jmp	tx
+	ret
+	endp
 z80_opcode_nop:	proc
 	;As opcode handlers are usually not calling other subrouties,
 	;no additional enter and leave code is needed.
@@ -2980,7 +3299,7 @@ z80_opcode_djnz_a8.ret:
 	ret
 	endp
 z80_opcode_bit_r8:	proc
-	;Split C into C=C[0:2] and D=C[3:5]
+	;Split C into C=C[0:2]/*register*/ and D=C[3:5]/*bit number*/
 	mov	d,	c	;shr	c,	3	;mov	d,	c
 	shr	c					
 	mov	a,	7				;and	d,	7
@@ -2989,7 +3308,13 @@ z80_opcode_bit_r8:	proc
 	shr	c
 	nop
 	and	c,	a	;and	c,	7
-	;--
+	;Load effective address
+	mov	ab,	z80_registers;lea di,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+z80_opcode_bit_r8.tappoint:
+	;Generate bitmask
 	mov	b,	1			
 	test	d		;shl	b,	d
 	jnz	z80_opcode_bit_r8.maskgenend
@@ -3000,10 +3325,6 @@ z80_opcode_bit_r8.maskgenloop:
 	mov	d,	b	;;Mask into D
 z80_opcode_bit_r8.maskgenend:
 	;--
-	mov	ab,	z80_registers;lea di,	[z80_registers+c]
-	add	a,	c
-	incc	b
-	mov	di,	ab
 	mov	a,	[di]
 	nop
 	and	a,	d	;Mask the bit	
@@ -3025,6 +3346,12 @@ z80_opcode_set_r8:	proc
 	nop
 	and	c,	a	;and	c,	7
 	;--
+	mov	ab,	z80_registers;lea di,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+z80_opcode_set_r8.tappoint:
+	;--
 	mov	b,	1			
 	test	d		;shl	b,	d
 	jnz	z80_opcode_set_r8.maskgenend
@@ -3035,10 +3362,6 @@ z80_opcode_set_r8.maskgenloop:
 	mov	d,	b	;;Mask into D
 z80_opcode_set_r8.maskgenend:
 	;--
-	mov	ab,	z80_registers;lea di,	[z80_registers+c]
-	add	a,	c
-	incc	b
-	mov	di,	ab
 	mov	a,	[di]
 	nop
 	or	a,	d	;Set the bit	
@@ -3061,6 +3384,12 @@ z80_opcode_res_r8:	proc
 	nop
 	and	c,	a	;and	c,	7
 	;--
+	mov	ab,	z80_registers;lea di,	[z80_registers+c]
+	add	a,	c
+	incc	b
+	mov	di,	ab
+z80_opcode_res_r8.tappoint:
+	;--
 	mov	b,	1			
 	test	d		;shl	b,	d
 	jnz	z80_opcode_res_r8.maskgenend
@@ -3071,10 +3400,6 @@ z80_opcode_res_r8.maskgenloop:
 	mov	d,	b	;;Mask into D
 z80_opcode_res_r8.maskgenend:
 	;--
-	mov	ab,	z80_registers;lea di,	[z80_registers+c]
-	add	a,	c
-	incc	b
-	mov	di,	ab
 	mov	a,	[di]
 	mov	b,	0xFF	;Reset the bit
 	xor	d,	a
@@ -3096,9 +3421,9 @@ z80_eval_ea_dxy:	proc
 	;DI	Effective address
 	push	c
 	push	d
-	mov	a,	[di]	;mov	di,	ab,	[di]	;dereference DI
-	inc	di
-	mov	b,	[di]
+	mov	b,	[di]	;mov	di,	ab,	[di]	;dereference DI
+	inc	di		;from reg. file, as such - bigendian
+	mov	a,	[di]
 	mov	di,	ab
 	mov	c,	[si]
 	inc	si
@@ -3585,6 +3910,174 @@ z80_opcode_dec_xyl:	proc
 	jmp	z80_opcode_dec_r8.tappoint
 	ret
 	endp
+z80_opcode_rlc_dxy:	proc
+	mov	cd,	di
+	jmp	z80_opcode_rlc_r8.tappoint
+	ret
+	endp
+z80_opcode_rrc_dxy:	proc
+	mov	cd,	di
+	jmp	z80_opcode_rrc_r8.tappoint
+	ret
+	endp
+z80_opcode_rr_dxy:	proc
+	mov	cd,	di
+	jmp	z80_opcode_rr_r8.tappoint
+	ret
+	endp
+z80_opcode_rl_dxy:	proc
+	mov	cd,	di
+	jmp	z80_opcode_rl_r8.tappoint
+	ret
+	endp
+z80_opcode_sla_dxy:	proc
+	mov	cd,	di
+	jmp	z80_opcode_sla_r8.tappoint
+	ret
+	endp
+z80_opcode_sra_dxy:	proc
+	mov	cd,	di
+	jmp	z80_opcode_sra_r8.tappoint
+	ret
+	endp
+z80_opcode_sll_dxy:	proc
+	mov	cd,	di
+	jmp	z80_opcode_sll_r8.tappoint
+	ret
+	endp
+z80_opcode_srl_dxy:	proc
+	mov	cd,	di
+	jmp	z80_opcode_srl_r8.tappoint
+	ret
+	endp
+z80_opcode_rlc_xyh:	proc
+	jmp	z80_opcode_rlc_r8.tappoint
+	ret
+	endp
+z80_opcode_rrc_xyh:	proc
+	jmp	z80_opcode_rrc_r8.tappoint
+	ret
+	endp
+z80_opcode_rr_xyh:	proc
+	jmp	z80_opcode_rr_r8.tappoint
+	ret
+	endp
+z80_opcode_rl_xyh:	proc
+	jmp	z80_opcode_rl_r8.tappoint
+	ret
+	endp
+z80_opcode_sla_xyh:	proc
+	jmp	z80_opcode_sla_r8.tappoint
+	ret
+	endp
+z80_opcode_sra_xyh:	proc
+	jmp	z80_opcode_sra_r8.tappoint
+	ret
+	endp
+z80_opcode_sll_xyh:	proc
+	jmp	z80_opcode_sll_r8.tappoint
+	ret
+	endp
+z80_opcode_srl_xyh:	proc
+	jmp	z80_opcode_srl_r8.tappoint
+	ret
+	endp
+z80_opcode_rlc_xyl:	proc
+	inc	di
+	jmp	z80_opcode_rlc_r8.tappoint
+	ret
+	endp
+z80_opcode_rrc_xyl:	proc
+	inc	di
+	jmp	z80_opcode_rrc_r8.tappoint
+	ret
+	endp
+z80_opcode_rr_xyl:	proc
+	inc	di
+	jmp	z80_opcode_rr_r8.tappoint
+	ret
+	endp
+z80_opcode_rl_xyl:	proc
+	inc	di
+	jmp	z80_opcode_rl_r8.tappoint
+	ret
+	endp
+z80_opcode_sla_xyl:	proc
+	inc	di
+	jmp	z80_opcode_sla_r8.tappoint
+	ret
+	endp
+z80_opcode_sra_xyl:	proc
+	inc	di
+	jmp	z80_opcode_sra_r8.tappoint
+	ret
+	endp
+z80_opcode_sll_xyl:	proc
+	inc	di
+	jmp	z80_opcode_sll_r8.tappoint
+	ret
+	endp
+z80_opcode_srl_xyl:	proc
+	inc	di
+	jmp	z80_opcode_srl_r8.tappoint
+	ret
+	endp
+
+
+z80_opcode_bit_dxy:	proc
+	mov	cd,	di
+	mov	d,	b
+	jmp	z80_opcode_bit_r8.tappoint
+	ret
+	endp
+z80_opcode_res_dxy:	proc
+	mov	cd,	di
+	mov	d,	b
+	jmp	z80_opcode_res_r8.tappoint
+	ret
+	endp
+z80_opcode_set_dxy:	proc
+	mov	cd,	di
+	mov	d,	b
+	jmp	z80_opcode_set_r8.tappoint
+	ret
+	endp
+
+z80_opcode_bit_xyh:	proc
+	mov	d,	b
+	jmp	z80_opcode_bit_r8.tappoint
+	ret
+	endp
+z80_opcode_res_xyh:	proc
+	mov	d,	b
+	jmp	z80_opcode_res_r8.tappoint
+	ret
+	endp
+z80_opcode_set_xyh:	proc
+	mov	d,	b
+	jmp	z80_opcode_set_r8.tappoint
+	ret
+	endp
+
+z80_opcode_bit_xyl:	proc
+	inc	di
+	mov	d,	b
+	jmp	z80_opcode_bit_r8.tappoint
+	ret
+	endp
+z80_opcode_res_xyl:	proc
+	inc	di
+	mov	d,	b
+	jmp	z80_opcode_res_r8.tappoint
+	ret
+	endp
+z80_opcode_set_xyl:	proc
+	inc	di
+	mov	d,	b
+	jmp	z80_opcode_set_r8.tappoint
+	ret
+	endp
+
 z80_opcode_putch:	proc
 	lda	z80_a
 	call	uart_write_char
