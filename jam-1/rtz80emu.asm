@@ -88,6 +88,9 @@ msg_sessionend:			db "Emulated program terminated.",13,10,0
 msg_wrongentrypoint:		
 	db "Type in Z80 program or CP/M BIOS+BDOS+RAMDisk first, then jump to $6816",13,10
 	db "to start the emulator.",13,10,0
+load_intelhex.welcome: db " Type in an Intel HEX dump ",13,10,0
+load_intelhex.prompt: db 13,10,">",0
+	
 msg_debugopcode:
 foldstart
 	db "DEBUG LOG",13,10,0
@@ -115,16 +118,16 @@ foldstart
 foldend
 msg_nativedebug:
 foldstart
-	db "NATIVE DEBUG LOG",13,10,0
-	db "PC:",0
-	db " SP:",0
-	db " CD:",0
-	db " AB:",0
-	db " SI:",0
-	db " DI:",0
-	db " RA:",0
-	db " TX:",0
-	db 13,10,0
+;	db "NATIVE DEBUG LOG",13,10,0
+;	db "PC:",0
+;	db " SP:",0
+;	db " CD:",0
+;	db " AB:",0
+;	db " SI:",0
+;	db " DI:",0
+;	db " RA:",0
+;	db " TX:",0
+;	db 13,10,0
 foldend
 .subsegment
 .align	256
@@ -1555,7 +1558,7 @@ z80_condcodes_to_flagmask:	;XOR and AND values for condition codes
 foldstart
 init_sp:		dw 0	;SP to restore to return to monitor.
 ;Z80 Register set
-.align 8
+;.align 8
 z80_registers:
 z80_b:	db	0
 z80_c:	db	0
@@ -2210,24 +2213,24 @@ z80_opcode_cmp_i8:	proc
 	ret
 	endp
 z80_opcode_fast_inc_r8:	proc
-	mov	ab,	z80_registers;lea tx,	[ab+c]
-	add	a,	c
-	incc	b
-	mov	tx,	ab
-	mov	a,	[tx]	;inc	[tx]
-	inc	a
-	mov	[tx],	a	
-	ret
-	endp
+;	mov	ab,	z80_registers;lea tx,	[ab+c]
+;	add	a,	c
+;	incc	b
+;	mov	tx,	ab
+;	mov	a,	[tx]	;inc	[tx]
+;	inc	a
+;	mov	[tx],	a	
+;	ret
+;	endp
 z80_opcode_fast_dec_r8:	proc
-	mov	ab,	z80_registers;lea tx,	[ab+c]
-	add	a,	c
-	incc	b
-	mov	tx,	ab
-	mov	a,	[tx]	;inc	[tx]
-	dec	a
-	mov	[tx],	a	
-	ret			
+;	mov	ab,	z80_registers;lea tx,	[ab+c]
+;	add	a,	c
+;	incc	b
+;	mov	tx,	ab
+;	mov	a,	[tx]	;inc	[tx]
+;	dec	a
+;	mov	[tx],	a	
+;	ret			
 	endp
 z80_opcode_inc_r8:	proc
 	mov	ab,	z80_registers;lea tx,	[ab+c]
@@ -2586,15 +2589,15 @@ z80_opcode_mov_r16_i16:	proc
 	ret
 	endp
 z80_opcode_mov_littleendian_r16_i16:	proc
-	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
-	add	a,	c	
-	incc	b
-	mov	di,	ab	
-	lodsw			;mov	[di],	ab,	[si]
-	mov	a,	[di]	
-	inc	di
-	mov	b,	[di]
-	ret
+;	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+;	add	a,	c	
+;	incc	b
+;	mov	di,	ab	
+;	lodsw			;mov	[di],	ab,	[si]
+;	mov	a,	[di]	
+;	inc	di
+;	mov	b,	[di]
+;	ret
 	endp
 z80_opcode_ncall_a16:	proc
 	;Do a subroutine call to a native subroutine.
@@ -3128,36 +3131,36 @@ z80_opcode_srl_r8.tappoint:
 	endp
 
 z80_opcode_fast_add_hl_r16:	proc
-	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
-	add	a,	c	
-	incc	b
-	mov	di,	ab	
-	mov	d,	[di]
-	inc	di
-	mov	c,	[di]
-	lda	z80_l
-	ldb	z80_h
-	add	c,	a
-	adc	d,	b
-	stc	z80_l
-	std	z80_h
-	ret
+;	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+;	add	a,	c	
+;	incc	b
+;	mov	di,	ab	
+;	mov	d,	[di]
+;	inc	di
+;	mov	c,	[di]
+;	lda	z80_l
+;	ldb	z80_h
+;	add	c,	a
+;	adc	d,	b
+;	stc	z80_l
+;	std	z80_h
+;	ret
 	endp
 z80_opcode_fast_sub_hl_r16:	proc
-	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
-	add	a,	c	
-	incc	b
-	mov	di,	ab	
-	mov	d,	[di]
-	inc	di
-	mov	c,	[di]
-	lda	z80_l
-	ldb	z80_h
-	sub	c,	a
-	sbb	d,	b
-	stc	z80_l
-	std	z80_h
-	ret
+;	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
+;	add	a,	c	
+;	incc	b
+;	mov	di,	ab	
+;	mov	d,	[di]
+;	inc	di
+;	mov	c,	[di]
+;	lda	z80_l
+;	ldb	z80_h
+;	sub	c,	a
+;	sbb	d,	b
+;	stc	z80_l
+;	std	z80_h
+;	ret
 	endp
 z80_opcode_add_hl_r16:	proc
 	mov	ab,	z80_registers;lea di,	ab,	[z80_registers+c]
@@ -4221,231 +4224,231 @@ z80_external_writeio:	proc
 z80_opcode_debug:	proc
 	;Debug opcode, displays internal state.
 	;Speed of execution is not relevant - it interfaces with SIO anyways.
-	push	ra
-	push	si
-	mov	ab,	si
-	mov	cd,	si
-	;---
-	mov	si,	msg_debugopcode
-	call	uart_write
-	;---
-	call	uart_write
-	mov	di,	si
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	foldstart
-	call	uart_write
-	mov	di,	si
-	ldb	z80_a
-	lda	z80_f
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_b
-	lda	z80_c
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_d
-	lda	z80_e
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_h
-	lda	z80_l
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_ixl
-	lda	z80_ixh
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_iyl
-	lda	z80_iyh
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	lda	z80_sp+1
-	ldb	z80_sp
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	push	si
-	mov	di,	cd
-	dec	di
-	mov	b,	[di]
-	inc	di
-	mov	a,	[di]
-	call	math_itoahex_16
-	call	uart_write
-	pop	si
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_a2
-	lda	z80_f2
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_b2
-	lda	z80_c2
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_d2
-	lda	z80_e2
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_h2
-	lda	z80_l2
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	ldb	z80_i
-	lda	z80_r
-	call	math_itoahex_16
-	call	uart_write
-	mov	si,	di
-	;---
-	call	uart_write
-	mov	di,	si
-	lda	z80_iff
-	call	math_itoahex_8
-	call	uart_write
-	mov	si,	di
-	call	uart_write
-	foldend
-	;The flags
-	ldb	z80_f
-	mov	di,	si
-	foldstart
-	inc	di
-	inc	di
-	add	b,b
-	incc	si
-	mov	a,	[si]
-	call	Uart_Write_Char
-	mov	si,	di
-	mov	a,	32
-	call	uart_write_char
-	;--
-	inc	di
-	inc	di
-	add	b,b
-	incc	si
-	mov	a,	[si]
-	call	Uart_Write_Char
-	mov	si,	di
-	mov	a,	32
-	call	uart_write_char
-	;--
-	inc	di
-	inc	di
-	add	b,b
-	incc	si
-	mov	a,	[si]
-	call	Uart_Write_Char
-	mov	si,	di
-	mov	a,	32
-	call	uart_write_char
-	;--
-	inc	di
-	inc	di
-	add	b,b
-	incc	si
-	mov	a,	[si]
-	call	Uart_Write_Char
-	mov	si,	di
-	mov	a,	32
-	call	uart_write_char
-	;--
-	inc	di
-	inc	di
-	add	b,b
-	incc	si
-	mov	a,	[si]
-	call	Uart_Write_Char
-	mov	si,	di
-	mov	a,	32
-	call	uart_write_char
-	;--
-	inc	di
-	inc	di
-	add	b,b
-	incc	si
-	mov	a,	[si]
-	call	Uart_Write_Char
-	mov	si,	di
-	mov	a,	32
-	call	uart_write_char
-	;--
-	inc	di
-	inc	di
-	add	b,b
-	incc	si
-	mov	a,	[si]
-	call	Uart_Write_Char
-	mov	si,	di
-	mov	a,	32
-	call	uart_write_char
-	;--
-	inc	di
-	inc	di
-	add	b,b
-	incc	si
-	mov	a,	[si]
-	call	Uart_Write_Char
-	mov	si,	di
-	mov	a,	32
-	call	uart_write_char
-	foldend
-	call	uart_write
-	;==
-;	mov	di,	0
-; z80_opcode_debug.delayloop:
+;	push	ra
+;	push	si
+;	mov	ab,	si
+;	mov	cd,	si
+;	;---
+;	mov	si,	msg_debugopcode
+;	call	uart_write
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	foldstart
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_a
+;	lda	z80_f
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_b
+;	lda	z80_c
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_d
+;	lda	z80_e
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_h
+;	lda	z80_l
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_ixl
+;	lda	z80_ixh
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_iyl
+;	lda	z80_iyh
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	lda	z80_sp+1
+;	ldb	z80_sp
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	push	si
+;	mov	di,	cd
 ;	dec	di
-;	mov	ab,	di
-;	nop
-;	or	a,	b
-;	jnz	z80_opcode_debug.delayloop
-	pop	si
-	pop	ra
-	ret
+;	mov	b,	[di]
+;	inc	di
+;	mov	a,	[di]
+;	call	math_itoahex_16
+;	call	uart_write
+;	pop	si
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_a2
+;	lda	z80_f2
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_b2
+;	lda	z80_c2
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_d2
+;	lda	z80_e2
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_h2
+;	lda	z80_l2
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	ldb	z80_i
+;	lda	z80_r
+;	call	math_itoahex_16
+;	call	uart_write
+;	mov	si,	di
+;	;---
+;	call	uart_write
+;	mov	di,	si
+;	lda	z80_iff
+;	call	math_itoahex_8
+;	call	uart_write
+;	mov	si,	di
+;	call	uart_write
+;	foldend
+;	;The flags
+;	ldb	z80_f
+;	mov	di,	si
+;	foldstart
+;	inc	di
+;	inc	di
+;	add	b,b
+;	incc	si
+;	mov	a,	[si]
+;	call	Uart_Write_Char
+;	mov	si,	di
+;	mov	a,	32
+;	call	uart_write_char
+;	;--
+;	inc	di
+;	inc	di
+;	add	b,b
+;	incc	si
+;	mov	a,	[si]
+;	call	Uart_Write_Char
+;	mov	si,	di
+;	mov	a,	32
+;	call	uart_write_char
+;	;--
+;	inc	di
+;	inc	di
+;	add	b,b
+;	incc	si
+;	mov	a,	[si]
+;	call	Uart_Write_Char
+;	mov	si,	di
+;	mov	a,	32
+;	call	uart_write_char
+;	;--
+;	inc	di
+;	inc	di
+;	add	b,b
+;	incc	si
+;	mov	a,	[si]
+;	call	Uart_Write_Char
+;	mov	si,	di
+;	mov	a,	32
+;	call	uart_write_char
+;	;--
+;	inc	di
+;	inc	di
+;	add	b,b
+;	incc	si
+;	mov	a,	[si]
+;	call	Uart_Write_Char
+;	mov	si,	di
+;	mov	a,	32
+;	call	uart_write_char
+;	;--
+;	inc	di
+;	inc	di
+;	add	b,b
+;	incc	si
+;	mov	a,	[si]
+;	call	Uart_Write_Char
+;	mov	si,	di
+;	mov	a,	32
+;	call	uart_write_char
+;	;--
+;	inc	di
+;	inc	di
+;	add	b,b
+;	incc	si
+;	mov	a,	[si]
+;	call	Uart_Write_Char
+;	mov	si,	di
+;	mov	a,	32
+;	call	uart_write_char
+;	;--
+;	inc	di
+;	inc	di
+;	add	b,b
+;	incc	si
+;	mov	a,	[si]
+;	call	Uart_Write_Char
+;	mov	si,	di
+;	mov	a,	32
+;	call	uart_write_char
+;	foldend
+;	call	uart_write
+;	;==
+;;	mov	di,	0
+;; z80_opcode_debug.delayloop:
+;;	dec	di
+;;	mov	ab,	di
+;;	nop
+;;	or	a,	b
+;;	jnz	z80_opcode_debug.delayloop
+;	pop	si
+;	pop	ra
+;	ret
 	endp
 z80_opcode_endsession:	proc
 	;Handler for correct termination of emulator.
@@ -4590,8 +4593,6 @@ load_intelhex.ret:
 	pop	ra
 	ret
 	endp
-load_intelhex.welcome: db " Type in an Intel HEX dump ",13,10,0
-load_intelhex.prompt: db 13,10,">",0
 rtl_readhex8:	proc
 	push	ra
 	push	b
